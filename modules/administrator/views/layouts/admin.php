@@ -4,6 +4,7 @@
 
 use app\assets\AdminAsset;
 use yii\helpers\Url;
+use app\modules\admin\models\Helper;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
@@ -52,7 +53,7 @@ $menu_active = Yii::$app->controller->id;
             <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
 
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin/default/">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/administrator/default/">
 
                     <div class="sidebar-brand-text mx-3">Trote Solidário</div>
                 </a>
@@ -62,7 +63,7 @@ $menu_active = Yii::$app->controller->id;
 
                 <!-- Nav Item - Dashboard -->
                 <li class="nav-item <?= $menu_active == 'default' ? 'active' : '' ?>">
-                    <a class="nav-link" href="/admin/default/">
+                    <a class="nav-link" href="/administrator/default/">
                         <i class="fas fa-fw fa-home"></i>
                         <span>Home</span></a>
                 </li>
@@ -78,15 +79,15 @@ $menu_active = Yii::$app->controller->id;
                 <!-- Nav Item - Charts -->
                 <!--<li class="nav-item active">-->
                 <li class="nav-item <?= $menu_active == 'doacao' ? 'active' : '' ?>">
-                    <a class="nav-link" href="/admin/doacao">
+                    <a class="nav-link" href="/administrator/doacao">
                         <i class="fas fa-inbox"></i>
                         <span>Doações</span></a>
                 </li>
-<!--                <li class="nav-item <?php $menu_active == 'certificado' ? 'active' : '' ?>">
-                    <a class="nav-link" href="/admin/certificado">
-                        <i class="fas fa-file-contract"></i>
-                        <span>Certificado</span></a>
-                </li>-->
+                <li class="nav-item <?= $menu_active == 'users' ? 'active' : '' ?>">
+                    <a class="nav-link" href="/administrator/users">
+                        <i class="fas fa-users"></i>
+                        <span>Inscritos</span></a>
+                </li>
                 
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
@@ -270,11 +271,6 @@ $menu_active = Yii::$app->controller->id;
                                 </a>
                                 <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="/admin/users/perfil">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Perfil
-                                    </a>
-                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Sair
@@ -323,7 +319,7 @@ $menu_active = Yii::$app->controller->id;
                     <div class="modal-body">Selecione sair, para finalizar a sessão.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" data-method="POST" href="/admin/default/logout">Sair</a>
+                        <a class="btn btn-primary" data-method="POST" href="/administrator/default/logout">Sair</a>
                     </div>
                 </div>
             </div>

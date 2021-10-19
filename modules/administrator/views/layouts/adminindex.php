@@ -4,9 +4,13 @@
 
 use app\assets\AdminAsset;
 use yii\helpers\Url;
+use app\modules\admin\models\Helper;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
+if(Yii::$app->user->identity->administrator==0){
+    Yii::$app->user->logout();
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -49,10 +53,10 @@ $menu_active = Yii::$app->controller->id;
         <div id="wrapper">
 
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
+            <ul class="navbar-nav bg-success sidebar sidebar-dark accordion" id="accordionSidebar">
 
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin/default/">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/administrator/default/">
 
                     <div class="sidebar-brand-text mx-3">Trote Solidário</div>
                 </a>
@@ -62,7 +66,7 @@ $menu_active = Yii::$app->controller->id;
 
                 <!-- Nav Item - Dashboard -->
                 <li class="nav-item <?= $menu_active == 'default' ? 'active' : '' ?>">
-                    <a class="nav-link" href="/admin/default/">
+                    <a class="nav-link" href="/administrator/default/">
                         <i class="fas fa-fw fa-home"></i>
                         <span>Home</span></a>
                 </li>
@@ -75,21 +79,41 @@ $menu_active = Yii::$app->controller->id;
                     menu
                 </div>
 
-                <!-- Nav Item - Charts -->
-                <!--<li class="nav-item active">-->
+                <!-- Nav Item - Pages Collapse Menu -->
+                <!--            <li class="nav-item">
+                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                                    <i class="fas fa-fw fa-folder"></i>
+                                    <span>Pages</span>
+                                </a>
+                                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                                    <div class="bg-white py-2 collapse-inner rounded">
+                                        <h6 class="collapse-header">Login Screens:</h6>
+                                        <a class="collapse-item" href="login.html">Login</a>
+                                        <a class="collapse-item" href="register.html">Register</a>
+                                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                                        <div class="collapse-divider"></div>
+                                        <h6 class="collapse-header">Other Pages:</h6>
+                                        <a class="collapse-item" href="404.html">404 Page</a>
+                                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                                    </div>
+                                </div>
+                            </li>-->
+
                 <li class="nav-item <?= $menu_active == 'doacao' ? 'active' : '' ?>">
-                    <a class="nav-link" href="/admin/doacao">
+                    <a class="nav-link" href="/administrator/doacao">
                         <i class="fas fa-inbox"></i>
                         <span>Doações</span></a>
                 </li>
-<!--                <li class="nav-item <?php $menu_active == 'certificado' ? 'active' : '' ?>">
-                    <a class="nav-link" href="/admin/certificado">
-                        <i class="fas fa-file-contract"></i>
-                        <span>Certificado</span></a>
-                </li>-->
-                
+                <li class="nav-item <?= $menu_active == 'users' ? 'active' : '' ?>">
+                    <a class="nav-link" href="/administrator/users">
+                        <i class="fas fa-users"></i>
+                        <span>Inscritos</span></a>
+                </li>
+
+
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
+
 
                 <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
@@ -97,8 +121,7 @@ $menu_active = Yii::$app->controller->id;
                 </div>
 
                 <!-- Sidebar Message -->
-                <div class="sidebar-card">
-                </div>
+
 
             </ul>
             <!-- End of Sidebar -->
@@ -270,11 +293,6 @@ $menu_active = Yii::$app->controller->id;
                                 </a>
                                 <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="/admin/users/perfil">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Perfil
-                                    </a>
-                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Sair
@@ -287,8 +305,9 @@ $menu_active = Yii::$app->controller->id;
                     </nav>
                     <!-- End of Topbar -->
                     <?php $this->beginBody() ?>
-<?= $content ?>
-<?php $this->endBody() ?>
+
+                    <?= $content ?>
+                    <?php $this->endBody() ?>
                 </div>
                 <!-- End of Main Content -->
 
@@ -298,53 +317,71 @@ $menu_active = Yii::$app->controller->id;
                         <div class="copyright text-center my-auto">
                             <span>Copyright © Simers 2021</span>
                         </div>
+                        
                     </div>
-                </footer>
-                <!-- End of Footer -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                                <img src="/img/$408d94efdsk.png" style="width: 100%;  padding: 10px;">
+                            </div>
+                            <div class="col-md-2">
+                                <img src="/img/$75h3bboup35.png" style="width: 100%;  padding: 10px;">
+                            </div>
+                            <div class="col-md-2">
+                                <img src="/img/$c43kqwkv8s.png" style="width: 100%;  padding: 10px;">
+                            </div>
+                            <div class="col-md-2">
+                                <img src="/img/$x8jm5962pap.png" style="width: 100%;  padding: 10px;">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
 
+    </div>
+</div>
+<!-- End of Content Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pronto para sair?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Selecione sair, para finalizar a sessão.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" data-method="POST" href="/administrator/default/logout">Sair</a>
             </div>
         </div>
-        <!-- End of Content Wrapper -->
+    </div>
+</div>
+<!-- Bootstrap core JavaScript-->
+<script src="/layoutadmin/vendor/jquery/jquery.min.js"></script>
+<script src="/layoutadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Pronto para sair?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Selecione sair, para finalizar a sessão.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" data-method="POST" href="/admin/default/logout">Sair</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Bootstrap core JavaScript-->
-        <script src="/layoutadmin/vendor/jquery/jquery.min.js"></script>
-        <script src="/layoutadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="/layoutadmin/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-        <!-- Core plugin JavaScript-->
-        <script src="/layoutadmin/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="/layoutadmin/js/sb-admin-2.js"></script>
 
+<!-- Page level plugins -->
+<!--<script src="/layoutadmin/vendor/chart.js/Chart.min.js"></script>-->
 
-        <!-- Custom scripts for all pages-->
-        <script src="/layoutadmin/js/sb-admin-2.js"></script>
-
-        <!-- Page level plugins -->
-        <!--<script src="/layoutadmin/vendor/chart.js/Chart.min.js"></script>-->
-
-        <!-- Page level custom scripts -->
-        <!--<script src="/layoutadmin/js/demo/chart-area-demo.js"></script>-->
-        <!--<script src="/layoutadmin/js/demo/chart-pie-demo.js"></script>-->
-    </body>
+<!-- Page level custom scripts -->
+<!--<script src="/layoutadmin/js/demo/chart-area-demo.js"></script>-->
+<!--<script src="/layoutadmin/js/demo/chart-pie-demo.js"></script>-->
+</body>
 </html>
 <?php $this->endPage() ?>

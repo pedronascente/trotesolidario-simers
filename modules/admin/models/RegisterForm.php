@@ -25,6 +25,7 @@ class RegisterForm extends Model {
     public $politicaPrivacidade;
     public $politicaImagem;
     public $rememberMe = true;
+    public $trote_id;
 
     private $_user = false;
 
@@ -42,6 +43,8 @@ class RegisterForm extends Model {
             ['email', 'required'],
             ['estudante', 'required', 'message' => 'Você deve definir se é estudante ou não'],
             ['estudante', 'required'],
+            ['trote_id', 'required', 'message' => 'Você deve definir um trote'],
+            ['trote_id', 'required'],
         ];
     }
 
@@ -51,13 +54,15 @@ class RegisterForm extends Model {
     public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'username' => Yii::t('app', 'Nome Completo'),
+            'username' => Yii::t('app', 'Username'),
+            'name' => Yii::t('app', 'Nome Completo Para o Certificado'),
             'password' => Yii::t('app', 'Senha'),
             'email' => Yii::t('app', 'Email'),
             'estudante' => Yii::t('app', 'Estudante'),
             'instituicao' => Yii::t('app', 'Instituição de Ensino'),
             'outraInstituicao' => Yii::t('app', 'Outra Instituição'),
             'telefone' => Yii::t('app', 'Telefone'),
+            'trote_id' => Yii::t('app', 'Trote'),
             'previsaoFormatura' => Yii::t('app', 'ATM previsão de formatura ex: (2021/02)'),
             'politicaPrivacidade' => Yii::t('app', 'Estou de acordo com a política de privacidade.'),
             'politicaImagem' => Yii::t('app', 'Eu autorizo o usou de imagem, video e/ou voz.'),

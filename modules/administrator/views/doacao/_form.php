@@ -5,8 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
 use kartik\widgets\Select2;
-use app\modules\admin\models\Trote;
-use app\modules\admin\models\Universidade;
+use app\modules\admin\models\Users;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\Doacao */
@@ -49,27 +48,52 @@ use app\modules\admin\models\Universidade;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <?=
-                    $form->field($model, 'trote_id')->label('Evento')->widget(Select2::classname(), [
-                        'options' => ['placeholder' => '- Selecione uma opção -'],
-                        'data' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
-                    
-                    ]);
-                    ?>
-                </div>
-                <div class="col-md-4">
-                    <?=
-                    $form->field($model, 'instituicao')->label('Instituição')->widget(Select2::classname(), [
-                        'options' => ['placeholder' => '- Selecione uma opção -'],
-                        'data' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                    $form->field($model, 'user_create')->label('Usuário Criação')->widget(Select2::classname(), [
+                        'options' => ['placeholder' => '- Selecione um usuário -'],
+                        'data' => ArrayHelper::map(Users::find()->where(['status'=>'1','administrator'=>'1'])->all(), 'id' ,'name','instituicao'),
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
                     ]);
                     ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <?=
+                    $form->field($model, 'trote')->label('Evento')->widget(Select2::classname(), [
+                        'options' => ['placeholder' => '- Selecione uma opção -'],
+                        'data' => [
+                            'Trote 2021/2' => 'Trote 2021/2'
+                        ]
+                    ]);
+                    ?>
+                </div>
+                <div class="col-md-3">
+                    <?=
+                    $form->field($model, 'instituicao')->label('Instituição')->widget(Select2::classname(), [
+                        'options' => ['placeholder' => '- Selecione uma opção -'],
+                        'data' => [
+                            'UFRGS - Universidade Federal do Rio Grande do Sul' => 'UFRGS - Universidade Federal do Rio Grande do Sul',
+                            'ULBRA - Universidade Luterana do Brasil' => 'ULBRA - Universidade Luterana do Brasil',
+                            'UNISINOS - Universidade do Vale do Rio dos Sinos' => 'UNISINOS - Universidade do Vale do Rio dos Sinos',
+                            'UCS - Universidade de Caxias do Sul' => 'UCS - Universidade de Caxias do Sul',
+                            'UPF - Universidade de Passo Fundo' => 'UPF - Universidade de Passo Fundo',
+                            'UFFS - Universidade Federal da Fronteira do Sul' => 'UFFS - Universidade Federal da Fronteira do Sul',
+                            'UFPEL - Universidade Federal de Pelotas' => 'UFPEL - Universidade Federal de Pelotas',
+                            'UFSM - Universidade Federal de Santa Maria' => 'UFSM - Universidade Federal de Santa Maria',
+                            'UFN - Universidade Franciscana' => 'UFN - Universidade Franciscana',
+                            'UNIVATES - Fundação Vale do Taquari' => 'UNIVATES - Fundação Vale do Taquari',
+                            'UNISC - Universidade de Santa Cruz' => 'UNISC - Universidade de Santa Cruz',
+                            'UNIPAMPA - Universidade Federal do Pampa' => 'UNIPAMPA - Universidade Federal do Pampa',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]);
+                    ?>
+                </div>
+                <div class="col-md-3">
                     <?=
                     $form->field($model, 'tipo_doacao')->label('Tipo de Doação')->widget(Select2::classname(), [
                         'options' => ['placeholder' => '- Selecione uma opção -'],

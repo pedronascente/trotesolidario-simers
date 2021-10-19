@@ -50,7 +50,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Regulamento</h6>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-md btn-success" href="/pdf/Regulamento - Trote Solidário 2021_2 OK.pdf" target="_blank" title="Hemocentros">
+                    <a class="btn btn-md btn-success" href="/pdf/Regulamento - Trote Solidário 2021_2 OK.pdf" target="_blank" >
                         Para ver o regulamento clique aqui
                     </a>
                 </div>
@@ -87,74 +87,13 @@
                     <br>
                     <br>
                     <div class="row" style="margin-bottom: 30px;">
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUFSM21" target="_blank" title="">
-                                UFSM - Universidade Federal Santa Maria
+                        <?php foreach($universidades_botoes as $universidade):?>
+                        <div class="col-md-3">
+                            <a class="btn btn-md btn-success" style="width: 90%;height:90%;margin:5px" href="<?= $universidade->link_doacao_alimento?>" target="_blank" title="">
+                                <?= $universidade->nome?>
                             </a>
                         </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteULBRA21" target="_blank" title="">
-                                ULBRA - Universidade Luterana do Brasil
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUNISINOS21" target="_blank" title="">
-                                UNISINOS - Universidade do Vale do Rio dos Sinos
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom: 30px;">
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUCS21" target="_blank" title="">
-                                UCS - Universidade Caxias do Sul
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUPF21" target="_blank" title="">
-                                UPF - Universidade de Passo Fundo
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUFFS21" target="_blank" title="">
-                                UFFS - Universidade Federal da Fronteira do Sul
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom: 30px;">
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUFPEL21" target="_blank" title="">
-                                UFPEL - Universidade Federal de Pelotas
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUNISC21" target="_blank" title="">
-                                UNISC - Universidade de Santa Cruz
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUFRGS21" target="_blank" title="">
-                                UFRGS - Universidade Federal do Rio Grande do Sul
-                            </a>
-
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom: 30px;">
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUFN21" target="_blank" title="">
-                                UFN - Universidade Franciscana
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUNIVATES21" target="_blank" title="">
-                                UNIVATES - Fundação Vale do Taquari
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a class="btn btn-md btn-success" style="width: 100%;height:100%;" href="http://bit.ly/TroteUNIPAMPA21" target="_blank" title="">
-                                UNIPAMPA - Universidade Federal do Pampa
-                            </a>
-                        </div>
+                        <?php                        endforeach;?>
                     </div>
                 </div>
             </div>

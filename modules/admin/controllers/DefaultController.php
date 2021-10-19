@@ -10,6 +10,7 @@ use app\modules\admin\models\LoginForm;
 use app\modules\admin\models\Doacao;
 use app\modules\admin\models\Helper;
 use app\modules\admin\models\Users;
+use app\modules\admin\models\Universidade;
 
 /**
  * Default controller for the `admin` module
@@ -75,97 +76,57 @@ class DefaultController extends Controller {
 
     public function actionHome() {
         $this->layout = 'adminindex';
-        $ufrgs_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UFRGS - Universidade Federal do Rio Grande do Sul'])->all();
-        $ulbra_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'ULBRA - Universidade Luterana do Brasil'])->all();
-        $unisinos_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UNISINOS - Universidade do Vale do Rio dos Sinos'])->all();
-        $ucs_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UCS - Universidade de Caxias do Sul'])->all();
-        $upf_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UPF - Universidade de Passo Fundo'])->all();
-        $uffs_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UFFS - Universidade Federal da Fronteira do Sul'])->all();
-        $ufpel_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UFPEL - Universidade Federal de Pelotas'])->all();
-        $ufsm_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UFSM - Universidade Federal de Santa Maria'])->all();
-        $ufn_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UFN - Universidade Franciscana'])->all();
-        $univates_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UNIVATES - Fundação Vale do Taquari'])->all();
-        $unisc_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UNISC - Universidade de Santa Cruz'])->all();
-        $unipampa_dados = Users::find()->where(['status' => 1, 'estudante' => 'Sim', 'instituicao' => 'UNIPAMPA - Universidade Federal do Pampa'])->all();
 
-        $dados = json_encode([
-            [
-                "name" => "UFRGS",
-                "points" => count($ufrgs_dados),
-                "color"=> '#800000',
-                "bullet" => "/img/logos_300x300_ufrgs.png"
-            ],
-            [
-                "name" => "ULBRA",
-                "points" => count($ulbra_dados),
-                "color"=> '#800080',
-                "bullet" => "/img/logos_300x300_ulbra.png"
-            ],
-            [
-                "name" => "UNISINOS",
-                "points" => count($unisinos_dados),
-                "color"=> '#000080',
-                "bullet" => "/img/logos_300x300_unisinos.png"
-            ],
-            [
-                "name" => "UCS",
-                "points" => count($ucs_dados),
-                "color"=> '#008080',
-                "bullet" => "/img/logos_300x300_UCS.png"
-            ],
-            [
-                "name" => "UPF",
-                "points" => count($upf_dados),
-                "color"=> '#CCCCFF',
-                "bullet" => "/img/logos_300x300_UPF.png"
-            ],
-            [
-                "name" => "UFFS",
-                "points" => count($uffs_dados),
-                "color"=> '#6495ED',
-                "bullet" => "/img/logos_300x300_UFFS.png"
-            ],
-            [
-                "name" => "UFPEL",
-                "points" => count($ufpel_dados),
-                "color"=> '#40E0D0',
-                "bullet" => "/img/logos_300x300_UFPEL.png"
-            ],
-            [
-                "name" => "UFSM",
-                "points" => count($ufsm_dados),
-                "color"=> '#9FE2BF',
-                "bullet" => "/img/logos_300x300_ufsm.png"
-            ],
-            [
-                "name" => "UFN",
-                "points" => count($ufn_dados),
-                "color"=> '#DE3163',
-                "bullet" => "/img/logos_300x300_UFN.png"
-            ],
-            [
-                "name" => "UNIVATES",
-                "points" => count($univates_dados),
-                "color"=> '#FF7F50',
-                "bullet" => "/img/logos_300x300_univates.png"
-            ],
-            [
-                "name" => "UNISC",
-                "points" => count($unisc_dados),
-                "color"=> '#FFBF00',
-                "bullet" => "/img/logos_300x300_unisc.png"
-            ],
-            [
-                "name" => "UNIPAMPA",
-                "points" => count($unipampa_dados),
-                "color"=> '#DFFF00',
-                "bullet" => "/img/logos_300x300_unimpa.png"
-            ]
-        ]);
+
+        $universidades = Universidade::find()
+                        ->where(['ativo' => 1])
+                        ->andWhere(['<=', 'id', '20'])->all();
+
+        $dados = [];
+
+        $array_cores = [
+            '#B0E0E6',
+            '#D8BFD8',
+            '#EEE8AA',
+            '#FAEBD7',
+            '#FFD700',
+            '#FF6347',
+            '#FF69B4',
+            '#8A2BE2',
+            '#2E8B57',
+            '#008B8B',
+            '#483D8B',
+            '#4F4F4F',
+            '#FFDEAD',
+            '#DA70D6',
+            '#CD5C5C',
+            '#FF7F50',
+            '#FFFF00',
+            '#FFE4C4',
+            '#E6E6FA',
+            '#F5FFFA'
+        ];
+        foreach ($universidades as $universidade) {
+            $dados_universidade = Users::find()
+                    ->innerJoin('_trote', '_users.trote_id = _trote.id')
+                    ->where([
+                        '_users.status' => 1,
+                        '_users.estudante' => 'Sim',
+                        '_users.instituicao' => $universidade->id])
+                    ->all();
+
+            array_push($dados, [
+                "name" => $universidade->nome,
+                "points" => count($dados_universidade),
+                "color" => $array_cores[array_rand($array_cores)],
+                "bullet" => "/img/{$universidade->icon}"
+            ]);
+        }
 
 
         return $this->render('home', [
-                    'dados' => $dados
+                    'universidades_botoes' => $universidades,
+                    'dados' => json_encode($dados)
         ]);
     }
 

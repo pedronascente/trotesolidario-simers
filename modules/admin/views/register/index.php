@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\alert\Alert;
+use app\modules\admin\models\Universidade;
+use yii\helpers\ArrayHelper;
+use app\modules\admin\models\Trote;
 ?>
 <style>
     .field-registerform-outrainstituicao{
@@ -50,6 +53,17 @@ use kartik\alert\Alert;
                                     <?= $form->field($model, 'name', ['labelOptions' => ['style' => 'color:grey']])->textInput() ?>
                                     <?= $form->field($model, 'password', ['labelOptions' => ['style' => 'color:grey']])->passwordInput() ?>
                                     <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
+                                    <?=
+                                            $form
+                                            ->field($model, 'trote_id')
+                                            ->dropDownList(
+                                                    ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
+                                                    , [
+                                                'prompt' => '- Selecione o Trote -',
+                                                'onchange' => 'outraInstituicao()'
+                                                    ] // $data should be the same as the items provided to a regular yii2 dropdownlist
+                                    );
+                                    ?>
                                     <?=
                                             $form
                                             ->field($model, 'estudante')
@@ -101,29 +115,9 @@ use kartik\alert\Alert;
                                     <?=
                                             $form
                                             ->field($model, 'instituicao')
-                                            ->dropDownList([
-                                                'UFRGS - Universidade Federal do Rio Grande do Sul' => 'UFRGS - Universidade Federal do Rio Grande do Sul',
-                                                'UFCSPA - Universidade Federal de Ciências da Saúde de POA' => 'UFCSPA - Universidade Federal de Ciências da Saúde de POA',
-                                                'PUCRS - Pontifícia Universidade Católica do RGS' => 'PUCRS - Pontifícia Universidade Católica do RGS',
-                                                'ULBRA - Universidade Luterana do Brasil' => 'ULBRA - Universidade Luterana do Brasil',
-                                                'UNISINOS - Universidade do Vale do Rio dos Sinos' => 'UNISINOS - Universidade do Vale do Rio dos Sinos',
-                                                'FEEVALE' => 'FEEVALE',
-                                                'UCS - Universidade de Caxias do Sul' => 'UCS - Universidade de Caxias do Sul',
-                                                'UPF - Universidade de Passo Fundo' => 'UPF - Universidade de Passo Fundo',
-                                                'IMED - Faculdade Meridional' => 'IMED - Faculdade Meridional',
-                                                'UFFS - Universidade Federal da Fronteira do Sul' => 'UFFS - Universidade Federal da Fronteira do Sul',
-                                                'UFPEL - Universidade Federal de Pelotas' => 'UFPEL - Universidade Federal de Pelotas',
-                                                'UCPEL - Universidade Católica de Pelotas' => 'UCPEL - Universidade Católica de Pelotas',
-                                                'FURG - Universidade Federal de Rio Grande' => 'FURG - Universidade Federal de Rio Grande',
-                                                'UFSM - Universidade Federal de Santa Maria' => 'UFSM - Universidade Federal de Santa Maria',
-                                                'UFN - Universidade Franciscana' => 'UFN - Universidade Franciscana',
-                                                'UNIVATES - Fundação Vale do Taquari' => 'UNIVATES - Fundação Vale do Taquari',
-                                                'UNISC - Universidade de Santa Cruz' => 'UNISC - Universidade de Santa Cruz',
-                                                'UNIPAMPA - Universidade Federal do Pampa' => 'UNIPAMPA - Universidade Federal do Pampa',
-                                                'URI - Universidade Regional Integrada do Alto Uruguai e das Missões' => 'URI - Universidade Regional Integrada do Alto Uruguai e das Missões',
-                                                'UNIJUÍ - Universidade Regional do Noroeste do Estado do Rio Grande do Sul' => 'UNIJUÍ - Universidade Regional do Noroeste do Estado do Rio Grande do Sul',
-                                                'Outra' => 'Outra'
-                                                    ], [
+                                            ->dropDownList(
+                                                    ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
+                                                    , [
                                                 'prompt' => '- Selecione uma Instituição -',
                                                 'onchange' => 'outraInstituicao()'
                                                     ] // $data should be the same as the items provided to a regular yii2 dropdownlist
@@ -131,6 +125,7 @@ use kartik\alert\Alert;
                                     ?>
 
                                     <?= $form->field($model, 'outraInstituicao', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
+                                    
                                     <?=
                                     $form->field($model, 'telefone', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
                                     ?>
@@ -165,7 +160,7 @@ use kartik\alert\Alert;
                                     <?= 'Ja possui um usuário? Clique ' . Html::a('aqui', ['/admin']) ?>
                                     <br>
                                     <br>
-                                    <?= 'Esqueceu sua senha? Clique ' . Html::a('aqui', ['default/recuperar-senha']) ?>
+                                    <?= 'Esqueceu sua senha? Clique ' . Html::a('aqui', ['/revoery-password']) ?>
                                     <?php ActiveForm::end(); ?>
                                 </div>
                             </div>
@@ -265,7 +260,7 @@ use kartik\alert\Alert;
         }
     }
     function outraInstituicao() {
-        if ($("#registerform-instituicao option:selected").val() == 'Outra') {
+        if ($("#registerform-instituicao option:selected").text() == 'Outra') {
             $(".field-registerform-outrainstituicao").show();
         } else {
             $(".field-registerform-outrainstituicao").hide();

@@ -5,14 +5,14 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name'=> 'Trote Solidario',
+    'name' => 'Trote Solidario',
     'basePath' => dirname(__DIR__),
     'language' => 'pt-br',
     'timeZone' => 'America/Sao_Paulo',
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
         'assetManager' => [
@@ -31,13 +31,13 @@ $config = [
         ],
         'user' => [
             /**
-            * Chama o model que ira implementar a interface IdentityInterface 
-            * e os métodos de autenticação.
-            */
+             * Chama o model que ira implementar a interface IdentityInterface 
+             * e os métodos de autenticação.
+             */
             'identityClass' => 'app\modules\admin\models\Users',
             /**
-            * É responsável por definir a rota (URL) padrão de login
-            */
+             * É responsável por definir a rota (URL) padrão de login
+             */
             'loginUrl' => ['admin/default/index'],
             'enableAutoLogin' => true,
         ],
@@ -69,7 +69,6 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                
             ],
         ],
         'formatter' => [
@@ -82,29 +81,31 @@ $config = [
         ],
     ],
     'modules' => [
-        'gridview' => ['class' => 'kartik\grid\Module'], 
+        'gridview' => [
+            'class' => '\kartik\grid\Module',
+            'downloadAction' => 'gridview/export/download'
+        ],
         'admin' => [
             'class' => 'app\modules\admin\admin',
+            'layout' => '@app/modules/admin/views/layouts/admin',
+        ],
+        'administrator' => [
+            'class' => 'app\modules\administrator\administrator',
             'layout' => '@app/modules/admin/views/layouts/admin',
         ],
         'markdown' => [
             // the module class
             'class' => 'kartik\markdown\Module',
-
             // the controller action route used for markdown editor preview
             'previewAction' => '/markdown/parse/preview',
-
             // the controller action route used for downloading the markdown exported file
             'downloadAction' => '/markdown/parse/download',
-
             // the list of custom conversion patterns for post processing
             'customConversion' => [
                 '<table>' => '<table class="table table-bordered table-striped">'
             ],
-
             // whether to use PHP SmartyPantsTypographer to process Markdown output
             'smartyPants' => true,
-                  
         ]
     ],
     'params' => $params,
@@ -116,14 +117,13 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1','172.17.0.1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '172.17.0.1'],
     ];
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1','172.17.0.1'],
-        
+        'allowedIPs' => ['127.0.0.1', '::1', '172.17.0.1'],
     ];
 }
 

@@ -4,9 +4,13 @@
 
 use app\assets\AdminAsset;
 use yii\helpers\Url;
+use app\modules\admin\models\Helper;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
+
+
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -82,6 +86,12 @@ $menu_active = Yii::$app->controller->id;
                         <i class="fas fa-inbox"></i>
                         <span>Doações</span></a>
                 </li>
+<!--                <li class="nav-item <?php $menu_active == 'certificado' ? 'active' : '' ?>">
+                    <a class="nav-link" href="/admin/certificado">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Certificado</span></a>
+                </li>-->
+                
                 
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">

@@ -3,10 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
-use yii\helpers\ArrayHelper;
 use kartik\alert\Alert;
-use app\modules\admin\models\Trote;
-use app\modules\admin\models\Universidade;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\Users */
@@ -30,19 +27,9 @@ use app\modules\admin\models\Universidade;
                         <h1 class="h4 text-gray-900 mb-4">Perfil</h1>
                     </div>
                     <?php $form = ActiveForm::begin(); ?>
+                    <?= $form->field($model, 'name', ['labelOptions' => ['style' => 'color:grey']])->label('Nome')->textInput() ?>
                     <?= $form->field($model, 'passwordHash', ['labelOptions' => ['style' => 'color:grey']])->label('Senha')->passwordInput() ?>
                     <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                    <?=
-                            $form
-                            ->field($model, 'trote_id')
-                            ->label('Trote')
-                            ->widget(Select2::classname(), [
-                                'options' => [
-                                    'placeholder' => '-  Selecione o Trote -',
-                                ],
-                                'data' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
-                    ]);
-                    ?>
                     <?=
                             $form
                             ->field($model, 'estudante')
@@ -101,8 +88,21 @@ use app\modules\admin\models\Universidade;
                                     'placeholder' => '- Selecione uma Instituição -',
                                     'onchange' => 'outraInstituicao()'
                                 ],
-                                'data' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
-                                                    ,
+                                'data' => [
+                                    'UFRGS - Universidade Federal do Rio Grande do Sul' => 'UFRGS - Universidade Federal do Rio Grande do Sul',
+                                    'ULBRA - Universidade Luterana do Brasil' => 'ULBRA - Universidade Luterana do Brasil',
+                                    'UNISINOS - Universidade do Vale do Rio dos Sinos' => 'UNISINOS - Universidade do Vale do Rio dos Sinos',
+                                    'UCS - Universidade de Caxias do Sul' => 'UCS - Universidade de Caxias do Sul',
+                                    'UPF - Universidade de Passo Fundo' => 'UPF - Universidade de Passo Fundo',
+                                    'UFFS - Universidade Federal da Fronteira do Sul' => 'UFFS - Universidade Federal da Fronteira do Sul',
+                                    'UFPEL - Universidade Federal de Pelotas' => 'UFPEL - Universidade Federal de Pelotas',
+                                    'UFSM - Universidade Federal de Santa Maria' => 'UFSM - Universidade Federal de Santa Maria',
+                                    'UFN - Universidade Franciscana' => 'UFN - Universidade Franciscana',
+                                    'UNIVATES - Fundação Vale do Taquari' => 'UNIVATES - Fundação Vale do Taquari',
+                                    'UNISC - Universidade de Santa Cruz' => 'UNISC - Universidade de Santa Cruz',
+                                    'UNIPAMPA - Universidade Federal do Pampa' => 'UNIPAMPA - Universidade Federal do Pampa',
+                                    'Outra' => 'Outra'
+                                ],
                     ]);
                     ?>
 
@@ -120,8 +120,7 @@ use app\modules\admin\models\Universidade;
         <div class="row">
             <div class="col-lg-12">
                 <div class="p-3">
-                    <small><b>*Alteração de nome deve ser feita através de solicitação por e-mail: nucleoacademico@simres.org.br</b></small>
-                    <br><?= Html::submitButton('Salvar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
+                    <?= Html::submitButton('Salvar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>
@@ -169,7 +168,7 @@ use app\modules\admin\models\Universidade;
         }
     }
     function outraInstituicao() {
-        if ($("#users-instituicao option:selected").text() == 'Outra') {
+        if ($("#users-instituicao option:selected").val() == 'Outra') {
             $(".field-users-outrainstituicao").show();
         } else {
             $(".field-users-outrainstituicao").hide();

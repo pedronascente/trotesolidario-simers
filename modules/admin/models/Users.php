@@ -5,15 +5,18 @@ namespace app\modules\admin\models;
 use Yii;
 use \yii\web\IdentityInterface;
 use \yii\base\NotSupportedException;
+use app\modules\admin\models\Trote;
 
 /**
  * This is the model class for table "_users".
  *
  * @property int $id
+ * @property int|null $trote_id
  * @property string $name
  * @property string $passwordHash
  * @property string $email
  * @property int $status
+ * @property int $administrator
  * @property string|null $created_at
  * @property string|null $updated_at
  * @property string|null $username
@@ -28,7 +31,7 @@ use \yii\base\NotSupportedException;
  * @property string|null $politicaPrivacidade
  * @property string|null $politicaImagem
  *
- * @property News[] $news
+ * @property Trote $trote
  */
 class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
@@ -50,12 +53,13 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['name'], 'required'],
-            [['status'], 'integer'],
+            [['status','trote_id','administrator'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['estudante', 'instituicao', 'outraInstituicao', 'telefone', 'previsaoFormatura', 'conheceONas', 'politicaPrivacidade','politicaImagem'], 'string'],
             [['name'], 'string', 'max' => 250],
             [['passwordHash', 'username', 'passwordResetToken', 'authKey'], 'string', 'max' => 255],
             [['email'], 'string', 'max' => 100],
+            [['trote_id'], 'exist', 'skipOnError' => true, 'targetClass' => Trote::className(), 'targetAttribute' => ['trote_id' => 'id']],
         ];
     }
 
@@ -66,10 +70,12 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'ID',
+            'trote_id' => 'Trote ID',
             'name' => 'Name',
             'passwordHash' => 'Password Hash',
             'email' => 'Email',
             'status' => 'Status',
+            'administrator'=>'Administrator',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'username' => 'Username',
@@ -94,6 +100,16 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return $scenarios;
     }
 
+        /**
+     * Gets query for [[Trote]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrote()
+    {
+        return $this->hasOne(Trote::className(), ['id' => 'trote_id']);
+    }
+    
     /**
      * @inheritdoc
      */
@@ -121,10 +137,18 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
+    public static function findByUsernameAdministrator($username)
+    {
+        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE,'administrator'=>1]);
+    }
     
     public static function findByEmail($username)
     {
         return static::findOne(['email' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+    public static function findByEmailAdministrator($username)
+    {
+        return static::findOne(['email' => $username, 'status' => self::STATUS_ACTIVE,'administrator'=>1]);
     }
 
     /**

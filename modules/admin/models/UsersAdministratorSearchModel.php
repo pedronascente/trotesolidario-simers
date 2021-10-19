@@ -5,28 +5,27 @@ namespace app\modules\admin\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\admin\models\Users;
+use app\modules\admin\models\Helper;
 
 /**
  * UsersSearchModel represents the model behind the search form of `app\modules\admin\models\Users`.
  */
-class UsersSearchModel extends Users
-{
+class UsersAdministratorSearchModel extends Users {
+
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id', 'status'], 'integer'],
-            [['name','estudante','telefone','conheceONas','previsaoFormatura','instituicao','outraInstituicao', 'passwordHash', 'email', 'created_at', 'updated_at', 'username', 'passwordResetToken', 'authKey'], 'safe'],
+            [['doacaosangue','name', 'estudante', 'telefone', 'conheceONas', 'previsaoFormatura', 'instituicao', 'outraInstituicao', 'passwordHash', 'email', 'created_at', 'updated_at', 'username', 'passwordResetToken', 'authKey'], 'safe'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -38,8 +37,7 @@ class UsersSearchModel extends Users
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Users::find();
 
         // add conditions that should always apply here
@@ -65,17 +63,18 @@ class UsersSearchModel extends Users
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'passwordHash', $this->passwordHash])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'estudante', $this->estudante])
-            ->andFilterWhere(['like', 'instituicao', $this->instituicao])
-            ->andFilterWhere(['like', 'outraInstituicao', $this->outraInstituicao])
-            ->andFilterWhere(['like', 'previsaoFormatura', $this->previsaoFormatura])
-            ->andFilterWhere(['like', 'conheceONas', $this->conheceONas])
-            ->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'passwordResetToken', $this->passwordResetToken])
-            ->andFilterWhere(['like', 'authKey', $this->authKey]);
+                ->andFilterWhere(['like', 'passwordHash', $this->passwordHash])
+                ->andFilterWhere(['like', 'email', $this->email])
+                ->andFilterWhere(['like', 'estudante', $this->estudante])
+                ->andFilterWhere(['like', 'instituicao', $this->instituicao])
+                ->andFilterWhere(['like', 'outraInstituicao', $this->outraInstituicao])
+                ->andFilterWhere(['like', 'previsaoFormatura', $this->previsaoFormatura])
+                ->andFilterWhere(['like', 'conheceONas', $this->conheceONas])
+                ->andFilterWhere(['like', 'username', $this->username])
+                ->andFilterWhere(['like', 'passwordResetToken', $this->passwordResetToken])
+                ->andFilterWhere(['like', 'authKey', $this->authKey]);
 
         return $dataProvider;
     }
+
 }

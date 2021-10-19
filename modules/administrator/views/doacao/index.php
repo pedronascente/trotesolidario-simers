@@ -3,9 +3,28 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
+use app\modules\admin\models\Users;
 use app\modules\admin\models\Universidade;
 use app\modules\admin\models\Trote;
 ?>
+<style>
+    .image:hover {
+        margin:0;
+        padding:0;
+        width:400% !important;
+        height:400% !important;
+        z-index: 999 !important;
+        position: relative;
+        display: block;
+        /*        position: absolute;
+                display: flex;
+                left: 20%;
+                top: 10%;
+                width: auto;
+                height: 500px !important;*/
+
+    }
+</style>
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -36,7 +55,22 @@ use app\modules\admin\models\Trote;
                                 'vAlign' => 'center',
                                 'filter' => false,
                                 'value' => function($model) {
-                                    return Html::img("/imagens/doacoes/$model->arquivo", ["style" => "height: 80px;width: auto;"]);
+                                    return Html::img("/imagens/doacoes/$model->arquivo", ["class" => "image", "style" => "height: 80px;width: auto;"]);
+                                }
+                            ],
+                            [
+                                'attribute' => 'user_create',
+                                'format' => 'raw',
+                                'hAlign' => 'center',
+                                'vAlign' => 'center',
+                                'filterType' => GridView::FILTER_SELECT2,
+                                'filter' => ArrayHelper::map(Users::find()->where(['status' => '1'])->all(), 'id', 'name'),
+                                'filterInputOptions' => ['placeholder' => '- Usuário -'],
+                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                               
+                                'value' => function($model) {
+                                    $user = Users::find()->where(['id'=>$model->user_create])->one();
+                                    return $user->name;
                                 }
                             ],
                             [
@@ -53,6 +87,14 @@ use app\modules\admin\models\Trote;
                                 }
                             ],
                             [
+                                'attribute' => 'validado_motivo',
+                                'contentOptions' => ['style' => 'width:500px !important; white-space: normal;'],
+                                'value' => function($model) {
+                                    return Html::textarea('', $model->validado_motivo, ['onblur' => 'salvaMotivo("' . $model->id . '",this.value)', 'rows' => '10', 'cols' => '30', 'class' => 'form-control']);
+                                },
+                                'format' => 'raw'
+                            ],
+                            [
                                 'attribute' => 'validado',
                                 'label' => 'Validados',
                                 'filterType' => GridView::FILTER_SELECT2,
@@ -63,12 +105,16 @@ use app\modules\admin\models\Trote;
                                 'filterInputOptions' => ['placeholder' => '- Validados -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                                 'value' => function($model) {
-                                    return $model->validado ? "Sim" : "Não";
+                                    $return = '';
+                                    if ($model->validado === 1) {
+                                        $return = "Aprovado";
+                                    } elseif ($model->validado === 0) {
+                                        $return = "Não aprovado";
+                                    } else {
+                                        $return = "Ainda não validado";
+                                    }
+                                    return $return;
                                 }
-                            ],
-                            [
-                                'attribute' => 'validado_motivo',
-                                'label' => 'Validados',
                             ],
                             [
                                 'attribute' => 'tipo_doacao',
@@ -89,21 +135,29 @@ use app\modules\admin\models\Trote;
                                 'value' => 'trote.nome',
                             ],
                             [
-                                'attribute' => 'ativo',
-                                'value' => function($model) {
-                                    return ($model->ativo == "1") ? "Ativo" : "Inativo";
-                                },
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => [
-                                    '1' => 'Ativo',
-                                    '0' => 'Inativo',
-                                ],
-                                'filterInputOptions' => ['placeholder' => '- Status -'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                            ],
-                            [
                                 'class' => '\kartik\grid\ActionColumn',
-                                'template' => '{update} {delete}',
+                                'template' => '{check}',
+                                'buttons' => [
+                                    'check' => function ($url, $model) {
+
+                                        $validado = [];
+                                        if ($model->validado === 1) {
+                                            $validado = ["far fa-check-square ", "Desaprovar"];
+                                        } elseif ($model->validado === 0) {
+                                            $validado = ["far fa-square ", "Aprovar"];
+                                        } else {
+                                            $validado = ["far fa-square ", "Aprovar"];
+                                        }
+                                        return '<div id="doacao-div-'.$model->id.'">'.Html::a(
+                                                        '<i class="' . $validado[0] . '" title="' . $validado[1] . '" data-toggle="tooltip"></i>', "#", [
+                                                    'title' => '',
+                                                            'id'=>'doacao-'.$model->id,
+                                                    'data-pjax' => '0',
+                                                            'onclick'=>'validaDoacao("' . $model->id . '")',
+                                                        ]
+                                        ).'</div>';
+                                    },
+                                ],
                             ],
                         ],
                     ]);
@@ -113,4 +167,3 @@ use app\modules\admin\models\Trote;
         </div>
     </div>
 </div>
-

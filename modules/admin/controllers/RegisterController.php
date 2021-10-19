@@ -125,6 +125,7 @@ class RegisterController extends Controller {
                 $modelUsuario = new Users;
                 $post = Yii::$app->request->post()['RegisterForm'];
                 $modelUsuario->name = $post["name"];
+                $modelUsuario->trote_id = $post["trote_id"];
                 $modelUsuario->setPassword($post["password"]);
                 $modelUsuario->email = $post["email"];
                 $modelUsuario->status = 1;
