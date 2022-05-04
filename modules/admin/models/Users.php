@@ -53,9 +53,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['name'], 'required'],
-            [['status','trote_id','administrator'], 'integer'],
+            [['status','trote_id','administrator','instituicao'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['estudante', 'instituicao', 'outraInstituicao', 'telefone', 'previsaoFormatura', 'conheceONas', 'politicaPrivacidade','politicaImagem'], 'string'],
+            [['estudante', 'outraInstituicao', 'telefone', 'previsaoFormatura', 'conheceONas', 'politicaPrivacidade','politicaImagem'], 'string'],
             [['name'], 'string', 'max' => 250],
             [['passwordHash', 'username', 'passwordResetToken', 'authKey'], 'string', 'max' => 255],
             [['email'], 'string', 'max' => 100],

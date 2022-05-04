@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use app\modules\admin\models\Helper;
 use app\modules\admin\models\Users;
+use app\modules\admin\models\Trote;
 use kartik\export\ExportMenu;
 use yii\helpers\ArrayHelper;
 use app\modules\admin\models\Universidade;
@@ -37,6 +38,19 @@ $gridColumns = [
     'telefone',
     'previsaoFormatura',
     'conheceONas',
+    [
+        'attribute' => 'trote_id',
+        'label'=> 'Trote',
+        'value' => function($model) {
+            $trote = Trote::find()->where(['id'=>$model->trote_id])->one();
+
+            return ($trote)?$trote->nome:"";
+        },
+        'filterType' => GridView::FILTER_SELECT2,
+        'filter' => [1 => 'Ativo', 0 => 'Inativo'],
+        'filterInputOptions' => ['placeholder' => 'Status'],
+        'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+    ],
     [
         'attribute' => 'status',
         'value' => function($model) {

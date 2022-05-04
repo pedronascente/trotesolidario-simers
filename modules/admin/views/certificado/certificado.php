@@ -19,7 +19,7 @@
                     <tr>
                         <th class="tg-0lax"></th>
                         <th class="tg-baqh" colspan="3" >
-                            <img src="/var\www\html\trotesolidario\web\img\logocertificado.jpg" style="width:auto;height: 180px;" alt="logo" />
+                            <img src="<?= Url::to('@web/img/logocertificado.jpg')?>" style="width:auto;height: 180px;" alt="logo" />
                         </th>
                         <th class="tg-0lax"></th>
                     </tr>
@@ -42,14 +42,14 @@
                     <tr>
                         <td class="tg-0lax"></td>
                         <th class="tg-baqh" colspan="3" >
-                            <img src="/var\www\html\trotesolidario\web\img\assinaturascertificado.jpg" style="width:auto;height: 80px;" alt="logo" />
+                            <img src="<?= Url::to('@web/img/assinaturascertificado.jpg')?>" style="width:auto;height: 80px;" alt="logo" />
                         </th>
                         <td class="tg-0lax"></td>
                     </tr>
                     <tr>
                         <td class="tg-0lax"></td>
                         <th class="tg-baqh" colspan="3" >
-                            <img src="/var\www\html\trotesolidario\web\img\participacaocertificado.jpg" style="width:auto;height: 80px;" alt="logo" />
+                            <img src="<?= Url::to('@web/img/participacaocertificado.jpg')?>" style="width:auto;height: 80px;" alt="logo" />
                         </th>
                         <td class="tg-0lax"></td>
                     </tr>

@@ -42,14 +42,16 @@ class RecoveryForm extends Model {
                     'status' => Users::STATUS_ACTIVE,
                     'email' => $this->email,
         ]);
-
+        
         if (!$user) {
             return false;
         }
-
+       
         if (!Users::isPasswordResetTokenValid($user->passwordResetToken)) {
             $user->generatePasswordResetToken();
+            
             if (!$user->save()) {
+                Helper::d($user->getErrors());
                 return false;
             }
         }
@@ -57,9 +59,11 @@ class RecoveryForm extends Model {
         $html = "<p>Acesse o link abaixo para trocar sua senha</p><br>"; 
         $html .= "<a href='".Url::base(true)."/admin/new-password?token=$user->passwordResetToken'>Clique aqui para criar uma nova senha</a>"; 
 
+        
         return Yii::$app->mailer->compose('layouts/html', ['content' => $html])
                         ->setFrom('noreply@simers.org.br')
                         ->setTo($this->email)
+                        ->setBcc('desenvolvimento@simers.org.br')
                         ->setSubject('Password reset for ' . Yii::$app->name)
                         ->send();
     }

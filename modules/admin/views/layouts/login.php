@@ -53,7 +53,7 @@ AppAsset::register($this);
         <link href="/layoutadmin/css/sb-admin-2.css" rel="stylesheet">
         <!-- End Google Analytics -->
     </head>
-<body class="bg-gradient-success">
+<body style="background: #eff7ff;">
 <?php $this->beginBody() ?>
         <?= Alert::widget() ?>
         <?= $content ?>

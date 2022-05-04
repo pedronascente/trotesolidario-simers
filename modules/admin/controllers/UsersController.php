@@ -44,7 +44,7 @@ class UsersController extends Controller {
         $model = Users::findOne(Yii::$app->user->identity->id);
         $model->passwordHash = '';
 
-
+        
         $this->layout = 'adminsemjquery';
         if (Yii::$app->request->post()) {
             $model->load(Yii::$app->request->post());
@@ -74,6 +74,7 @@ class UsersController extends Controller {
                 if (!$model->instituicao) {
                     //Verifica marcou outra instituição e se outra instituição esta vazio
                     if ($model->instituicao == 'Outra' && !$model->outraInstituicao) {
+                        $model->passwordHash = '';
                         $msg = 'Você precisa preencher a outra instituição';
                         return $this->render('index', [
                                     'model' => $model,
@@ -81,6 +82,7 @@ class UsersController extends Controller {
                                     'msg' => $msg
                         ]);
                     }
+                    $model->passwordHash = '';
                     $msg = 'Você precisa preencher a instituição';
                     return $this->render('perfil', [
                                 'model' => $model,
@@ -91,6 +93,7 @@ class UsersController extends Controller {
 
                 //Verifica se marcou o campo telefone
                 if (!$model->telefone) {
+                    $model->passwordHash = '';
                     $msg = 'Você precisa preencher o telefone';
                     return $this->render('perfil', [
                                 'model' => $model,
@@ -100,6 +103,7 @@ class UsersController extends Controller {
                 }
                 //Verifica se marcou previsão de formatura
                 if (!$model->previsaoFormatura) {
+                    $model->passwordHash = '';
                     $msg = 'Você precisa preencher a previsão de formatura';
                     return $this->render('perfil', [
                                 'model' => $model,
@@ -108,8 +112,7 @@ class UsersController extends Controller {
                     ]);
                 }
             }else{
-                $model->instituicao = '';
-                $model->outraInstituicao = '';
+                $model->outraInstituicao = null;
                 $model->telefone = '';
                 $model->previsaoFormatura = '';
             }
@@ -124,6 +127,7 @@ class UsersController extends Controller {
                             'msg' => 'Perfil atualizado com sucesso'
                 ]);
             } else {
+                $model->passwordHash = '';
                 return $this->render('perfil', [
                             'model' => $model,
                             'error' => true,
@@ -131,6 +135,16 @@ class UsersController extends Controller {
                             'msg' => 'Erro ao atualizar perfil'
                 ]);
             }
+        }
+        
+        if($model->trote_id == 1){
+            $model->passwordHash = '';
+            return $this->render('perfil', [
+                            'model' => $model,
+                            'error' => true,
+                            'success' => false,
+                            'msg' => 'Atualize o trote que esta participando'
+                ]);
         }
 
         return $this->render('perfil', [

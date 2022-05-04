@@ -59,6 +59,23 @@ $gridColumns = [
         }
     ],
     [
+        'attribute' => 'tipo_doacao',
+        'label' => 'Tipo Doação',
+        'format' => 'raw',
+        'hAlign' => 'center',
+        'vAlign' => 'center',
+        'filterType' => GridView::FILTER_SELECT2,
+        'filter' => [
+            'Alimentos' => 'Alimentos',
+            'Comissão' => 'Comissão',
+            'Participação Presencial' => 'Participação Presencial',
+            'Sangue' => 'Sangue',
+            
+        ],
+        'filterInputOptions' => ['placeholder' => '- Tipo doação -'],
+        'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+    ],
+    [
         'attribute' => 'user_create',
         'label' => 'Usuário Email',
         'format' => 'raw',
@@ -74,19 +91,9 @@ $gridColumns = [
         }
     ],
     [
-        'attribute' => 'tipo_doacao',
-        'filterType' => GridView::FILTER_SELECT2,
-        'filter' => [
-            'Sangue' => 'Sangue',
-            'Alimentos' => 'Alimentos'
-        ],
-        'filterInputOptions' => ['placeholder' => '- Tipo de Doação -'],
-        'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-    ],
-    [
         'attribute' => 'instituicao',
         'filterType' => GridView::FILTER_SELECT2,
-        'filter' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+        'filter' => ArrayHelper::map(Universidade::find()->all(), 'id', 'nome'),
         'filterInputOptions' => ['placeholder' => '- Instituição -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
         'value' => function($model) {
@@ -130,7 +137,7 @@ $gridColumns = [
         'attribute' => 'trote_id',
         'label' => 'Trote',
         'filterType' => GridView::FILTER_SELECT2,
-        'filter' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+        'filter' => ArrayHelper::map(Trote::find()->all(), 'id', 'nome'),
         'filterInputOptions' => ['placeholder' => '- Trote -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
         'value' => 'trote.nome',

@@ -48,6 +48,10 @@ class DoacaoController extends Controller {
      */
     public function actionIndex() {
         $this->layout = 'adminsemjquery';
+        if(Yii::$app->user->identity->trote_id == 1){
+            
+            return $this->redirect(['users/perfil']);
+        }
         $searchModel = new DoacaoSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -64,7 +68,10 @@ class DoacaoController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
-        
+        if(Yii::$app->user->identity->trote_id == 1){
+            
+            return $this->redirect(['users/perfil']);
+        }
         if(strtotime(date('d-m-Y'))>=strtotime('16-10-'.date('Y')))
         {
             return $this->redirect(['index']);
@@ -128,7 +135,7 @@ class DoacaoController extends Controller {
 //                                'msg' => $str_erro
 //                    ]);
 //                }
-                $name = ((!$ultimo_id) ? "1" : $ultimo_id->id + 1) . '_doacao.' . explode(".", $arquivo->name)[1];
+                $name = ((!$ultimo_id) ? "1" : $ultimo_id->id + 1) . '_doacao.' . explode("/", $arquivo->type)[1];
                 
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
                 
@@ -229,7 +236,7 @@ class DoacaoController extends Controller {
 //                                'msg' => $str_erro
 //                    ]);
 //                }
-                $name = $model->id . '_doacao.' . explode(".", $arquivo->name)[1];
+                $name = $model->id . '_doacao.' . explode("/", $arquivo->type)[1];
                 
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
                 

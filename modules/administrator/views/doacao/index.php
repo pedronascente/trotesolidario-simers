@@ -76,7 +76,7 @@ use app\modules\admin\models\Trote;
                             [
                                 'attribute' => 'instituicao',
                                 'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                                'filter' => ArrayHelper::map(Universidade::find()->all(), 'id', 'nome'),
                                 'filterInputOptions' => ['placeholder' => '- Instituição -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                                 'value' => function($model) {
@@ -120,8 +120,10 @@ use app\modules\admin\models\Trote;
                                 'attribute' => 'tipo_doacao',
                                 'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => [
+                                    'Alimentos' => 'Alimentos',
+                                    'Comissão' => 'Comissão',
+                                    'Participação Presencial' => 'Participação Presencial',
                                     'Sangue' => 'Sangue',
-                                    'Alimentos' => 'Alimentos'
                                 ],
                                 'filterInputOptions' => ['placeholder' => '- Tipo de Doação -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
@@ -129,7 +131,7 @@ use app\modules\admin\models\Trote;
                             [
                                 'attribute' => 'trote_id',
                                 'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                                'filter' => ArrayHelper::map(Trote::find()->all(), 'id', 'nome'),
                                 'filterInputOptions' => ['placeholder' => '- Trote -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                                 'value' => 'trote.nome',
@@ -167,3 +169,49 @@ use app\modules\admin\models\Trote;
         </div>
     </div>
 </div>
+<script>
+    function validaDoacao(id) {
+
+        $.ajax({
+            url: '/administrator/doacao/check',
+            data: {
+                "model_id": id
+            },
+            type: "POST",
+            dataType: 'json',
+            success: function (result) {
+                $('#doacao-' + id).remove();
+                $('#doacao-div-' + id).append(
+                        '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
+                        );
+
+
+            },
+            error: function () {
+                alert('Erro: avisar a ti');
+            }
+        });
+    }
+
+    function salvaMotivo(id, texto) {
+
+        $.ajax({
+            url: '/administrator/doacao/atualizamotivo',
+            data: {
+                "model_id": id,
+                "texto": texto
+            },
+            type: "POST",
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+            },
+            error: function () {
+                alert('Erro: avisar a ti');
+            }
+        });
+    }
+
+
+
+</script>

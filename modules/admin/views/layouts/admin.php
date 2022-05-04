@@ -82,11 +82,11 @@ $menu_active = Yii::$app->controller->id;
                         <i class="fas fa-inbox"></i>
                         <span>Doações</span></a>
                 </li>
-<!--                <li class="nav-item <?php $menu_active == 'certificado' ? 'active' : '' ?>">
+                <li class="nav-item <?php $menu_active == 'certificado' ? 'active' : '' ?>">
                     <a class="nav-link" href="/admin/certificado">
                         <i class="fas fa-file-contract"></i>
                         <span>Certificado</span></a>
-                </li>-->
+                </li>
                 
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">

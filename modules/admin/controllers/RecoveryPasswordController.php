@@ -53,6 +53,7 @@ class RecoveryPasswordController extends Controller {
 
         if ($model->load(Yii::$app->request->post()) && $model->validate())
         {
+           
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Verifique seu email para recuperar a senha.');
 

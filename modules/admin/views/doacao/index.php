@@ -74,8 +74,10 @@ use app\modules\admin\models\Trote;
                                 'attribute' => 'tipo_doacao',
                                 'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => [
+                                    'Alimentos' => 'Alimentos',
+                                    'Comissão' => 'Comissão',
+                                    'Participação Presencial' => 'Participação Presencial',
                                     'Sangue' => 'Sangue',
-                                    'Alimentos' => 'Alimentos'
                                 ],
                                 'filterInputOptions' => ['placeholder' => '- Tipo de Doação -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],

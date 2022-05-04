@@ -50,8 +50,11 @@
                     <h6 class="m-0 font-weight-bold text-primary">Regulamento</h6>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-md btn-success" href="/pdf/Regulamento - Trote Solidário 2021_2 OK.pdf" target="_blank" >
-                        Para ver o regulamento clique aqui
+                    <a class="btn btn-md btn-success m-1" href="/pdf/Regulamento - Trote Solidário 2022_1 - Interior Versão Final.pdf" target="_blank" >
+                        Para ver o regulamento do interior versão. 
+                    </a>
+                    <a class="btn btn-md btn-success m-1" href="/pdf/Regulamento - Trote Solidário 2022_1 - POA + Metropolitana -Versão Final.pdf" target="_blank" >
+                        Para ver o regulamento POA + Metropolitana.
                     </a>
                 </div>
             </div>
@@ -67,7 +70,7 @@
                 </div>
                 <div class="card-body">
                     <p>Para a doação de sangue, o participante deve ir sozinho ao hemocentro (mediante agendamento prévio), em horários alternativos, evitando aglomerações de pessoas. Os interessados não podem se esquecer de usar máscara de proteção e álcool gel. Ir ao hemocentro é um ato de coragem e de bravura em benefício da saúde. O Simers lembra que uma bolsa de sangue pode salvar até quatro vidas, e a doação é fundamental neste momento de restrições (com a diminuição dos estoques devido ao distanciamento social).</p>
-                    <a class="btn btn-md btn-success" href="https://drive.google.com/file/d/1M_WZwgE8zIw6eH8smI1Jf8na_nPc5Nj_/view?usp=sharing" id="rd-button-kmpbw2hu" target="_blank" title="Hemocentros">
+                    <a class="btn btn-md btn-success" href="/pdf/Bancos de Sangue e Hemocentros RS 2022 - atualizado 30.03.pdf" id="rd-button-kmpbw2hu" target="_blank" title="Hemocentros">
                         Clique para acessar a relação de hemocentros
                     </a>
                 </div>

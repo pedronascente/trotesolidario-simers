@@ -63,7 +63,7 @@ class RegisterForm extends Model {
             'outraInstituicao' => Yii::t('app', 'Outra Instituição'),
             'telefone' => Yii::t('app', 'Telefone'),
             'trote_id' => Yii::t('app', 'Trote'),
-            'previsaoFormatura' => Yii::t('app', 'ATM previsão de formatura ex: (2021/02)'),
+            'previsaoFormatura' => Yii::t('app', 'ATM previsão de formatura ex: (2022/01)'),
             'politicaPrivacidade' => Yii::t('app', 'Estou de acordo com a política de privacidade.'),
             'politicaImagem' => Yii::t('app', 'Eu autorizo o usou de imagem, video e/ou voz.'),
         ];

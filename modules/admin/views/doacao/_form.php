@@ -20,6 +20,14 @@ use app\modules\admin\models\Universidade;
             <?php $form = ActiveForm::begin(); ?>
             <div class="row">
                 <div class="col-md-6">
+                    <?php
+                        //if($teste){
+                        //foreach($teste as $value){
+                            
+                          //  echo 'teste';
+                        //}
+                    //}
+                    ?>
                     <?=
                     $form->field($model, 'file')->label('Anexo doação')->widget(FileInput::classname(), [
                         'options' => [
@@ -74,8 +82,11 @@ use app\modules\admin\models\Universidade;
                     $form->field($model, 'tipo_doacao')->label('Tipo de Doação')->widget(Select2::classname(), [
                         'options' => ['placeholder' => '- Selecione uma opção -'],
                         'data' => [
-                            'Sangue' => 'Sangue',
                             'Alimentos' => 'Alimentos',
+                            'Comissão' => 'Comissão',
+                            'Participação Presencial' => 'Participação Presencial',
+                            'Sangue' => 'Sangue',
+                            
                         ],
                         'pluginOptions' => [
                             'allowClear' => true

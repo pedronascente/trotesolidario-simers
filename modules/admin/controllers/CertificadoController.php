@@ -52,14 +52,14 @@ class CertificadoController extends Controller {
         $connection = Yii::$app->getDb();
         $certificados = $connection
                 ->createCommand('SELECT 
-                            DISTINCT(t.nome) as trote,u.name 
+                             DISTINCT(t.nome) as trote, d.tipo_doacao, t.id,u.name 
                             FROM _doacao AS d 
                             INNER JOIN _users u ON d.user_create = u.id 
                             INNER JOIN _trote t on d.trote_id = t.id
                             WHERE d.user_create = "'.Yii::$app->user->identity->id.'"
                             AND d.validado = "1"
                             and d.ativo = "1"
-                            AND t.ativo = "1"'
+                            '
                  )
                 ->queryAll();
 
@@ -72,10 +72,11 @@ class CertificadoController extends Controller {
     public function actionImprime() {
         $this->layout = 'admin';
         $connection = Yii::$app->getDb();
-        $certificados = $connection
+        $certificado = $connection
                 ->createCommand('SELECT 
                             DISTINCT(t.nome) as trote,
                             t.frase_certificado,
+                            d.tipo_doacao,
                             u.name 
                             FROM _doacao AS d 
                             INNER JOIN _users u ON d.user_create = u.id 
@@ -83,12 +84,13 @@ class CertificadoController extends Controller {
                             WHERE d.user_create = "'.Yii::$app->user->identity->id.'"
                             AND d.validado = "1"
                             AND t.nome = "'.$_GET["trote"].'"
+                            AND d.tipo_doacao = "'.$_GET["tipo_doacao"].'"
                             and d.ativo = "1"
-                            AND t.ativo = "1"'
+                            '
                  )
                 ->queryOne();
         
-        if(!$certificados){
+        if(!$certificado){
             return false;
         }
         
@@ -97,6 +99,7 @@ class CertificadoController extends Controller {
             'orientation' => Pdf::ORIENT_LANDSCAPE,
             'mode' => 'utf-8',
             'format' => 'A4',
+            
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
         ]);
         $pdf->showImageErrors = true;
@@ -108,11 +111,21 @@ class CertificadoController extends Controller {
         
         $pdf->setAutoTopMargin = 'stretch';
         $pdf->SetTitle('Trote Solidario');
-        $htmlContent = $this->renderPartial('certificado', ['model' => $certificados]);
+        //trote 2021/2
+        if($_GET["troteid"]==1){
+            $htmlContent = $this->renderPartial('certificado', ['model' => $certificado]);
+        }else{
+            $htmlContent = $this->renderPartial('certificado2022', ['model' => $certificado]);
+        }
         $pdf->WriteHTML($htmlContent);
         $pdf->AddPage();
         $pdf->SetTitle('Trote Solidario');
-        $htmlContent = $this->renderPartial('certificado2', ['model' => $certificados]);
+        //trote 2021/2
+        if($_GET["troteid"]==1){
+            $htmlContent = $this->renderPartial('certificado2', ['model' => $certificado]);
+        }else{
+            $htmlContent = $this->renderPartial('certificado22022', ['model' => $certificado]);
+        }
         $pdf->WriteHTML($htmlContent);
         $pdf->defaultPagebreakType = '1';
         return $pdf->output();

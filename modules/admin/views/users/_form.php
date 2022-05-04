@@ -71,7 +71,7 @@ use app\modules\admin\models\Universidade;
                             ])
                     ?>
                     <small>
-                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL – SIMERS, em razão da ação “TROTE SOLIDÁRIO 2021/2”, disponha dos meus dados pessoais, de acordo com os artigos 7º e 11 da Lei nº 13.709/2018, e autorizo a utilização de minha imagem e/ou voz.
+                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL – SIMERS, em razão da ação “TROTE SOLIDÁRIO 2022/1”, disponha dos meus dados pessoais, de acordo com os artigos 7º e 11 da Lei nº 13.709/2018, e autorizo a utilização de minha imagem e/ou voz.
                     </small>
                     <?=
                             $form->field($model, 'politicaImagem', [

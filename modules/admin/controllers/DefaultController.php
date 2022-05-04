@@ -15,11 +15,13 @@ use app\modules\admin\models\Universidade;
 /**
  * Default controller for the `admin` module
  */
-class DefaultController extends Controller {
+class DefaultController extends Controller
+{
 
     public $enableCsrfValidation = false;
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -35,7 +37,7 @@ class DefaultController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-//                    'logout' => ['post'],
+                    //                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -45,9 +47,15 @@ class DefaultController extends Controller {
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
+        $universidades = Universidade::find()
+            ->where(['ativo' => 1])
+            ->andWhere(['<=', 'id', '20'])->all();
+
         $this->layout = 'adminindex';
         if (!Yii::$app->user->isGuest) {
+
             return $this->redirect(['default/home']);
         }
 
@@ -57,10 +65,14 @@ class DefaultController extends Controller {
             return $this->redirect(['default/home']);
         }
         $this->layout = 'login';
-        return $this->render('index', ['model' => $model]);
+        return $this->render('index', [
+            'model' => $model,
+            'universidades_botoes' => $universidades,
+        ]);
     }
 
-    public function actionRegister() {
+    public function actionRegister()
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->redirect(['default/home']);
         }
@@ -74,13 +86,17 @@ class DefaultController extends Controller {
         return $this->render('register', ['model' => $model]);
     }
 
-    public function actionHome() {
+    public function actionHome()
+    {
         $this->layout = 'adminindex';
+        if (Yii::$app->user->identity->trote_id == 1) {
 
+            return $this->redirect(['users/perfil']);
+        }
 
         $universidades = Universidade::find()
-                        ->where(['ativo' => 1])
-                        ->andWhere(['<=', 'id', '20'])->all();
+            ->where(['ativo' => 1])
+            ->andWhere(['<=', 'id', '20'])->all();
 
         $dados = [];
 
@@ -108,12 +124,14 @@ class DefaultController extends Controller {
         ];
         foreach ($universidades as $universidade) {
             $dados_universidade = Users::find()
-                    ->innerJoin('_trote', '_users.trote_id = _trote.id')
-                    ->where([
-                        '_users.status' => 1,
-                        '_users.estudante' => 'Sim',
-                        '_users.instituicao' => $universidade->id])
-                    ->all();
+                ->innerJoin('_trote', '_users.trote_id = _trote.id')
+                ->where([
+                    '_users.trote_id' => 2,
+                    '_users.status' => 1,
+                    '_users.estudante' => 'Sim',
+                    '_users.instituicao' => $universidade->id
+                ])
+                ->all();
 
             array_push($dados, [
                 "name" => $universidade->nome,
@@ -125,15 +143,15 @@ class DefaultController extends Controller {
 
 
         return $this->render('home', [
-                    'universidades_botoes' => $universidades,
-                    'dados' => json_encode($dados)
+            'universidades_botoes' => $universidades,
+            'dados' => json_encode($dados)
         ]);
     }
 
-    public function actionLogout() {
+    public function actionLogout()
+    {
         Yii::$app->user->logout();
 
         return $this->redirect(['/admin']);
     }
-
 }

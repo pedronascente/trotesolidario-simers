@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
+use app\modules\admin\models\Helper;
 ?>
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -21,7 +22,7 @@ use yii\helpers\ArrayHelper;
                 <div class="p-3"> 
                     <ul>
                     <?php foreach ($certificados as $certificado): ?>
-                        <li><a href="certificado/imprime?name=<?= $certificado["name"]?>&trote=<?= $certificado["trote"]?>" target="_blank"><?= $certificado["trote"]?></a></li>
+                        <li><a href="certificado/imprime?name=<?= $certificado["name"]?>&troteid=<?= $certificado["id"]?>&trote=<?= $certificado["trote"]?>&tipo_doacao=<?= $certificado["tipo_doacao"]?>" target="_blank"><?= $certificado["trote"]?></a></li>
                     <?php endforeach; ?>
                     </ul>
                 </div>

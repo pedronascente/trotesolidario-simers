@@ -135,7 +135,7 @@ class RegisterController extends Controller {
                 $modelUsuario->estudante = $post["estudante"];
                 $modelUsuario->politicaPrivacidade = $post["politicaPrivacidade"];
                 $modelUsuario->politicaImagem = $post["politicaImagem"];
-                $modelUsuario->instituicao = $post["instituicao"];
+                $modelUsuario->instituicao = isset($post["instituicao"])?$post["instituicao"]:null;
                 $modelUsuario->outraInstituicao = $post["outraInstituicao"];
                 $modelUsuario->telefone = $post["telefone"];
                 $modelUsuario->previsaoFormatura = $post["previsaoFormatura"];
@@ -159,6 +159,7 @@ class RegisterController extends Controller {
                 $modelUsuario->generatePasswordResetToken();
                 $modelUsuario->generateAuthKey();
                 $modelUsuario->estudante = $post["estudante"];
+                $modelUsuario->instituicao = isset($post["instituicao"])?$post["instituicao"]:null;
                 $modelUsuario->politicaPrivacidade = $post["politicaPrivacidade"];
                 $modelUsuario->politicaImagem = $post["politicaImagem"];
                 if (!$modelUsuario->save()) {
