@@ -89,7 +89,7 @@ class DefaultController extends Controller
     public function actionHome()
     {
         $this->layout = 'adminindex';
-        if (Yii::$app->user->identity->trote_id == 1) {
+        if (Yii::$app->user->identity->trote_id < 3) {
 
             return $this->redirect(['users/perfil']);
         }
@@ -126,7 +126,7 @@ class DefaultController extends Controller
             $dados_universidade = Users::find()
                 ->innerJoin('_trote', '_users.trote_id = _trote.id')
                 ->where([
-                    '_users.trote_id' => 2,
+                    '_users.trote_id' => 3,
                     '_users.status' => 1,
                     '_users.estudante' => 'Sim',
                     '_users.instituicao' => $universidade->id

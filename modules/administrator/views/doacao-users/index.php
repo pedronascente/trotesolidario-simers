@@ -70,6 +70,7 @@ $gridColumns = [
             'Comissão' => 'Comissão',
             'Participação Presencial' => 'Participação Presencial',
             'Sangue' => 'Sangue',
+            'Medula Óssea' => 'Medula Óssea',
             
         ],
         'filterInputOptions' => ['placeholder' => '- Tipo doação -'],

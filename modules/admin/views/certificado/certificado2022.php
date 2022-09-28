@@ -16,6 +16,9 @@ if ($model['tipo_doacao'] == 'Comissão') {
 } else if ($model['tipo_doacao'] == 'Participação Presencial') {
     $model['frase_certificado'] .= ' 4 horas.';
     $tipo = ' na qualidade de PARTICIPANTE';
+} else if ($model['tipo_doacao'] == 'Medula Óssea') {
+    $model['frase_certificado'] .= ' 4 horas.';
+    $tipo = ' na qualidade de PARTICIPANTE';
 } else {
     $model['frase_certificado'] .= ' 0 horas.';
     $tipo = ' ';
@@ -62,7 +65,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logotrote.jpg')?>" style="width:auto;height: 130px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/logotrote.jpg') ?>" style="width:auto;height: 130px;" alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
                         </tr>
@@ -89,14 +92,14 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <td class="tg-0lax"></td>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/assinaturarovinski.jpg')?>" style="width:auto;height: 80px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/assinaturarovinski.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
                             </th>
                             <td class="tg-0lax"></td>
                         </tr>
                         <tr>
                             <td class="tg-0lax"></td>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logonucleo.jpg')?>" style="width:auto;height: 80px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/logonucleo.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
                             </th>
                             <td class="tg-0lax"></td>
                         </tr>

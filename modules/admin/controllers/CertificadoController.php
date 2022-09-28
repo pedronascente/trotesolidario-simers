@@ -16,19 +16,21 @@ use kartik\mpdf\Pdf;
 /**
  * DoacaoController implements the CRUD actions for Doacao model.
  */
-class CertificadoController extends Controller {
+class CertificadoController extends Controller
+{
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['delete', 'create', 'index', 'update'],
+                'only' => ['delete', 'create', 'index', 'update', 'imprime'],
                 'rules' => [
                     [
-                        'actions' => ['delete', 'create', 'index', 'update'],
+                        'actions' => ['delete', 'create', 'index', 'update', 'imprime'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -37,7 +39,7 @@ class CertificadoController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-//                    'logout' => ['post'],
+                    //                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -47,33 +49,37 @@ class CertificadoController extends Controller {
      * Lists all Doacao models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->layout = 'admin';
         $connection = Yii::$app->getDb();
         $certificados = $connection
-                ->createCommand('SELECT 
+            ->createCommand(
+                'SELECT 
                              DISTINCT(t.nome) as trote, d.tipo_doacao, t.id,u.name 
                             FROM _doacao AS d 
                             INNER JOIN _users u ON d.user_create = u.id 
                             INNER JOIN _trote t on d.trote_id = t.id
-                            WHERE d.user_create = "'.Yii::$app->user->identity->id.'"
+                            WHERE d.user_create = "' . Yii::$app->user->identity->id . '"
                             AND d.validado = "1"
                             and d.ativo = "1"
                             '
-                 )
-                ->queryAll();
+            )
+            ->queryAll();
 
 
         return $this->render('index', [
-                    'certificados' => $certificados
+            'certificados' => $certificados
         ]);
     }
 
-    public function actionImprime() {
+    public function actionImprime()
+    {
         $this->layout = 'admin';
         $connection = Yii::$app->getDb();
         $certificado = $connection
-                ->createCommand('SELECT 
+            ->createCommand(
+                'SELECT 
                             DISTINCT(t.nome) as trote,
                             t.frase_certificado,
                             d.tipo_doacao,
@@ -81,49 +87,49 @@ class CertificadoController extends Controller {
                             FROM _doacao AS d 
                             INNER JOIN _users u ON d.user_create = u.id 
                             INNER JOIN _trote t on d.trote_id = t.id
-                            WHERE d.user_create = "'.Yii::$app->user->identity->id.'"
+                            WHERE d.user_create = "' . Yii::$app->user->identity->id . '"
                             AND d.validado = "1"
-                            AND t.nome = "'.$_GET["trote"].'"
-                            AND d.tipo_doacao = "'.$_GET["tipo_doacao"].'"
+                            AND t.nome = "' . $_GET["trote"] . '"
+                            AND d.tipo_doacao = "' . $_GET["tipo_doacao"] . '"
                             and d.ativo = "1"
                             '
-                 )
-                ->queryOne();
-        
-        if(!$certificado){
+            )
+            ->queryOne();
+
+        if (!$certificado) {
             return false;
         }
-        
-        
+
+
         $pdf = new \Mpdf\Mpdf([
             'orientation' => Pdf::ORIENT_LANDSCAPE,
             'mode' => 'utf-8',
             'format' => 'A4',
-            
+
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
         ]);
         $pdf->showImageErrors = true;
         $pdfExtra = new Pdf();
-        
-        $pdf->WriteHTML($pdfExtra->getCss(), 1);
-        
 
-        
+        $pdf->WriteHTML($pdfExtra->getCss(), 1);
+
+
+
         $pdf->setAutoTopMargin = 'stretch';
         $pdf->SetTitle('Trote Solidario');
         //trote 2021/2
-        if($_GET["troteid"]==1){
+        if ($_GET["troteid"] == 1) {
             $htmlContent = $this->renderPartial('certificado', ['model' => $certificado]);
-        }else{
+        } else {
             $htmlContent = $this->renderPartial('certificado2022', ['model' => $certificado]);
         }
         $pdf->WriteHTML($htmlContent);
         $pdf->AddPage();
         $pdf->SetTitle('Trote Solidario');
         //trote 2021/2
-        if($_GET["troteid"]==1){
+        if ($_GET["troteid"] == 1) {
             $htmlContent = $this->renderPartial('certificado2', ['model' => $certificado]);
-        }else{
+        } else {
             $htmlContent = $this->renderPartial('certificado22022', ['model' => $certificado]);
         }
         $pdf->WriteHTML($htmlContent);
@@ -138,12 +144,12 @@ class CertificadoController extends Controller {
      * @return Doacao the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         if (($model = Doacao::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 }

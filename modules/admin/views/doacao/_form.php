@@ -21,11 +21,11 @@ use app\modules\admin\models\Universidade;
             <div class="row">
                 <div class="col-md-6">
                     <?php
-                        //if($teste){
-                        //foreach($teste as $value){
-                            
-                          //  echo 'teste';
-                        //}
+                    //if($teste){
+                    //foreach($teste as $value){
+
+                    //  echo 'teste';
+                    //}
                     //}
                     ?>
                     <?=
@@ -51,8 +51,8 @@ use app\modules\admin\models\Universidade;
                     ?>
                 </div>
                 <div class="col-md-6">
-                    <?php if ($model->arquivo): ?>
-                        <img src="/imagens/doacoes/<?= $model->arquivo ?>" class="img-fluid"/>
+                    <?php if ($model->arquivo) : ?>
+                        <img src="/imagens/doacoes/<?= $model->arquivo ?>" class="img-fluid" />
                     <?php endif; ?>
                 </div>
             </div>
@@ -62,7 +62,7 @@ use app\modules\admin\models\Universidade;
                     $form->field($model, 'trote_id')->label('Evento')->widget(Select2::classname(), [
                         'options' => ['placeholder' => '- Selecione uma opção -'],
                         'data' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
-                    
+
                     ]);
                     ?>
                 </div>
@@ -86,7 +86,8 @@ use app\modules\admin\models\Universidade;
                             'Comissão' => 'Comissão',
                             'Participação Presencial' => 'Participação Presencial',
                             'Sangue' => 'Sangue',
-                            
+                            'Medula Óssea' => 'Medula Óssea',
+
                         ],
                         'pluginOptions' => [
                             'allowClear' => true
