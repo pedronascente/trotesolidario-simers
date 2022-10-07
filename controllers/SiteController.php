@@ -5,14 +5,16 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 
-class SiteController extends Controller {
+class SiteController extends Controller
+{
 
     public $enableCsrfValidation = false;
 
     /**
      * @inheritdoc
      */
-    public function actions() {
+    public function actions()
+    {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -29,10 +31,9 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    public function actionIndex() {
-        
-        return $this->redirect(['/admin']);
-    }
+    public function actionIndex()
+    {
 
-   
+        return $this->redirect(['/participante']);
+    }
 }

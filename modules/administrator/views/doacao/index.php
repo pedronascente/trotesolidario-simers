@@ -3,16 +3,16 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
-use app\modules\admin\models\Users;
-use app\modules\admin\models\Universidade;
-use app\modules\admin\models\Trote;
+use app\modules\participante\models\Users;
+use app\modules\participante\models\Universidade;
+use app\modules\participante\models\Trote;
 ?>
 <style>
     .image:hover {
-        margin:0;
-        padding:0;
-        width:400% !important;
-        height:400% !important;
+        margin: 0;
+        padding: 0;
+        width: 400% !important;
+        height: 400% !important;
         z-index: 999 !important;
         position: relative;
         display: block;
@@ -41,7 +41,7 @@ use app\modules\admin\models\Trote;
                     <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Doação', ['create'], ['class' => 'btn btn-success']) ?>
                     </h6>
                 </div>
-                <div class="p-3" style="overflow-x: auto; width: 100%;"> 
+                <div class="p-3" style="overflow-x: auto; width: 100%;">
                     <?=
                     GridView::widget([
                         'options' => ['style' => ['width' => '1800px']],
@@ -54,7 +54,7 @@ use app\modules\admin\models\Trote;
                                 'hAlign' => 'center',
                                 'vAlign' => 'center',
                                 'filter' => false,
-                                'value' => function($model) {
+                                'value' => function ($model) {
                                     return Html::img("/imagens/doacoes/$model->arquivo", ["class" => "image", "style" => "height: 80px;width: auto;"]);
                                 }
                             ],
@@ -67,9 +67,9 @@ use app\modules\admin\models\Trote;
                                 'filter' => ArrayHelper::map(Users::find()->where(['status' => '1'])->all(), 'id', 'name'),
                                 'filterInputOptions' => ['placeholder' => '- Usuário -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                               
-                                'value' => function($model) {
-                                    $user = Users::find()->where(['id'=>$model->user_create])->one();
+
+                                'value' => function ($model) {
+                                    $user = Users::find()->where(['id' => $model->user_create])->one();
                                     return $user->name;
                                 }
                             ],
@@ -79,17 +79,17 @@ use app\modules\admin\models\Trote;
                                 'filter' => ArrayHelper::map(Universidade::find()->all(), 'id', 'nome'),
                                 'filterInputOptions' => ['placeholder' => '- Instituição -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                                'value' => function($model) {
-                                    $return = Universidade::find()->where(['id'=>$model->instituicao])->one();
-                                    
-                                    
+                                'value' => function ($model) {
+                                    $return = Universidade::find()->where(['id' => $model->instituicao])->one();
+
+
                                     return $return->nome;
                                 }
                             ],
                             [
                                 'attribute' => 'validado_motivo',
                                 'contentOptions' => ['style' => 'width:500px !important; white-space: normal;'],
-                                'value' => function($model) {
+                                'value' => function ($model) {
                                     return Html::textarea('', $model->validado_motivo, ['onblur' => 'salvaMotivo("' . $model->id . '",this.value)', 'rows' => '10', 'cols' => '30', 'class' => 'form-control']);
                                 },
                                 'format' => 'raw'
@@ -104,7 +104,7 @@ use app\modules\admin\models\Trote;
                                 ],
                                 'filterInputOptions' => ['placeholder' => '- Validados -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                                'value' => function($model) {
+                                'value' => function ($model) {
                                     $return = '';
                                     if ($model->validado === 1) {
                                         $return = "Aprovado";
@@ -150,14 +150,16 @@ use app\modules\admin\models\Trote;
                                         } else {
                                             $validado = ["far fa-square ", "Aprovar"];
                                         }
-                                        return '<div id="doacao-div-'.$model->id.'">'.Html::a(
-                                                        '<i class="' . $validado[0] . '" title="' . $validado[1] . '" data-toggle="tooltip"></i>', "#", [
-                                                    'title' => '',
-                                                            'id'=>'doacao-'.$model->id,
-                                                    'data-pjax' => '0',
-                                                            'onclick'=>'validaDoacao("' . $model->id . '")',
-                                                        ]
-                                        ).'</div>';
+                                        return '<div id="doacao-div-' . $model->id . '">' . Html::a(
+                                            '<i class="' . $validado[0] . '" title="' . $validado[1] . '" data-toggle="tooltip"></i>',
+                                            "#",
+                                            [
+                                                'title' => '',
+                                                'id' => 'doacao-' . $model->id,
+                                                'data-pjax' => '0',
+                                                'onclick' => 'validaDoacao("' . $model->id . '")',
+                                            ]
+                                        ) . '</div>';
                                     },
                                 ],
                             ],
@@ -179,15 +181,15 @@ use app\modules\admin\models\Trote;
             },
             type: "POST",
             dataType: 'json',
-            success: function (result) {
+            success: function(result) {
                 $('#doacao-' + id).remove();
                 $('#doacao-div-' + id).append(
-                        '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
-                        );
+                    '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
+                );
 
 
             },
-            error: function () {
+            error: function() {
                 alert('Erro: avisar a ti');
             }
         });
@@ -203,15 +205,12 @@ use app\modules\admin\models\Trote;
             },
             type: "POST",
             dataType: 'json',
-            success: function (result) {
+            success: function(result) {
                 console.log(result);
             },
-            error: function () {
+            error: function() {
                 alert('Erro: avisar a ti');
             }
         });
     }
-
-
-
 </script>

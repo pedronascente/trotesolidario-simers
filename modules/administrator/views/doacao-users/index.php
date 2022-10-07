@@ -2,23 +2,23 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\admin\models\Helper;
-use app\modules\admin\models\Users;
-use app\modules\admin\models\Trote;
+use app\modules\participante\models\Helper;
+use app\modules\participante\models\Users;
+use app\modules\participante\models\Trote;
 use kartik\export\ExportMenu;
 use yii\helpers\ArrayHelper;
-use app\modules\admin\models\Universidade;
+use app\modules\participante\models\Universidade;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\UsersSearchModel */
+/* @var $searchModel app\modules\participante\models\UsersSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
 <style>
     .image:hover {
-        margin:0;
-        padding:0;
-        width:400% !important;
-        height:400% !important;
+        margin: 0;
+        padding: 0;
+        width: 400% !important;
+        height: 400% !important;
         z-index: 999 !important;
         position: relative;
         display: block;
@@ -39,7 +39,7 @@ $gridColumns = [
         'hAlign' => 'center',
         'vAlign' => 'center',
         'filter' => false,
-        'value' => function($model) {
+        'value' => function ($model) {
             return Html::img("/imagens/doacoes/$model->arquivo", ["class" => "image", "style" => "height: 80px;width: auto;"]);
         }
     ],
@@ -53,7 +53,7 @@ $gridColumns = [
         'filter' => ArrayHelper::map(Users::find()->where(['status' => '1'])->all(), 'id', 'name'),
         'filterInputOptions' => ['placeholder' => '- Usuário -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'value' => function($model) {
+        'value' => function ($model) {
             $user = Users::find()->where(['id' => $model->user_create])->one();
             return $user->name;
         }
@@ -71,7 +71,7 @@ $gridColumns = [
             'Participação Presencial' => 'Participação Presencial',
             'Sangue' => 'Sangue',
             'Medula Óssea' => 'Medula Óssea',
-            
+
         ],
         'filterInputOptions' => ['placeholder' => '- Tipo doação -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
@@ -86,7 +86,7 @@ $gridColumns = [
         'filter' => ArrayHelper::map(Users::find()->where(['status' => '1'])->all(), 'id', 'email'),
         'filterInputOptions' => ['placeholder' => '- Email -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'value' => function($model) {
+        'value' => function ($model) {
             $user = Users::find()->where(['id' => $model->user_create])->one();
             return $user->email;
         }
@@ -97,7 +97,7 @@ $gridColumns = [
         'filter' => ArrayHelper::map(Universidade::find()->all(), 'id', 'nome'),
         'filterInputOptions' => ['placeholder' => '- Instituição -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'value' => function($model) {
+        'value' => function ($model) {
             $return = Universidade::find()->where(['id' => $model->instituicao])->one();
 
 
@@ -107,7 +107,7 @@ $gridColumns = [
     [
         'attribute' => 'validado_motivo',
         'contentOptions' => ['style' => 'width:500px !important; white-space: normal;'],
-        'value' => function($model) {
+        'value' => function ($model) {
             return Html::textarea('', $model->validado_motivo, ['onblur' => 'salvaMotivo("' . $model->id . '",this.value)', 'rows' => '10', 'cols' => '30', 'class' => 'form-control']);
         },
         'format' => 'raw'
@@ -122,7 +122,7 @@ $gridColumns = [
         ],
         'filterInputOptions' => ['placeholder' => '- Validados -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'value' => function($model) {
+        'value' => function ($model) {
             $return = '';
             if ($model->validado === 1) {
                 $return = "Aprovado";
@@ -157,7 +157,7 @@ $gridColumns = [
         <div class="col-lg-12 mb-4">
             <!-- Illustrations -->
             <div class="card shadow mb-4">
-                <div class="p-3" style="overflow-x: auto; width: 100%;"> 
+                <div class="p-3" style="overflow-x: auto; width: 100%;">
                     <?=
                     ExportMenu::widget([
                         'dataProvider' => $dataProvider,
@@ -198,15 +198,15 @@ $gridColumns = [
             },
             type: "POST",
             dataType: 'json',
-            success: function (result) {
+            success: function(result) {
                 $('#doacao-' + id).remove();
                 $('#doacao-div-' + id).append(
-                        '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
-                        );
+                    '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
+                );
 
 
             },
-            error: function () {
+            error: function() {
                 alert('Erro: avisar a ti');
             }
         });
@@ -222,16 +222,12 @@ $gridColumns = [
             },
             type: "POST",
             dataType: 'json',
-            success: function (result) {
+            success: function(result) {
                 console.log(result);
             },
-            error: function () {
+            error: function() {
                 alert('Erro: avisar a ti');
             }
         });
     }
-
-
-
 </script>
-

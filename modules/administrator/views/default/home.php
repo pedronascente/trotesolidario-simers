@@ -1,4 +1,2 @@
 <?php 
-    use app\modules\admin\models\Helper;
-?>
-    
+    use app\modules\participante\models\Helper;

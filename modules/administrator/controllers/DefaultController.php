@@ -6,19 +6,21 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\modules\admin\models\LoginFormAdministrator;
-use app\modules\admin\models\Doacao;
-use app\modules\admin\models\Helper;
-use app\modules\admin\models\Users;
+use app\modules\participante\models\LoginFormAdministrator;
+use app\modules\participante\models\Doacao;
+use app\modules\participante\models\Helper;
+use app\modules\participante\models\Users;
 
 /**
  * Default controller for the `admin` module
  */
-class DefaultController extends Controller {
+class DefaultController extends Controller
+{
 
     public $enableCsrfValidation = false;
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -34,18 +36,19 @@ class DefaultController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-//                    'logout' => ['post'],
+                    //                    'logout' => ['post'],
                 ],
             ],
         ];
     }
-    
+
 
     /**
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->layout = 'adminindex';
         if (!Yii::$app->user->isGuest) {
             return $this->redirect(['default/home']);
@@ -60,19 +63,20 @@ class DefaultController extends Controller {
         return $this->render('index', ['model' => $model]);
     }
 
-    
-    public function actionHome() {
+
+    public function actionHome()
+    {
         $this->layout = 'adminindex';
         $dados = '';
         return $this->render('home', [
-                    'dados' => $dados
+            'dados' => $dados
         ]);
     }
 
-    public function actionLogout() {
+    public function actionLogout()
+    {
         Yii::$app->user->logout();
 
-        return $this->redirect(['/admin']);
+        return $this->redirect(['/participante']);
     }
-
 }

@@ -1,28 +1,29 @@
 <?php
 
-use app\modules\admin\models\Helper;
+use app\modules\participante\models\Helper;
+
 $countbanner = 0;
 $countbanneractive = 0;
 ?>
 <?= Yii::$app->controller->renderPartial('_menusite'); ?>
 
 <!-- Masthead-->
-<section style="<?= Helper::isMobile()? 'padding: 7rem 0;': ''?>">
+<section style="<?= Helper::isMobile() ? 'padding: 7rem 0;' : '' ?>">
     <div id="banners" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
-            <?php foreach($banners as $banner): ?>
-                <li data-target="#banners" data-slide-to="<?= $countbanneractive?>" class="<?= $countbanneractive==0?"active":""?>"></li>
-              <?php $countbanneractive++; ?>
-            <?php            endforeach;?>
+            <?php foreach ($banners as $banner) : ?>
+                <li data-target="#banners" data-slide-to="<?= $countbanneractive ?>" class="<?= $countbanneractive == 0 ? "active" : "" ?>"></li>
+                <?php $countbanneractive++; ?>
+            <?php endforeach; ?>
         </ol>
         <div class="carousel-inner">
-            <?php foreach($banners as $banner): ?>
-            
-            <div class="carousel-item <?= $countbanner==0?"active":""?>">
-                <img src="/img/banners/<?= Helper::isMobile()?$banner->banner_mbl:$banner->banner_dsk?>" class="img-fluid">
-            </div>
-            <?php $countbanner++; ?>
-            <?php            endforeach;?>
+            <?php foreach ($banners as $banner) : ?>
+
+                <div class="carousel-item <?= $countbanner == 0 ? "active" : "" ?>">
+                    <img src="/img/banners/<?= Helper::isMobile() ? $banner->banner_mbl : $banner->banner_dsk ?>" class="img-fluid">
+                </div>
+                <?php $countbanner++; ?>
+            <?php endforeach; ?>
         </div>
         <a class="carousel-control-prev" href="#banners" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -44,7 +45,7 @@ $countbanneractive = 0;
 <!-- QUEM SOMOS -->
 <?= Yii::$app->controller->renderPartial('_quemsomos'); ?>
 <!-- PROJETOS -->
-<?= Yii::$app->controller->renderPartial('_projetos',['projetos'=>$projects]); ?>
+<?= Yii::$app->controller->renderPartial('_projetos', ['projetos' => $projects]); ?>
 <!-- PARCEIROS -->
 <?= Yii::$app->controller->renderPartial('_parceiros'); ?>
 
@@ -52,6 +53,5 @@ $countbanneractive = 0;
 <?= Yii::$app->controller->renderPartial('_nossosparceiros'); ?>
 <!-- SEJA VOLUNTARIO-->
 <?= Yii::$app->controller->renderPartial('_sejavoluntario'); ?>
-<?= Yii::$app->controller->renderPartial('_noticias',['noticias'=>$news]); ?>
+<?= Yii::$app->controller->renderPartial('_noticias', ['noticias' => $news]); ?>
 <?= Yii::$app->controller->renderPartial('_faleconosco'); ?>
-

@@ -2,12 +2,12 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\admin\models\Helper;
-use app\modules\admin\models\Users;
-use app\modules\admin\models\Trote;
+use app\modules\participante\models\Helper;
+use app\modules\participante\models\Users;
+use app\modules\participante\models\Trote;
 use kartik\export\ExportMenu;
 use yii\helpers\ArrayHelper;
-use app\modules\admin\models\Universidade;
+use app\modules\participante\models\Universidade;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\UsersSearchModel */
@@ -30,7 +30,7 @@ $gridColumns = [
         'filter' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
         'filterInputOptions' => ['placeholder' => '- Instituição -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-        'value' => function($model) {
+        'value' => function ($model) {
             $return = Universidade::find()->where(['id' => $model->instituicao])->one();
             return ($return) ? $return->nome : "Não definido";
         }
@@ -40,11 +40,11 @@ $gridColumns = [
     'conheceONas',
     [
         'attribute' => 'trote_id',
-        'label'=> 'Trote',
-        'value' => function($model) {
-            $trote = Trote::find()->where(['id'=>$model->trote_id])->one();
+        'label' => 'Trote',
+        'value' => function ($model) {
+            $trote = Trote::find()->where(['id' => $model->trote_id])->one();
 
-            return ($trote)?$trote->nome:"";
+            return ($trote) ? $trote->nome : "";
         },
         'filterType' => GridView::FILTER_SELECT2,
         'filter' => [1 => 'Ativo', 0 => 'Inativo'],
@@ -53,7 +53,7 @@ $gridColumns = [
     ],
     [
         'attribute' => 'status',
-        'value' => function($model) {
+        'value' => function ($model) {
             return ($model->status == Users::STATUS_ACTIVE) ? "Ativo" : "Inativo";
         },
         'filterType' => GridView::FILTER_SELECT2,
@@ -75,7 +75,7 @@ $gridColumns = [
         <div class="col-lg-12 mb-4">
             <!-- Illustrations -->
             <div class="card shadow mb-4">
-                <div class="p-3"> 
+                <div class="p-3">
                     <?=
                     ExportMenu::widget([
                         'dataProvider' => $dataProvider,
@@ -90,7 +90,7 @@ $gridColumns = [
                     ]);
                     ?>
                     <?=
-                        Html::a('Doações Usuários','doacao-users',['class'=>'btn btn-md btn-success'])
+                    Html::a('Doações Usuários', 'doacao-users', ['class' => 'btn btn-md btn-success'])
                     ?>
 
                     <?=
@@ -107,4 +107,3 @@ $gridColumns = [
         </div>
     </div>
 </div>
-

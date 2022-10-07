@@ -1,16 +1,16 @@
 <?php
 
-use app\modules\admin\models\Trote;
-use app\modules\admin\models\Universidade;
+use app\modules\participante\models\Trote;
+use app\modules\participante\models\Universidade;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
 use kartik\widgets\Select2;
-use app\modules\admin\models\Users;
+use app\modules\participante\models\Users;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\admin\models\Doacao */
+/* @var $model app\modules\participante\models\Doacao */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 

@@ -3,8 +3,8 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\admin\models\Users;
-use app\modules\admin\models\UsersSearchModel;
+use app\modules\participante\models\Users;
+use app\modules\participante\models\UsersSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,12 +13,14 @@ use yii\filters\AccessControl;
 /**
  * UsersController implements the CRUD actions for Users model.
  */
-class UsersController extends Controller {
+class UsersController extends Controller
+{
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -34,7 +36,7 @@ class UsersController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-//                    'logout' => ['post'],
+                    //                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -44,15 +46,16 @@ class UsersController extends Controller {
      * Lists all Users models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->layout = 'adminsemjquery';
         $searchModel = new UsersSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
         return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -62,9 +65,10 @@ class UsersController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id) {
+    public function actionView($id)
+    {
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -73,7 +77,8 @@ class UsersController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $this->layout = 'adminsemjquery';
         $model = new Users();
 
@@ -95,13 +100,13 @@ class UsersController extends Controller {
             } else {
                 Yii::$app->session->setFlash('error', 'Erro ao salvar o usuário');
                 return $this->render('update', [
-                            'model' => $model,
+                    'model' => $model,
                 ]);
             }
         }
 
         return $this->render('create', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
@@ -112,7 +117,8 @@ class UsersController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) {
+    public function actionUpdate($id)
+    {
         $this->layout = 'adminsemjquery';
         $model = $this->findModel($id);
 
@@ -126,14 +132,14 @@ class UsersController extends Controller {
             } else {
                 Yii::$app->session->setFlash('error', 'Erro ao salvar o usuário');
                 return $this->render('update', [
-                            'model' => $model,
+                    'model' => $model,
                 ]);
             }
         }
 
 
         return $this->render('update', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
@@ -144,7 +150,8 @@ class UsersController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         $this->layout = 'adminsemjquery';
         $model = $this->findModel($id);
 
@@ -158,7 +165,7 @@ class UsersController extends Controller {
         } else {
             Yii::$app->session->setFlash('error', 'Erro ao salvar o usuário');
             return $this->render('view', [
-                        'model' => $model,
+                'model' => $model,
             ]);
         }
     }
@@ -170,12 +177,12 @@ class UsersController extends Controller {
      * @return Users the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         if (($model = Users::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 }

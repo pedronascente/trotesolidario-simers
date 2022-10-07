@@ -34,11 +34,11 @@ $config = [
              * Chama o model que ira implementar a interface IdentityInterface 
              * e os métodos de autenticação.
              */
-            'identityClass' => 'app\modules\admin\models\Users',
+            'identityClass' => 'app\modules\participante\models\Users',
             /**
              * É responsável por definir a rota (URL) padrão de login
              */
-            'loginUrl' => ['admin/default/index'],
+            'loginUrl' => ['participante/default/index'],
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -68,8 +68,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-            ],
+            'rules' => [],
         ],
         'formatter' => [
             'dateFormat' => 'php:d/m/Y', //'short',
@@ -85,13 +84,13 @@ $config = [
             'class' => '\kartik\grid\Module',
             'downloadAction' => 'gridview/export/download'
         ],
-        'admin' => [
-            'class' => 'app\modules\admin\admin',
-            'layout' => '@app/modules/admin/views/layouts/admin',
+        'participante' => [
+            'class' => 'app\modules\participante\participante',
+            'layout' => '@app/modules/participante/views/layouts/participante',
         ],
         'administrator' => [
             'class' => 'app\modules\administrator\administrator',
-            'layout' => '@app/modules/admin/views/layouts/admin',
+            'layout' => '@app/modules/participante/views/layouts/participante',
         ],
         'markdown' => [
             // the module class
