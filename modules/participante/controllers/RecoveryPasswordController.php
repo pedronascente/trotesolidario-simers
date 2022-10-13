@@ -1,23 +1,25 @@
 <?php
 
-namespace app\modules\admin\controllers;
+namespace app\modules\participante\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\modules\admin\models\RecoveryForm;
-use app\modules\admin\models\Helper;
-use app\modules\admin\models\Users;
+use app\modules\participante\models\RecoveryForm;
+use app\modules\participante\models\Helper;
+use app\modules\participante\models\Users;
 
 /**
- * Default controller for the `admin` module
+ * Default controller for the `participante` module
  */
-class RecoveryPasswordController extends Controller {
+class RecoveryPasswordController extends Controller
+{
 
     public $enableCsrfValidation = false;
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -32,8 +34,7 @@ class RecoveryPasswordController extends Controller {
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
-                'actions' => [
-                ],
+                'actions' => [],
             ],
         ];
     }
@@ -42,7 +43,8 @@ class RecoveryPasswordController extends Controller {
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $msg = '';
         $this->layout = 'register';
         if (!Yii::$app->user->isGuest) {
@@ -51,9 +53,8 @@ class RecoveryPasswordController extends Controller {
 
         $model = new RecoveryForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate())
-        {
-           
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Verifique seu email para recuperar a senha.');
 
@@ -64,20 +65,19 @@ class RecoveryPasswordController extends Controller {
         }
 
         return $this->render('index', [
-                                'model' => $model,
-                                'error' => false,
-                                'msg' => $msg
-                    ]);
+            'model' => $model,
+            'error' => false,
+            'msg' => $msg
+        ]);
     }
-    
-    public function actionNewPassowrd($token) {
-        
+
+    public function actionNewPassowrd($token)
+    {
+
         $model = Users::findByPasswordResetToken($token);
-        
+
         return $this->render('index', [
             'model' => $model,
         ]);
-        
     }
-
 }
