@@ -35,7 +35,7 @@ use yii\helpers\Url;
 </style>
 
 <body class="body">
-    <div style="background-color: #2b9879;padding: 40px 40px 30px 40px;">
+    <div style="background-color: #1F1D44;padding: 40px 40px 30px 40px;">
         <div class="well" style="background-color: #FFF; border-radius:36px;">
             <div class="row">
                 <table class="tg" style="table-layout: fixed; width: 100%">
@@ -43,7 +43,7 @@ use yii\helpers\Url;
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logotrote.jpg') ?>" style="width:auto;height: 130px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/favicon_trote.png') ?>" style="width:auto;height: 130px;" alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
                         </tr>
