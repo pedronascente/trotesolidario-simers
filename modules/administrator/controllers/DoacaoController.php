@@ -9,7 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use app\modules\admin\models\Helper;
+use app\modules\participante\models\Helper;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 
@@ -70,7 +70,7 @@ class DoacaoController extends Controller
     public function actionCreate()
     {
 
-        if (strtotime(date('d-m-Y')) >= strtotime('16-10-' . date('Y'))) {
+        if (strtotime(date('d-m-Y')) >= strtotime('31-10-' . date('Y'))) {
             return $this->redirect(['index']);
         }
         $model = new Doacao();
@@ -186,7 +186,7 @@ class DoacaoController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (strtotime(date('d-m-Y')) >= strtotime('16-10-' . date('Y'))) {
+        if (strtotime(date('d-m-Y')) >= strtotime('31-10-' . date('Y'))) {
             return $this->redirect(['index']);
         }
         $model = $this->findModel($id);
