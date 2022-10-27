@@ -120,8 +120,10 @@ class CertificadoController extends Controller
         //trote 2021/2
         if ($_GET["troteid"] == 1) {
             $htmlContent = $this->renderPartial('certificado', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 3) {
+            $htmlContent = $this->renderPartial('certificado202221', ['model' => $certificado]);
         } else {
-            $htmlContent = $this->renderPartial('certificado2022', ['model' => $certificado]);
+            $htmlContent = $this->renderPartial('certificado202211', ['model' => $certificado]);
         }
         $pdf->WriteHTML($htmlContent);
         $pdf->AddPage();
@@ -129,8 +131,10 @@ class CertificadoController extends Controller
         //trote 2021/2
         if ($_GET["troteid"] == 1) {
             $htmlContent = $this->renderPartial('certificado2', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 3) {
+            $htmlContent = $this->renderPartial('certificado202222', ['model' => $certificado]);
         } else {
-            $htmlContent = $this->renderPartial('certificado22022', ['model' => $certificado]);
+            $htmlContent = $this->renderPartial('certificado202212', ['model' => $certificado]);
         }
         $pdf->WriteHTML($htmlContent);
         $pdf->defaultPagebreakType = '1';

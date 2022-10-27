@@ -90,6 +90,7 @@ use app\modules\participante\models\Users;
                             'Comissão' => 'Comissão',
                             'Participação Presencial' => 'Participação Presencial',
                             'Sangue' => 'Sangue',
+                            'Medula Óssea' => 'Medula Óssea',
                         ],
                         'pluginOptions' => [
                             'allowClear' => true

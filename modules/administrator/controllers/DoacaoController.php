@@ -3,8 +3,8 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\admin\models\Doacao;
-use app\modules\admin\models\DoacaoAdministratorSearchModel;
+use app\modules\participante\models\Doacao;
+use app\modules\participante\models\DoacaoAdministratorSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,19 +16,21 @@ use yii\helpers\Url;
 /**
  * DoacaoController implements the CRUD actions for Doacao model.
  */
-class DoacaoController extends Controller {
+class DoacaoController extends Controller
+{
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['delete','create','index','update'],
+                'only' => ['delete', 'create', 'index', 'update'],
                 'rules' => [
                     [
-                        'actions' => ['delete','create','index','update'],
+                        'actions' => ['delete', 'create', 'index', 'update'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -37,7 +39,7 @@ class DoacaoController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-//                    'logout' => ['post'],
+                    //                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -47,33 +49,34 @@ class DoacaoController extends Controller {
      * Lists all Doacao models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->layout = 'adminsemjquery';
         $searchModel = new DoacaoAdministratorSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
+
         return $this->render('index', [
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
-    
+
     /**
      * Creates a new Doacao model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate() {
-        
-        if(strtotime(date('d-m-Y'))>=strtotime('16-10-'.date('Y')))
-        {
+    public function actionCreate()
+    {
+
+        if (strtotime(date('d-m-Y')) >= strtotime('16-10-' . date('Y'))) {
             return $this->redirect(['index']);
         }
         $model = new Doacao();
         $model->ativo = 1;
         $this->layout = 'adminsemjquery';
-        
+
         $erro = $config = array();
         // Tamanho máximo do arquivo (em bytes) 
         $config["tamanho"] = 2000000;
@@ -92,7 +95,7 @@ class DoacaoController extends Controller {
             $model->user_update = Yii::$app->user->identity->id;
             $model->data_create = date('Y-m-d H:i:s');
             $model->data_update = date('Y-m-d H:i:s');
-            
+
             if ($arquivo) {
                 if (!in_array($arquivo->type, $arr_extensao)) {
                     $erro[] = "Arquivo em formato inválido! A imagem deve ser jpg, jpeg, gif ou png. Envie outro arquivo";
@@ -121,56 +124,56 @@ class DoacaoController extends Controller {
                 }
 
 
-//                if ($erro) {
-//                    return $this->render('create', [
-//                                'model' => $model,
-//                                'error' => true,
-//                                'success' => false,
-//                                'msg' => $str_erro
-//                    ]);
-//                }
+                //                if ($erro) {
+                //                    return $this->render('create', [
+                //                                'model' => $model,
+                //                                'error' => true,
+                //                                'success' => false,
+                //                                'msg' => $str_erro
+                //                    ]);
+                //                }
                 $name = ((!$ultimo_id) ? "1" : $ultimo_id->id + 1) . '_doacao.' . explode(".", $arquivo->name)[1];
-                
+
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
-                
+
                 $arquivo->saveAs($path);
                 $model->arquivo = $name;
             }
             if (!$model->save()) {
                 return $this->render('create', [
-                            'model' => $model,
-                            'error' => true,
-                            'success' => false,
-                            'msg' => 'Erro ao criar doação'
+                    'model' => $model,
+                    'error' => true,
+                    'success' => false,
+                    'msg' => 'Erro ao criar doação'
                 ]);
             }
             $html = '';
-            $html .= "<p>Nome: ".Yii::$app->user->identity->name."</p><br>";
-            $html .= "<p>Universidade: ".Yii::$app->user->identity->instituicao."</p><br>";
-            $html .= "<p>Outra Universidade: ".Yii::$app->user->identity->outraInstituicao."</p><br>";
-            $html = "<p>Acesse o link abaixo para acessar o arquivo</p><br>"; 
-            $html .= "<a href='".Url::base(true)."/imagens/doacoes/$model->arquivo'>Clique aqui para acessar o arquivo.</a>"; 
+            $html .= "<p>Nome: " . Yii::$app->user->identity->name . "</p><br>";
+            $html .= "<p>Universidade: " . Yii::$app->user->identity->instituicao . "</p><br>";
+            $html .= "<p>Outra Universidade: " . Yii::$app->user->identity->outraInstituicao . "</p><br>";
+            $html = "<p>Acesse o link abaixo para acessar o arquivo</p><br>";
+            $html .= "<a href='" . Url::base(true) . "/imagens/doacoes/$model->arquivo'>Clique aqui para acessar o arquivo.</a>";
 
 
             Yii::$app->mailer->compose('layouts/html', ['content' => $html])
-                        ->setFrom('noreply@simers.org.br')
-                        ->setTo('nucleoacademico@simers.org.br')
-                        ->setSubject('Nova Doação')
-                        ->send();
-            
+                ->setFrom('noreply@simers.org.br')
+                ->setTo('nucleoacademico@simers.org.br')
+                ->setSubject('Nova Doação')
+                ->send();
+
             return $this->render('update', [
-                        'model' => $model,
-                        'success' => true,
-                        'error' => false,
-                        'msg' => 'Doação criada com sucesso'
+                'model' => $model,
+                'success' => true,
+                'error' => false,
+                'msg' => 'Doação criada com sucesso'
             ]);
         }
 
         return $this->render('create', [
-                    'model' => $model,
-                    'success' => false,
-                    'error' => false,
-                    'msg' =>''
+            'model' => $model,
+            'success' => false,
+            'error' => false,
+            'msg' => ''
         ]);
     }
 
@@ -181,15 +184,15 @@ class DoacaoController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) {
-        if(strtotime(date('d-m-Y'))>=strtotime('16-10-'.date('Y')))
-        {
+    public function actionUpdate($id)
+    {
+        if (strtotime(date('d-m-Y')) >= strtotime('16-10-' . date('Y'))) {
             return $this->redirect(['index']);
         }
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
         $this->layout = 'adminsemjquery';
-        
+
         $erro = $config = array();
         // Tamanho máximo do arquivo (em bytes) 
         $config["tamanho"] = 2000000;
@@ -206,7 +209,7 @@ class DoacaoController extends Controller {
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->user_update = Yii::$app->user->identity->id;
             $model->data_update = date('Y-m-d H:i:s');
-            
+
             if ($arquivo) {
                 if (!in_array($arquivo->type, $arr_extensao)) {
                     $erro[] = "Arquivo em formato inválido! A imagem deve ser jpg, jpeg, gif ou png. Envie outro arquivo";
@@ -235,43 +238,43 @@ class DoacaoController extends Controller {
                 }
 
 
-//                if ($erro) {
-//                    return $this->render('create', [
-//                                'model' => $model,
-//                                'error' => true,
-//                                'success' => false,
-//                                'msg' => $str_erro
-//                    ]);
-//                }
+                //                if ($erro) {
+                //                    return $this->render('create', [
+                //                                'model' => $model,
+                //                                'error' => true,
+                //                                'success' => false,
+                //                                'msg' => $str_erro
+                //                    ]);
+                //                }
                 $name = $model->id . '_doacao.' . explode(".", $arquivo->name)[1];
-                
+
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
-                
+
                 $arquivo->saveAs($path);
                 $model->arquivo = $name;
             }
             if (!$model->save()) {
                 return $this->render('update', [
-                            'model' => $model,
-                            'error' => true,
-                            'success' => false,
-                            'msg' => 'Erro ao atualizar doação'
+                    'model' => $model,
+                    'error' => true,
+                    'success' => false,
+                    'msg' => 'Erro ao atualizar doação'
                 ]);
             }
 
             return $this->render('update', [
-                        'model' => $model,
-                        'success' => true,
-                        'error' => false,
-                        'msg' => 'Doação atualizada com sucesso'
+                'model' => $model,
+                'success' => true,
+                'error' => false,
+                'msg' => 'Doação atualizada com sucesso'
             ]);
         }
 
         return $this->render('update', [
-                    'model' => $model,
-                    'success' => false,
-                    'error' => false,
-                    'msg' =>''
+            'model' => $model,
+            'success' => false,
+            'error' => false,
+            'msg' => ''
         ]);
     }
 
@@ -282,36 +285,39 @@ class DoacaoController extends Controller {
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         $model = $this->findModel($id);
         $model->ativo = ($model->ativo == 1) ? 0 : 1;
-        
+
         if (!$model->save()) {
             Helper::d($model->getErrors());
             return $this->redirect(['index']);
         }
         return $this->redirect(['index']);
     }
-    
-    public function actionCheck() {
+
+    public function actionCheck()
+    {
         $model = $this->findModel($_POST["model_id"]);
         $model->validado = ($model->validado == 1) ? 0 : 1;
-        
+
         if (!$model->save()) {
             Helper::d($model->getErrors());
             return false;
         }
         $return = [];
         $return = ($model->validado == 1) ? ["far fa-check-square ", "Desaprovar"] : ["far fa-square ", "Aprovar"];
-        
+
         return json_encode($return);
     }
-    
-    public function actionAtualizamotivo() {
-        
+
+    public function actionAtualizamotivo()
+    {
+
         $model = $this->findModel($_POST["model_id"]);
         $model->validado_motivo = $_POST["texto"];
-        
+
         if (!$model->save()) {
             Helper::d($model->getErrors());
             return false;
@@ -326,12 +332,12 @@ class DoacaoController extends Controller {
      * @return Doacao the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         if (($model = Doacao::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 }
