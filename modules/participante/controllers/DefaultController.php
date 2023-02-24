@@ -2,6 +2,7 @@
 
 namespace app\modules\participante\controllers;
 
+use app\modules\participante\models\Banner;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -9,6 +10,9 @@ use yii\filters\AccessControl;
 use app\modules\participante\models\LoginForm;
 use app\modules\participante\models\Doacao;
 use app\modules\participante\models\Helper;
+use app\modules\participante\models\Informativo;
+use app\modules\participante\models\Regulamento;
+use app\modules\participante\models\Trote;
 use app\modules\participante\models\Users;
 use app\modules\participante\models\Universidade;
 
@@ -53,6 +57,8 @@ class DefaultController extends Controller
             ->where(['ativo' => 1])
             ->andWhere(['<=', 'id', '20'])->all();
 
+        $capa = Banner::find()->where(['posicao' => 1])->one();
+
         $this->layout = 'adminindex';
         if (!Yii::$app->user->isGuest) {
 
@@ -67,6 +73,7 @@ class DefaultController extends Controller
         $this->layout = 'login';
         return $this->render('index', [
             'model' => $model,
+            'capa' => $capa,
             'universidades_botoes' => $universidades,
         ]);
     }
@@ -89,10 +96,14 @@ class DefaultController extends Controller
     public function actionHome()
     {
         $this->layout = 'adminindex';
-        if (Yii::$app->user->identity->trote_id < 3) {
+        if (Yii::$app->user->identity->trote_id < count(Trote::find()->orderBy(['id' => SORT_DESC])->all())) {
 
             return $this->redirect(['users/perfil']);
         }
+
+        $banner = Banner::find()->where(['posicao' => 2])->one();
+        $informativos = Informativo::find()->all();
+        $regulamentos = Regulamento::find()->all();
 
         $universidades = Universidade::find()
             ->where(['ativo' => 1])
@@ -144,7 +155,10 @@ class DefaultController extends Controller
 
         return $this->render('home', [
             'universidades_botoes' => $universidades,
-            'dados' => json_encode($dados)
+            'dados' => json_encode($dados),
+            'banner' => $banner,
+            'informativos' => $informativos,
+            'regulamentos' => $regulamentos
         ]);
     }
 

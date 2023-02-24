@@ -15,9 +15,11 @@ use Yii;
  * @property int|null $ativo
  *
  * @property Trote $trote
+ * @property Users[] $users
  */
 class Universidade extends \yii\db\ActiveRecord
 {
+    public $file;
     /**
      * {@inheritdoc}
      */
@@ -61,5 +63,15 @@ class Universidade extends \yii\db\ActiveRecord
     public function getTrote()
     {
         return $this->hasOne(Trote::className(), ['id' => 'trote_id']);
+    }
+
+    /**
+     * Gets query for [[Users]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(Users::className(), ['instituicao' => 'id']);
     }
 }

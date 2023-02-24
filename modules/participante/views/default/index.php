@@ -1,7 +1,9 @@
 <?php
 
+use app\modules\participante\models\Helper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+
 ?>
 
 <div class="container">
@@ -9,7 +11,7 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-lg-9 mx-auto">
             <div style="padding: 15px 0;">
-                <img src="/img/capalogin.png" style="width: 100%;height: auto;">
+                <img src="/img/<?= !Helper::isMobile() ? $capa->img_dsk : $capa->img_mob ?>" style="width: 100%;height: auto;">
             </div>
             <div class="px-4">
                 <?php
