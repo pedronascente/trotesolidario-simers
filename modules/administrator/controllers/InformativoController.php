@@ -8,6 +8,7 @@ use app\modules\participante\models\InformativoSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * InformativoController implements the CRUD actions for Informativo model.
@@ -87,8 +88,20 @@ class InformativoController extends Controller
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $arquivo = UploadedFile::getInstance($model, 'file');
+            if ($arquivo) {
+                $path = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
+                $arquivo->saveAs($path);
+            }
+            if (!$model->save()) {
+                return $this->render('update', [
+                    'model' => $model,
+                    'error' => true,
+                    'success' => false,
+                    'msg' => 'Erro ao atualizar Universidade'
+                ]);
+            }
         }
 
         return $this->render('update', [

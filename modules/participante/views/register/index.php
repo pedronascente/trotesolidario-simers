@@ -95,7 +95,7 @@ use app\modules\participante\models\Trote;
                                         ])
                                     ?>
                                     <small>
-                                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL – SIMERS, em razão da ação “TROTE SOLIDÁRIO 2022/1”, disponha dos meus dados pessoais, de acordo com os artigos 7º e 11 da Lei nº 13.709/2018, e autorizo a utilização de minha imagem e/ou voz.
+                                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL- SIMERS, em razão do TROTE SOLIDÁRIO 2023/1, disponha de meus dados pessoais, de acordo com os artigos 7º e 11, da Lei 13.709/2018, bem como autorizo a utilização da minha imagem e/ou voz para a finalidade de divulgação do Trote Solidário em postagens em redes sociais do NAS/SIMERS.
                                     </small>
                                     <?=
                                     $form->field($model, 'politicaImagem', [
