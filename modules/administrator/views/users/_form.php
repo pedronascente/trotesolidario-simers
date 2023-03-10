@@ -22,58 +22,13 @@ use kartik\alert\Alert;
 
     <div class="container">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-6 mx-auto">
                 <div class="p-3">
                     <div class="text-center">
                         <h1 class="h4 text-gray-900 mb-4">Perfil</h1>
                     </div>
                     <?php $form = ActiveForm::begin(); ?>
                     <?= $form->field($model, 'name', ['labelOptions' => ['style' => 'color:grey']])->label('Nome')->textInput() ?>
-                    <?= $form->field($model, 'passwordHash', ['labelOptions' => ['style' => 'color:grey']])->label('Senha')->passwordInput() ?>
-                    <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                    <?=
-                    $form
-                        ->field($model, 'estudante')
-                        ->label('Você é um estudante?')
-                        ->widget(Select2::classname(), [
-                            'options' => [
-                                'placeholder' => '- Você é um estudante? -',
-                                'onchange' => 'verificaEstudante()'
-                            ],
-                            'data' => [
-                                'Sim' => 'Sim',
-                                'Não' => 'Não'
-                            ],
-                        ]);
-                    ?>
-                    <small>
-                        O Simers utiliza cookies e tecnologias semelhantes, como explicado em nossa <a style="font-weight: bold;text-decoration: underline;" href="https://simers.org.br/politica-privacidade" target="_blank">Política de Privacidade</a>, para melhorar a experiência de usuário. Ao navegar por nosso conteúdo, o usuário aceita tais condições.
-                    </small>
-                    <?=
-                    $form->field($model, 'politicaPrivacidade', [
-                        'options' => ['class' => 'checkbox checkbox-primary'],
-                        'labelOptions' => ['style' => 'color:grey']
-                    ])
-                        ->checkbox([
-                            'id' => 'politicaPrivacidade',
-                            'onchange' => 'habilitaBotao()'
-                        ])
-                    ?>
-                    <small>
-                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL – SIMERS, em razão da ação “TROTE SOLIDÁRIO 2021/2”, disponha dos meus dados pessoais, de acordo com os artigos 7º e 11 da Lei nº 13.709/2018, e autorizo a utilização de minha imagem e/ou voz.
-                    </small>
-                    <?=
-                    $form->field($model, 'politicaImagem', [
-                        'options' => ['class' => 'checkbox checkbox-primary'],
-                        'labelOptions' => ['style' => 'color:grey']
-                    ])
-                        ->checkbox([
-                            'id' => 'politicaImagem',
-                            'onchange' => 'habilitaBotao()'
-                        ])
-                    ?>
-
-
 
                 </div>
             </div>
@@ -121,7 +76,7 @@ use kartik\alert\Alert;
         </div>
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12 text-center">
                 <div class="p-3">
                     <?= Html::submitButton('Salvar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
                     <?php ActiveForm::end(); ?>

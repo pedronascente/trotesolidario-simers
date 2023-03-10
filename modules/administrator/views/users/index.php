@@ -61,6 +61,28 @@ $gridColumns = [
         'filterInputOptions' => ['placeholder' => 'Status'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
     ],
+    [
+        'headerOptions' => ['style' => 'width:5%'],
+        'contentOptions' => ['class' => 'col-md-2'],
+        'class' => '\kartik\grid\ActionColumn',
+        'template' => '{update}',
+        //'template' => '{view} {update} {download}',
+        'buttons' => [
+            'update' => function ($url) {
+                return Html::a(
+                    '<i class="fas fa-pen" aria-hidden="true"></i>',
+                    [$url],
+                    [
+                        'class' => 'btn btn-small btn-success',
+                        'data-toggle' => 'tooltip',
+                        'data-original-title' => 'Editar',
+                        'data-pjax' => '0',
+                    ]
+                );
+            },
+
+        ],
+    ],
 ];
 ?>
 <!-- Begin Page Content -->
