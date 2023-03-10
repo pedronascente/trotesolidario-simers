@@ -101,6 +101,31 @@ if (Yii::$app->user->identity->administrator == 0) {
                                 </div>
                             </li>-->
 
+            <li class="nav-item <?= $menu_active == 'trote' ? 'active' : '' ?>">
+                <a class="nav-link" href="/administrator/trote">
+                    <i class="fas fa-inbox"></i>
+                    <span>Trote</span></a>
+            </li>
+            <li class="nav-item <?= $menu_active == 'universidade' ? 'active' : '' ?>">
+                <a class="nav-link" href="/administrator/universidade">
+                    <i class="fas fa-inbox"></i>
+                    <span>Universidade</span></a>
+            </li>
+            <li class="nav-item <?= $menu_active == 'informativo' ? 'active' : '' ?>">
+                <a class="nav-link" href="/administrator/informativo">
+                    <i class="fas fa-inbox"></i>
+                    <span>Informativo</span></a>
+            </li>
+            <li class="nav-item <?= $menu_active == 'regulamento' ? 'active' : '' ?>">
+                <a class="nav-link" href="/administrator/regulamento">
+                    <i class="fas fa-inbox"></i>
+                    <span>Regulamento</span></a>
+            </li>
+            <li class="nav-item <?= $menu_active == 'banner' ? 'active' : '' ?>">
+                <a class="nav-link" href="/administrator/banner">
+                    <i class="fas fa-inbox"></i>
+                    <span>Banners</span></a>
+            </li>
             <li class="nav-item <?= $menu_active == 'doacao' ? 'active' : '' ?>">
                 <a class="nav-link" href="/administrator/doacao">
                     <i class="fas fa-inbox"></i>

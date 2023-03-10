@@ -191,7 +191,6 @@ class DoacaoController extends Controller
         }
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
-        $this->layout = 'adminsemjquery';
 
         $erro = $config = array();
         // Tamanho máximo do arquivo (em bytes) 

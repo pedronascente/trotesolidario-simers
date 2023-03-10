@@ -77,7 +77,7 @@ class DoacaoController extends Controller
 
             return $this->redirect(['users/perfil']);
         }
-        if (strtotime(date('d-m-Y')) >= strtotime('31-10-' . date('Y'))) {
+        if (strtotime(date('d-m-Y')) >= strtotime('01-11-' . date('Y'))) {
             return $this->redirect(['index']);
         }
         $model = new Doacao();

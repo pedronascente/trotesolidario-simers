@@ -29,7 +29,7 @@ use app\modules\participante\models\Helper;
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="/img/<?= !Helper::isMobile() ? 'banner-site-desktop.png' : 'banner-site-mobile.png' ?>" style="cursor:pointer; width: 100%;" />
+                    <img src="/img/<?= !Helper::isMobile() ? $banner->img_dsk :  $banner->img_mob ?>" style="cursor:pointer; width: 100%;" />
                 </div>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
@@ -51,10 +51,10 @@ use app\modules\participante\models\Helper;
                     <h6 class="m-0 font-weight-bold text-primary">Regulamento</h6>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-md btn-success m-1" href="/pdf/Regulamento - Interior.pdf" target="_blank">
+                    <a class="btn btn-md btn-success m-1" href="/pdf/<?= $regulamentos[0]->arquivo ?>" target="_blank">
                         Para ver o regulamento do interior versão.
                     </a>
-                    <a class="btn btn-md btn-success m-1" href="/pdf/Regulamento - POA e Região Metropolitana.pdf" target="_blank">
+                    <a class="btn btn-md btn-success m-1" href="/pdf/<?= $regulamentos[1]->arquivo ?>" target="_blank">
                         Para ver o regulamento POA + Metropolitana.
                     </a>
                 </div>
@@ -71,10 +71,10 @@ use app\modules\participante\models\Helper;
                 </div>
                 <div class="card-body">
                     <p>Para a doação de sangue, o participante deve ir ao hemocentro (mediante agendamento prévio), em horários alternativos, evitando aglomerações de pessoas. Os interessados não podem se esquecer de usar máscara de proteção e álcool gel. Ir ao hemocentro é um ato de coragem e de bravura em benefício da saúde. O Simers lembra que uma bolsa de sangue pode salvar até quatro vidas, e a doação é fundamental neste momento de restrições (com a diminuição dos estoques devido ao distanciamento social durante a pandemia). <br>Quanto às doações de tampinhas, estas deverão ser entregue nas instituições sociais indicadas pela organização do evento, lembrando que os recursos serão utilizados para manutenção das entidades em seus serviços à população local.</p>
-                    <a class="btn btn-md btn-success" href="/pdf/Bancos de Sangue e Hemocentros RS 2022.xlsx - Plan1.pdf" id="rd-button-kmpbw2hu" target="_blank" title="Hemocentros">
+                    <a class="btn btn-md btn-success" href="/pdf/<?= $informativos[0]->arquivo ?>" id="rd-button-kmpbw2hu" target="_blank" title="Hemocentros">
                         Clique para acessar a relação de hemocentros
                     </a>
-                    <a class="btn btn-md btn-success" href="/pdf/Locais - Doação de Tampinhas - Página1.pdf" id="rd-button-kmpbw2hu" target="_blank" title="Hemocentros">
+                    <a class="btn btn-md btn-success" href="/pdf/<?= $informativos[1]->arquivo ?>" id="rd-button-kmpbw2hu" target="_blank" title="Hemocentros">
                         Clique para acessar a relação de tampinhas
                     </a>
                 </div>

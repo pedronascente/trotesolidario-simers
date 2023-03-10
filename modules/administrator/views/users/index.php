@@ -98,32 +98,45 @@ $gridColumns = [
             <!-- Illustrations -->
             <div class="card shadow mb-4">
                 <div class="p-3">
-                    <?=
-                    ExportMenu::widget([
-                        'dataProvider' => $dataProvider,
-                        'columns' => $gridColumns,
-                        'columnSelectorOptions' => [
-                            'label' => 'Columns',
-                        ],
-                        'fontAwesome' => true,
-                        'dropdownOptions' => [
-                            'label' => 'Export All',
-                        ]
-                    ]);
-                    ?>
-                    <?=
-                    Html::a('Doações Usuários', 'doacao-users', ['class' => 'btn btn-md btn-success'])
-                    ?>
-
-                    <?=
-                    GridView::widget([
+                    <p>
+                        <?=
+                        Html::a('Doações Usuários', 'doacao-users', ['class' => 'btn btn-md btn-success'])
+                        ?>
+                    </p>
+                    <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
+                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'], // offset from top
+                        //'floatHeader' => true, // table header floats when you scroll
+                        //'floatPageSummary' => true, // table page summary floats when you scroll
+                        //'floatFooter' => false, // disable floating of table footer
+                        'pjax' => true, // pjax is set to always false for this demo
+                        // parameters from the demo form
+                        //  'responsive' => true,
+                        //'bordered' => true,
+                        //'striped' => true,
+                        //'condensed' => true,
+                        'hover' => true,
+                        //'showPageSummary' => true,
+                        'panel' => [
+                            'heading' => '<i class="fa fa-book"></i>  Usuários',
+                            'type' => 'success',
+                            'before' => '<div style="padding-top: 7px;"><em></em></div>',
+                        ],
+                        // set export properties
+                        'export' => [
+                            'fontAwesome' => true
+                        ],
+                        'exportConfig' => [
+                            'html' => [],
+                            'csv' => [],
+                            'txt' => [],
+                            'xls' => [],
+                            //'pdf' => [],
+                            'json' => [],
+                        ],
                         'columns' => $gridColumns,
-                    ]);
-                    ?>
-
-
+                    ]); ?>
                 </div>
             </div>
         </div>

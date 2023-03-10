@@ -44,7 +44,6 @@ use app\modules\participante\models\Trote;
                 <div class="p-3" style="overflow-x: auto; width: 100%;">
                     <?=
                     GridView::widget([
-                        'options' => ['style' => ['width' => '1800px']],
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
                         'columns' => [
