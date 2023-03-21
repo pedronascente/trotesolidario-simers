@@ -18,7 +18,7 @@ class UsersSearchModel extends Users
     {
         return [
             [['id', 'status'], 'integer'],
-            [['name', 'estudante', 'telefone', 'conheceONas', 'previsaoFormatura', 'instituicao', 'outraInstituicao', 'passwordHash', 'email', 'created_at', 'updated_at', 'username', 'passwordResetToken', 'authKey'], 'safe'],
+            [['name', 'estudante', 'telefone', 'conheceONas', 'previsaoFormatura', 'instituicao', 'outraInstituicao', 'passwordHash', 'email', 'created_at', 'updated_at', 'username', 'passwordResetToken', 'authKey', 'trote_id'], 'safe'],
         ];
     }
 
@@ -69,6 +69,7 @@ class UsersSearchModel extends Users
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'estudante', $this->estudante])
             ->andFilterWhere(['like', 'instituicao', $this->instituicao])
+            ->andFilterWhere(['like', 'trote_id', $this->trote_id])
             ->andFilterWhere(['like', 'outraInstituicao', $this->outraInstituicao])
             ->andFilterWhere(['like', 'previsaoFormatura', $this->previsaoFormatura])
             ->andFilterWhere(['like', 'conheceONas', $this->conheceONas])

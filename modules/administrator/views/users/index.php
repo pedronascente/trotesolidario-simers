@@ -40,16 +40,14 @@ $gridColumns = [
     'conheceONas',
     [
         'attribute' => 'trote_id',
-        'label' => 'Trote',
-        'value' => function ($model) {
-            $trote = Trote::find()->where(['id' => $model->trote_id])->one();
-
-            return ($trote) ? $trote->nome : "";
-        },
         'filterType' => GridView::FILTER_SELECT2,
-        'filter' => [1 => 'Ativo', 0 => 'Inativo'],
-        'filterInputOptions' => ['placeholder' => 'Status'],
+        'filter' => ArrayHelper::map(Trote::find()->all(), 'id', 'nome'),
+        'filterInputOptions' => ['placeholder' => '- Trote -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+        'value' => function ($model) {
+            $return = Trote::find()->where(['id' => $model->trote_id])->one();
+            return ($return) ? $return->nome : "Não definido";
+        }
     ],
     [
         'attribute' => 'status',

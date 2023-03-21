@@ -37,7 +37,7 @@ use app\modules\participante\models\Users;
                             'browseClass' => 'btn btn-primary btn-block',
                             'browseIcon' => '<i class="fas fa-camera"></i>',
                             'browseLabel' => 'Anexar comprovante de doação',
-                            'allowedFileExtensions' => ['jpg', 'gif', 'png'],
+                            'allowedFileExtensions' => ['jpeg', 'jpg', 'gif', 'png'],
                             'overwriteInitial' => false
                         ],
                     ]);
@@ -65,7 +65,7 @@ use app\modules\participante\models\Users;
                     <?=
                     $form->field($model, 'trote_id')->label('Evento')->widget(Select2::classname(), [
                         'options' => ['placeholder' => '- Selecione uma opção -'],
-                        'data' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                        'data' => ArrayHelper::map(Trote::find()->all(), 'id', 'nome'),
                     ]);
                     ?>
                 </div>
@@ -74,7 +74,7 @@ use app\modules\participante\models\Users;
                     $form->field($model, 'instituicao')->label('Instituição')->widget(Select2::classname(), [
                         'options' => ['placeholder' => '- Selecione uma opção -'],
                         'data' =>
-                        ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                        ArrayHelper::map(Universidade::find()->all(), 'id', 'nome'),
                         'pluginOptions' => [
                             'allowClear' => true
                         ],

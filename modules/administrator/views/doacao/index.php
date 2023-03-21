@@ -150,16 +150,11 @@ use app\modules\participante\models\Trote;
                                         } else {
                                             $validado = ["far fa-square ", "Aprovar"];
                                         }
-                                        return '<div id="doacao-div-' . $model->id . '">' . Html::a(
-                                            '<i class="' . $validado[0] . '" title="' . $validado[1] . '" data-toggle="tooltip"></i>',
-                                            "#",
-                                            [
-                                                'title' => '',
-                                                'id' => 'doacao-' . $model->id,
-                                                'data-pjax' => '0',
-                                                'onclick' => 'validaDoacao("' . $model->id . '")',
-                                            ]
-                                        ) . '</div>';
+                                        return "<div id='doacao-div-" . $model->id . "'>
+                                        <a id='doacao" . $model->id . "' onclick='validaDoacao(" . $model->id . ")'>
+                                        <i class='" . $validado[0] . "' title='" . $validado[1] . "' data-toggle='tooltip'></i>
+                                        </a>
+                                        </div>";
                                     },
                                 ],
                             ],
@@ -182,9 +177,9 @@ use app\modules\participante\models\Trote;
             type: "POST",
             dataType: 'json',
             success: function(result) {
-                $('#doacao-' + id).remove();
+                $('#doacao' + id).remove();
                 $('#doacao-div-' + id).append(
-                    '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
+                    '<a id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
                 );
 
 

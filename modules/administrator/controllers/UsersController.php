@@ -128,7 +128,7 @@ class UsersController extends Controller
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Usuário editado com sucesso');
-                return $this->redirect(['view', 'id' => $model->id]);
+                // return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 Yii::$app->session->setFlash('error', 'Erro ao salvar o usuário');
                 return $this->render('update', [

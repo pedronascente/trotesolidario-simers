@@ -44,7 +44,7 @@ use app\modules\participante\models\Universidade;
                             'browseClass' => 'btn btn-primary btn-block',
                             'browseIcon' => '<i class="fas fa-camera"></i>',
                             'browseLabel' => 'Anexar comprovante de doação',
-                            'allowedFileExtensions' => ['jpg', 'gif', 'png'],
+                            'allowedFileExtensions' => ['jpeg', 'jpg', 'gif', 'png'],
                             'overwriteInitial' => false
                         ],
                     ]);
