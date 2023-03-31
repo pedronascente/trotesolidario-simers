@@ -5,6 +5,7 @@ namespace app\modules\administrator\controllers;
 use Yii;
 use app\modules\participante\models\Banner;
 use app\modules\participante\models\BannerSearchModel;
+use app\modules\participante\models\Helper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -90,6 +91,9 @@ class BannerController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $arquivo_dsk = UploadedFile::getInstance($model, 'file_dsk');
             $arquivo_mob = UploadedFile::getInstance($model, 'file_mob');
+
+
+
             if ($arquivo_dsk) {
                 $path = Yii::$app->basePath . '/web/img/' . $model->img_dsk;
                 $arquivo_dsk->saveAs($path);

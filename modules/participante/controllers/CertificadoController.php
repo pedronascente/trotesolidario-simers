@@ -105,7 +105,6 @@ class CertificadoController extends Controller
             'orientation' => Pdf::ORIENT_LANDSCAPE,
             'mode' => 'utf-8',
             'format' => 'A4',
-
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
         ]);
         $pdf->showImageErrors = true;
@@ -120,11 +119,15 @@ class CertificadoController extends Controller
         //trote 2021/2
         if ($_GET["troteid"] == 1) {
             $htmlContent = $this->renderPartial('certificado', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 2) {
+            $htmlContent = $this->renderPartial('certificado202211', ['model' => $certificado]);
         } else if ($_GET["troteid"] == 3) {
             $htmlContent = $this->renderPartial('certificado202221', ['model' => $certificado]);
-        } else {
-            $htmlContent = $this->renderPartial('certificado202211', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 4) {
+            $htmlContent = $this->renderPartial('certificado202311', ['model' => $certificado]);
         }
+
+
         $pdf->WriteHTML($htmlContent);
         $pdf->AddPage();
         $pdf->SetTitle('Trote Solidario');
@@ -133,6 +136,8 @@ class CertificadoController extends Controller
             $htmlContent = $this->renderPartial('certificado2', ['model' => $certificado]);
         } else if ($_GET["troteid"] == 3) {
             $htmlContent = $this->renderPartial('certificado202222', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 4) {
+            $htmlContent = $this->renderPartial('certificado202312', ['model' => $certificado]);
         } else {
             $htmlContent = $this->renderPartial('certificado202212', ['model' => $certificado]);
         }

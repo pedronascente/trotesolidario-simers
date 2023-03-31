@@ -28,6 +28,7 @@ use app\modules\participante\models\Users;
                         ],
                         'pluginOptions' => [
                             'resizeImage' => true,
+                            'maxFileSize' => 2500,
                             // 'maxImageWidth' => 200,
                             // 'maxImageHeight' => 200,
                             'resizePreference' => 'width',

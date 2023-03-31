@@ -93,11 +93,14 @@ class TroteController extends Controller
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'error' => false,
+            'success' => false,
+            'msg' => ''
         ]);
     }
 
