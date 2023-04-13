@@ -35,8 +35,9 @@ use app\modules\participante\models\Universidade;
                         ],
                         'pluginOptions' => [
                             'resizeImage' => true,
-                            // 'maxImageWidth' => 200,
-                            // 'maxImageHeight' => 200,
+                            //'maxImageWidth' => 640,
+                            //'maxImageHeight' => 640,
+                            'maxFileSize' => 2500,
                             'resizePreference' => 'width',
                             'showCaption' => false,
                             'showRemove' => false,

@@ -101,6 +101,9 @@ class DefaultController extends Controller
             return $this->redirect(['users/perfil']);
         }
 
+        $trote_atual = Trote::find()->where(['ativo' => 1])->orderBy(['id' => SORT_DESC])->one();
+
+
         $banner = Banner::find()->where(['posicao' => 2])->one();
         $informativos = Informativo::find()->all();
         $regulamentos = Regulamento::find()->all();
@@ -137,7 +140,7 @@ class DefaultController extends Controller
             $dados_universidade = Users::find()
                 ->innerJoin('_trote', '_users.trote_id = _trote.id')
                 ->where([
-                    '_users.trote_id' => 3,
+                    '_users.trote_id' => $trote_atual->id,
                     '_users.status' => 1,
                     '_users.estudante' => 'Sim',
                     '_users.instituicao' => $universidade->id

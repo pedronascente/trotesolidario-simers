@@ -5,19 +5,19 @@ use yii\helpers\Url;
 
 $tipo = '';
 if ($model['tipo_doacao'] == 'Comissão') {
-    $model['frase_certificado'] .= ' 28 horas.';
+    $model['frase_certificado'] .= ' 30 horas.';
     $tipo = ' na qualidade de MEMBRO DA COMISSÃO ORGANIZADORA';
 } else if ($model['tipo_doacao'] == 'Sangue') {
-    $model['frase_certificado'] .= ' 4 horas.';
+    $model['frase_certificado'] .= ' 6 horas.';
     $tipo = ' na qualidade de PARTICIPANTE';
 } else if ($model['tipo_doacao'] == 'Alimentos') {
-    $model['frase_certificado'] .= ' 2 horas.';
+    $model['frase_certificado'] .= ' 4 horas.';
     $tipo = ' na qualidade de PARTICIPANTE';
 } else if ($model['tipo_doacao'] == 'Participação Presencial') {
-    $model['frase_certificado'] .= ' 4 horas.';
+    $model['frase_certificado'] .= ' 6 horas.';
     $tipo = ' na qualidade de PARTICIPANTE';
 } else if ($model['tipo_doacao'] == 'Medula Óssea') {
-    $model['frase_certificado'] .= ' 4 horas.';
+    $model['frase_certificado'] .= ' 6 horas.';
     $tipo = ' na qualidade de PARTICIPANTE';
 } else {
     $model['frase_certificado'] .= ' 0 horas.';
@@ -57,7 +57,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
 </style>
 
 <body class="body">
-    <div style="background-color: #2b9879;padding: 40px 40px 30px 40px;">
+    <div style="background-color: #4b3c91;padding: 40px 40px 30px 40px;">
         <div class="well" style="background-color: #FFF; border-radius:36px;">
             <div class="row">
                 <table class="tg" style="table-layout: fixed; width: 100%">
@@ -65,7 +65,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logotrote.jpg') ?>" style="width:auto;height: 130px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/logo15trote.png') ?>" style="width:auto;height: 130px;" alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
                         </tr>

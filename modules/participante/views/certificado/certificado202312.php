@@ -2,28 +2,6 @@
 
 use app\modules\participante\models\Helper;
 use yii\helpers\Url;
-
-$tipo = '';
-if ($model['tipo_doacao'] == 'Comissão') {
-    $model['frase_certificado'] .= ' 28 horas.';
-    $tipo = ' na qualidade de MEMBRO DA COMISSÃO ORGANIZADORA';
-} else if ($model['tipo_doacao'] == 'Sangue') {
-    $model['frase_certificado'] .= ' 4 horas.';
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else if ($model['tipo_doacao'] == 'Alimentos') {
-    $model['frase_certificado'] .= ' 2 horas.';
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else if ($model['tipo_doacao'] == 'Participação Presencial') {
-    $model['frase_certificado'] .= ' 4 horas.';
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else if ($model['tipo_doacao'] == 'Medula Óssea') {
-    $model['frase_certificado'] .= ' 4 horas.';
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else {
-    $model['frase_certificado'] .= ' 0 horas.';
-    $tipo = ' ';
-}
-
 ?>
 <style type="text/css">
     .tg {}
@@ -57,7 +35,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
 </style>
 
 <body class="body">
-    <div style="background-color: #2b9879;padding: 40px 40px 30px 40px;">
+    <div style="background-color: #4b3c91;padding: 40px 40px 30px 40px;">
         <div class="well" style="background-color: #FFF; border-radius:36px;">
             <div class="row">
                 <table class="tg" style="table-layout: fixed; width: 100%">
@@ -65,7 +43,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logotrote.jpg') ?>" style="width:auto;height: 130px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/logo15trote.png') ?>" style="width:auto;height: 130px;" alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
                         </tr>
@@ -73,33 +51,29 @@ if ($model['tipo_doacao'] == 'Comissão') {
                     <tbody>
                         <tr>
                             <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: center;">
-                                <h1 style="color:#000;">CERTIFICADO</h1>
+                            <td class="tg-baqh" colspan="3" style="text-align: justify;">
+                                <p style="color:#000; font-size: 17px;">O Trote Solidário é um projeto realizado pelo Núcleo Acadêmico Simers desde 2008. Esta ação é a união da campanha de doação de sangue realizada pelos ingressantes das universidades de medicina e o convite a sociedade para doar alimentos às comunidades carentes, que mantém a tradição do trote universitário, tornando realidade o objetivo de todos os médicos: SALVAR VIDAS.</p>
                             </td>
                             <td class="tg-0lax"></td>
                         </tr>
                         <tr>
                             <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                                <p style="color:#000;font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>, participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
+                            <td class="tg-baqh" colspan="3" style="text-align: justify;">
+                                <p style="color:#000;font-size: 17px;">Como reconhecimento público, o Trote Solidário foi vencedor do Prêmio Top Cidadania 2013 da ABRH-RS e do Prêmio Ser Humano Oswaldo Checchia 2014 da ABRH-Nacional, na modalidade Desenvolvimento Sustentável e Responsabilidade Social/ Organização Cidadã e prêmio Top Cidadania da ABRH-RS, na categoria organização em 2022.</p>
                             </td>
                             <td class="tg-0lax"></td>
                         </tr>
                         <tr>
                             <td class="tg-0lax"></td>
+                            <td class="tg-baqh" colspan="3" style="text-align: justify;">
+                                <p style="color:#000;font-size: 17px;">Atualmente o Trote Solidário promove as seguintes ações: Doação de sangue, coleta de: alimentos, tampinhas plásticas e livros pré-vestibular para doação junto a entidades carentes.</p>
+                            </td>
                             <td class="tg-0lax"></td>
                         </tr>
                         <tr>
                             <td class="tg-0lax"></td>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/assinaturarovinski.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
-                            </th>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logonucleo.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/logonucleo.jpg') ?>" alt="logo" />
                             </th>
                             <td class="tg-0lax"></td>
                         </tr>

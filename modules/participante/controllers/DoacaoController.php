@@ -86,7 +86,7 @@ class DoacaoController extends Controller
 
         $erro = $config = array();
         // Tamanho máximo do arquivo (em bytes) 
-        $config["tamanho"] = 2000000;
+        $config["tamanho"] = 2500000;
 
         // Largura máxima (pixels) 
         $config["largura"] = 640;
@@ -112,23 +112,27 @@ class DoacaoController extends Controller
                 }
 
                 // Para verificar as dimensões da imagem 
-                $tamanhos = getimagesize($arquivo->tempName);
 
-                // Verifica largura 
-                if ($tamanhos[0] > $config["largura"]) {
-                    $erro[] = "Largura da imagem não deve ultrapassar " . $config["largura"] . " pixels. Largura Atual: " . $tamanhos[0];
+                if ($arquivo->tempName) {
+                    $tamanhos = getimagesize($arquivo->tempName);
+                    // Verifica largura 
+                    //if ($tamanhos[0] > $config["largura"]) {
+                    //    $erro[] = "Largura da imagem não deve ultrapassar " . $config["largura"] . " pixels. Largura Atual: " . $tamanhos[0];
+                    // }
+
+                    // Verifica altura 
+                    //if ($tamanhos[1] > $config["altura"]) {
+                    //    $erro[] = "Altura da imagem não deve ultrapassar " . $config["altura"] . " pixels. Altura Atual: " . $tamanhos[1];
+                    //}
                 }
 
-                // Verifica altura 
-                if ($tamanhos[1] > $config["altura"]) {
-                    $erro[] = "Altura da imagem não deve ultrapassar " . $config["altura"] . " pixels. Altura Atual: " . $tamanhos[1];
-                }
+
+
 
                 $str_erro = '';
                 foreach ($erro as $value) {
                     $str_erro .= $value . ' <br>';
                 }
-
 
                 $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
@@ -179,7 +183,7 @@ class DoacaoController extends Controller
 
         $erro = $config = array();
         // Tamanho máximo do arquivo (em bytes) 
-        $config["tamanho"] = 2000000;
+        $config["tamanho"] = 2500000;
 
         // Largura máxima (pixels) 
         $config["largura"] = 640;
@@ -204,24 +208,27 @@ class DoacaoController extends Controller
                 }
 
                 // Para verificar as dimensões da imagem 
-                $tamanhos = getimagesize($arquivo->tempName);
+                if ($arquivo->tempName) {
+                    $tamanhos = getimagesize($arquivo->tempName);
 
-                // Verifica largura 
-                if ($tamanhos[0] > $config["largura"]) {
-                    $erro[] = "Largura da imagem não deve ultrapassar " . $config["largura"] . " pixels. Largura Atual: " . $tamanhos[0];
+                    // Verifica largura 
+                    if ($tamanhos[0] > $config["largura"]) {
+                        $erro[] = "Largura da imagem não deve ultrapassar " . $config["largura"] . " pixels. Largura Atual: " . $tamanhos[0];
+                    }
+
+                    // Verifica altura 
+                    if ($tamanhos[1] > $config["altura"]) {
+                        $erro[] = "Altura da imagem não deve ultrapassar " . $config["altura"] . " pixels. Altura Atual: " . $tamanhos[1];
+                    }
                 }
 
-                // Verifica altura 
-                if ($tamanhos[1] > $config["altura"]) {
-                    $erro[] = "Altura da imagem não deve ultrapassar " . $config["altura"] . " pixels. Altura Atual: " . $tamanhos[1];
-                }
 
                 $str_erro = '';
                 foreach ($erro as $value) {
                     $str_erro .= $value . ' <br>';
                 }
-
                 $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
+
 
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
