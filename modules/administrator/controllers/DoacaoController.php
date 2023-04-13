@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use app\modules\participante\models\Helper;
+use app\modules\participante\models\Users;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 
@@ -30,7 +31,7 @@ class DoacaoController extends Controller
                 'only' => ['delete', 'create', 'index', 'update'],
                 'rules' => [
                     [
-                        'actions' => ['delete', 'create', 'index', 'update'],
+                        'actions' => ['delete', 'create', 'index', 'update', 'import'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -60,8 +61,77 @@ class DoacaoController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    public function actionImport()
+    {
 
 
+        $this->layout = 'adminsemjquery';
+        $model = new Doacao();
+        $user = new Users();
+        $tipoDoacao = '';
+        $trote = '';
+
+        if ($model->load(Yii::$app->request->post())) {
+            $trote = $model->trote_id;
+            $tipoDoacao = $model->tipo_doacao;
+
+
+            $allowedFileType = [
+                'application/vnd.ms-excel',
+                'text/xls',
+                'text/xlsx',
+                'text/csv',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+
+            $file = UploadedFile::getInstance($model, 'file');
+            $comprovante = UploadedFile::getInstance($model, 'comprovante');
+
+
+            if (in_array($file->type, $allowedFileType)) {
+                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $comprovante->type)[1];
+                $path = Yii::$app->basePath . '/web/uploads/' . $name;
+                $comprovante->saveAs($path);
+
+                $file_array = [];
+                if (($h = fopen($file->tempName, "r")) !== FALSE) {
+
+                    while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
+                        array_push($file_array, $data);
+                    }
+
+                    //if ($file_array);
+                }
+
+                unset($file_array[0]);
+                foreach ($file_array as $email) {
+
+
+                    if ($usuario = $user::findByEmail($email[0])) {
+                        $model  = new Doacao();
+                        //user
+                        $model->user_create = $usuario->id;
+                        $model->instituicao = !$usuario->instituicao ? 21 : $usuario->instituicao;
+                        //doacao
+                        $model->trote_id = $trote;
+                        $model->arquivo =  $name;
+                        $model->tipo_doacao = $tipoDoacao;
+                        $model->validado = 1;
+                        $model->usuario_validacao = Yii::$app->user->identity->id;
+                        $model->data_create = date('Y-m-d H:i:s');
+                        $model->ativo = 1;
+                        if (!$model->save()) {
+                            Helper::d($model->getErrors());
+                        }
+                    }
+                }
+            }
+        }
+        return $this->render('import', [
+            'model' => $model
+
+        ]);
+    }
     /**
      * Creates a new Doacao model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -91,7 +161,6 @@ class DoacaoController extends Controller
         $arr_extensao = array("image/jpeg", "image/gif", "image/png");
         if ($model->load(Yii::$app->request->post())) {
             $arquivo = UploadedFile::getInstance($model, 'file');
-            $ultimo_id = Doacao::find()->select('id')->limit('1')->orderBy(['id' => SORT_DESC])->one();
             $model->user_update = Yii::$app->user->identity->id;
             $model->data_create = date('Y-m-d H:i:s');
             $model->data_update = date('Y-m-d H:i:s');
@@ -123,16 +192,7 @@ class DoacaoController extends Controller
                     $str_erro .= $value . ' <br>';
                 }
 
-
-                //                if ($erro) {
-                //                    return $this->render('create', [
-                //                                'model' => $model,
-                //                                'error' => true,
-                //                                'success' => false,
-                //                                'msg' => $str_erro
-                //                    ]);
-                //                }
-                $name = ((!$ultimo_id) ? "1" : $ultimo_id->id + 1) . '_doacao.' . explode(".", $arquivo->name)[1];
+                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
 
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
@@ -236,17 +296,7 @@ class DoacaoController extends Controller
                     $str_erro .= $value . ' <br>';
                 }
 
-
-                //                if ($erro) {
-                //                    return $this->render('create', [
-                //                                'model' => $model,
-                //                                'error' => true,
-                //                                'success' => false,
-                //                                'msg' => $str_erro
-                //                    ]);
-                //                }
-                $name = $model->id . '_doacao.' . explode(".", $arquivo->name)[1];
-
+                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
                 $arquivo->saveAs($path);

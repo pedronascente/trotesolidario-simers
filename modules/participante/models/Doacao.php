@@ -31,6 +31,8 @@ class Doacao extends \yii\db\ActiveRecord
 
     public $file;
     public $user_create_email;
+    public $comprovante;
+
 
     /**
      * {@inheritdoc}
@@ -47,8 +49,8 @@ class Doacao extends \yii\db\ActiveRecord
     {
         return [
             [['arquivo', 'instituicao', 'trote_id', 'tipo_doacao'], 'required'],
-            [['arquivo', 'instituicao', 'tipo_doacao', 'validado_motivo'], 'string'],
-            [['trote_id', 'validado', 'usuario_validacao', 'user_create', 'user_update', 'ativo'], 'integer'],
+            [['arquivo', 'tipo_doacao', 'validado_motivo'], 'string'],
+            [['trote_id', 'validado', 'instituicao',  'usuario_validacao', 'user_create', 'user_update', 'ativo'], 'integer'],
             [['data_create', 'data_update'], 'safe'],
             [['trote_id'], 'exist', 'skipOnError' => true, 'targetClass' => Trote::className(), 'targetAttribute' => ['trote_id' => 'id']],
             [['user_create'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_create' => 'id']],

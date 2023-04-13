@@ -98,7 +98,6 @@ class DoacaoController extends Controller
         $arr_extensao = array("image/jpeg", "image/gif", "image/png");
         if ($model->load(Yii::$app->request->post())) {
             $arquivo = UploadedFile::getInstance($model, 'file');
-            $ultimo_id = Doacao::find()->select('id')->limit('1')->orderBy(['id' => SORT_DESC])->one();
             $model->user_create = Yii::$app->user->identity->id;
             $model->data_create = date('Y-m-d H:i:s');
 
@@ -131,16 +130,7 @@ class DoacaoController extends Controller
                 }
 
 
-                //                if ($erro) {
-                //                    return $this->render('create', [
-                //                                'model' => $model,
-                //                                'error' => true,
-                //                                'success' => false,
-                //                                'msg' => $str_erro
-                //                    ]);
-                //                }
-                $name = ((!$ultimo_id) ? "1" : $ultimo_id->id + 1) . '_doacao.' . explode("/", $arquivo->type)[1];
-
+                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
                 $arquivo->saveAs($path);
@@ -231,16 +221,7 @@ class DoacaoController extends Controller
                     $str_erro .= $value . ' <br>';
                 }
 
-
-                //                if ($erro) {
-                //                    return $this->render('create', [
-                //                                'model' => $model,
-                //                                'error' => true,
-                //                                'success' => false,
-                //                                'msg' => $str_erro
-                //                    ]);
-                //                }
-                $name = $model->id . '_doacao.' . explode("/", $arquivo->type)[1];
+                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
 
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
