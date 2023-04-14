@@ -58,7 +58,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
 
 <body class="body">
     <div style="background-color: #4b3c91;padding: 40px 40px 30px 40px;">
-        <div class="well" style="background-color: #FFF; border-radius:36px;">
+        <div class="well" style="background-repeat: no-repeat; background-size: cover;background-image: url('<?= Url::to('@web/img/FUNDO.png') ?>');background-color: #fefefe; border-radius:36px;">
             <div class="row">
                 <table class="tg" style="table-layout: fixed; width: 100%">
                     <thead>
@@ -91,15 +91,19 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         </tr>
                         <tr>
                             <td class="tg-0lax"></td>
-                            <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/assinaturarovinski.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
-                            </th>
                             <td class="tg-0lax"></td>
+
+                            <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
+                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_rovinski.png') ?>" style="width:auto;height: 80px;" alt="logo" />
+
+                            </th>
+                            <th class="tg-baqh" style="  flex-direction: row; justify-content: start; text-align: left;">
+                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_vinicius.png') ?>" style="width:auto;height: 80px;" alt="logo" />
+                            </th>
                         </tr>
                         <tr>
                             <td class="tg-0lax"></td>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logonucleo.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
                             </th>
                             <td class="tg-0lax"></td>
                         </tr>
