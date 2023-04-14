@@ -40,6 +40,10 @@ use app\modules\participante\models\Trote;
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Doação', ['create'], ['class' => 'btn btn-success']) ?>
                     </h6>
+                    <br>
+                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Importador', ['import'], ['class' => 'btn btn-primary']) ?>
+                    </h6>
+
                 </div>
                 <div class="p-3" style="overflow-x: auto; width: 100%;">
                     <?=

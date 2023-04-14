@@ -3,7 +3,10 @@
 use app\modules\participante\models\Trote;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
+use yii\bootstrap4\Button;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -20,7 +23,7 @@ use yii\helpers\ArrayHelper;
     <div class="container-fluid">
         <!-- Page Heading -->
 
-        <h1>Importar Excel CSV</h1>
+        <h1>Importador CSV de Emails</h1>
 
         <?php $form = ActiveForm::begin(); ?>
 
@@ -50,7 +53,14 @@ use yii\helpers\ArrayHelper;
             ],
         ]);
         ?>
-        <input type="submit" name="enviar">
+        <br>
+
+        <a href="/uploads/import_csv.csv">
+            <button type="button">Download CSV</button>
+        </a>
+        <p>
+            <br>
+            <input type="submit" name="enviar">
 
     </div>
     <?php ActiveForm::end(); ?>
