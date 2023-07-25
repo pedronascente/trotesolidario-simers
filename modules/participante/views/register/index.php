@@ -68,7 +68,7 @@ use app\modules\participante\models\Trote;
                                     <?=
                                     $form
                                         ->field($model, 'estudante')
-                                        ->label('Você é um estudante?')
+                                        ->label('Você é um Acadêmico de Medicina?')
                                         ->dropDownList(
                                             [
                                                 '' => '',
