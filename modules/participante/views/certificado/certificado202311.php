@@ -92,13 +92,12 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <td class="tg-0lax"></td>
                             <td class="tg-0lax"></td>
-
+                            <th class="tg-baqh" style="  flex-direction: row; justify-content: start; text-align: left;">
+                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_vinicius.png') ?>" style="width:auto;height: 80px;" alt="logo" />
+                            </th>
                             <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
                                 <img src="<?= Url::to('@web/img/Assinaturas_NAS_rovinski.png') ?>" style="width:auto;height: 80px;" alt="logo" />
 
-                            </th>
-                            <th class="tg-baqh" style="  flex-direction: row; justify-content: start; text-align: left;">
-                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_vinicius.png') ?>" style="width:auto;height: 80px;" alt="logo" />
                             </th>
                         </tr>
                         <tr>

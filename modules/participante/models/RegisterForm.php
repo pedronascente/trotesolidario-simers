@@ -15,9 +15,12 @@ class RegisterForm extends Model
 {
 
     public $name;
+    public $cpf;
     public $password;
     public $email;
     public $estudante;
+    public $estudanteMedicina;
+    public $estudanteOutros;
     public $instituicao;
     public $outraInstituicao;
     public $telefone;
@@ -39,6 +42,8 @@ class RegisterForm extends Model
             // username and password are both required
             ['name', 'required', 'message' => 'O campo "nome" não pode ficar em branco.'],
             ['name', 'required'],
+            ['cpf', 'required', 'message' => 'O campo "CPF" não pode ficar em branco.'],
+            ['cpf', 'required'],
             ['password', 'required', 'message' => 'O campo "senha" não pode ficar em branco.'],
             ['password', 'required'],
             ['email', 'required', 'message' => 'O campo "email" não pode ficar em branco'],
@@ -62,10 +67,13 @@ class RegisterForm extends Model
             'password' => Yii::t('app', 'Senha'),
             'email' => Yii::t('app', 'Email'),
             'estudante' => Yii::t('app', 'Estudante'),
+            'estudanteMedicina' => 'Medicina ou OUTROS',
+            'estudanteOutros' => 'Qual curso',
             'instituicao' => Yii::t('app', 'Instituição de Ensino'),
             'outraInstituicao' => Yii::t('app', 'Outra Instituição'),
             'telefone' => Yii::t('app', 'Telefone'),
             'trote_id' => Yii::t('app', 'Trote'),
+            'cpf' => 'CPF',
             'previsaoFormatura' => Yii::t('app', 'ATM previsão de formatura ex: (2022/01)'),
             'politicaPrivacidade' => Yii::t('app', 'Estou de acordo com a política de privacidade.'),
             'politicaImagem' => Yii::t('app', 'Eu autorizo o usou de imagem, video e/ou voz.'),

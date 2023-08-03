@@ -96,7 +96,7 @@ class DefaultController extends Controller
     public function actionHome()
     {
         $this->layout = 'adminindex';
-        if (Yii::$app->user->identity->trote_id < count(Trote::find()->orderBy(['id' => SORT_DESC])->all())) {
+        if (Yii::$app->user->identity->trote_id < count(Trote::find()->orderBy(['id' => SORT_DESC])->all()) || !Yii::$app->user->identity->cpf) {
 
             return $this->redirect(['users/perfil']);
         }

@@ -23,11 +23,14 @@ use app\modules\participante\models\Trote;
  * @property string|null $passwordResetToken
  * @property string|null $authKey
  * @property string|null $estudante
+ * @property string|null $estudanteMedicina
+ * @property string|null $estudanteOutros
  * @property string|null $instituicao
  * @property string|null $outraInstituicao
  * @property string|null $telefone
  * @property string|null $previsaoFormatura
  * @property string|null $conheceONas
+ * @property string|null $cpf
  * @property string|null $politicaPrivacidade
  * @property string|null $politicaImagem
  *
@@ -52,10 +55,10 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name', 'cpf'], 'required'],
             [['status', 'trote_id', 'administrator', 'instituicao'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['estudante', 'outraInstituicao', 'telefone', 'previsaoFormatura', 'conheceONas', 'politicaPrivacidade', 'politicaImagem'], 'string'],
+            [['estudante', 'cpf', 'estudanteMedicina', 'estudanteOutros', 'outraInstituicao', 'telefone', 'previsaoFormatura', 'conheceONas', 'politicaPrivacidade', 'politicaImagem'], 'string'],
             [['name'], 'string', 'max' => 250],
             [['passwordHash', 'username', 'passwordResetToken', 'authKey'], 'string', 'max' => 255],
             [['email'], 'string', 'max' => 100],
@@ -82,11 +85,14 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'passwordResetToken' => 'Password Reset Token',
             'authKey' => 'Auth Key',
             'estudante' => 'Estudante',
+            'estudanteMedicina' => 'Medicina ou OUTROS',
+            'estudanteOutros' => 'Qual curso',
             'instituicao' => 'Instituição',
             'outraInstituicao' => 'Outra Instituição',
             'telefone' => 'Telefone',
             'previsaoFormatura' => 'Previsão Formatura',
             'conheceONas' => 'Conhece O Nas',
+            'cpf' => 'CPF',
             'politicaPrivacidade' => 'Estou de acordo com a política de privacidade',
             'politicaImagem' => 'Eu autorizo o usou de imagem, video e/ou voz'
         ];

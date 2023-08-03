@@ -33,6 +33,8 @@ use app\modules\participante\models\Universidade;
                     <?php $form = ActiveForm::begin(); ?>
                     <?= $form->field($model, 'passwordHash', ['labelOptions' => ['style' => 'color:grey']])->label('Senha')->passwordInput() ?>
                     <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
+                    <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
+
                     <?=
                     $form
                         ->field($model, 'trote_id')
@@ -110,6 +112,24 @@ use app\modules\participante\models\Universidade;
 
                     <?= $form->field($model, 'outraInstituicao', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
                     <?=
+                    $form
+                        ->field($model, 'estudanteMedicina')
+                        ->label('Você é um Estudante de Medicina?')
+                        ->dropDownList(
+                            [
+                                '' => '',
+                                'Sim' => 'Sim',
+                                'Não' => 'Não'
+                            ],
+                            [
+                                'prompt' => 'Você é um estudante?',
+                                'onchange' => 'verificaEstudanteMedicina()'
+                            ]
+                        );
+                    ?>
+                    <?= $form->field($model, 'estudanteOutros', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
+
+                    <?=
                     $form->field($model, 'telefone', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
                     ?>
                     <?=
@@ -152,9 +172,18 @@ use app\modules\participante\models\Universidade;
         } else {
             $(".field-users-outrainstituicao").hide();
         }
+
+        if ($("#users-estudantemedicina option:selected").val() == 'Não') {
+            $(".field-users-estudanteoutros").show();
+        } else {
+            $(".field-users-estudanteoutros").hide();
+        }
     });
     $("#users-telefone").inputmask({
         "mask": "(99) 99999-9999"
+    });
+    $("#users-cpf").inputmask({
+        "mask": "999.999.999-99"
     });
     $("#users-previsaoformatura").inputmask({
         "mask": "9999/99"
@@ -176,6 +205,15 @@ use app\modules\participante\models\Universidade;
             $(".div-estudante").hide();
         }
     }
+
+    function verificaEstudanteMedicina() {
+        if ($("#users-estudantemedicina option:selected").val() == 'Não') {
+            $(".field-users-estudanteoutros").show();
+        } else {
+            $(".field-users-estudanteoutros").hide();
+        }
+    }
+
 
     function outraInstituicao() {
         if ($("#users-instituicao option:selected").text() == 'Outra') {

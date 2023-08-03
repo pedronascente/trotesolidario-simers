@@ -53,6 +53,7 @@ use app\modules\participante\models\Trote;
                                     <?php $form = ActiveForm::begin(); ?>
                                     <?= $form->field($model, 'name', ['labelOptions' => ['style' => 'color:grey']])->textInput() ?>
                                     <?= $form->field($model, 'password', ['labelOptions' => ['style' => 'color:grey']])->passwordInput() ?>
+                                    <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
                                     <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
                                     <?=
                                     $form
@@ -68,7 +69,7 @@ use app\modules\participante\models\Trote;
                                     <?=
                                     $form
                                         ->field($model, 'estudante')
-                                        ->label('Você é um Acadêmico de Medicina?')
+                                        ->label('Você é um Estudante?')
                                         ->dropDownList(
                                             [
                                                 '' => '',
@@ -130,6 +131,23 @@ use app\modules\participante\models\Trote;
                                     ?>
 
                                     <?= $form->field($model, 'outraInstituicao', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
+                                    <?=
+                                    $form
+                                        ->field($model, 'estudanteMedicina')
+                                        ->label('Você é um Estudante de Medicina?')
+                                        ->dropDownList(
+                                            [
+                                                '' => '',
+                                                'Sim' => 'Sim',
+                                                'Não' => 'Não'
+                                            ],
+                                            [
+                                                'prompt' => 'Você é um estudante?',
+                                                'onchange' => 'verificaEstudanteMedicina()'
+                                            ]
+                                        );
+                                    ?>
+                                    <?= $form->field($model, 'estudanteOutros', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
 
                                     <?=
                                     $form->field($model, 'telefone', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
@@ -248,9 +266,17 @@ use app\modules\participante\models\Trote;
         } else {
             $(".field-registerform-outrainstituicao").hide();
         }
+        if ($("#registerform-estudantemedicina option:selected").val() == 'Não') {
+            $(".field-registerform-estudanteoutros").show();
+        } else {
+            $(".field-registerform-estudanteoutros").hide();
+        }
     });
     $("#registerform-telefone").inputmask({
         "mask": "(99) 99999-9999"
+    });
+    $("#registerform-cpf").inputmask({
+        "mask": "999.999.999-99"
     });
     $("#registerform-previsaoformatura").inputmask({
         "mask": "9999/99"
@@ -270,6 +296,14 @@ use app\modules\participante\models\Trote;
             $(".div-estudante").show();
         } else {
             $(".div-estudante").hide();
+        }
+    }
+
+    function verificaEstudanteMedicina() {
+        if ($("#registerform-estudantemedicina option:selected").val() == 'Não') {
+            $(".field-registerform-estudanteoutros").show();
+        } else {
+            $(".field-registerform-estudanteoutros").hide();
         }
     }
 
