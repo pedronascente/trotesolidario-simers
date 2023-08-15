@@ -142,6 +142,9 @@ class RegisterController extends Controller
                 $modelUsuario->telefone = $post["telefone"];
                 $modelUsuario->previsaoFormatura = $post["previsaoFormatura"];
                 $modelUsuario->conheceONas = $post["conheceONas"];
+                $modelUsuario->cpf = $post["cpf"];
+                $modelUsuario->estudanteMedicina = $post["estudanteMedicina"];
+                $modelUsuario->estudanteOutros = $post["estudanteOutros"];
                 if (!$modelUsuario->save()) {
                     $msg = 'Houve um erro no cadastro informe o NAS';
                     return $this->render('index', [
@@ -164,6 +167,7 @@ class RegisterController extends Controller
                 $modelUsuario->instituicao = isset($post["instituicao"]) ? $post["instituicao"] : null;
                 $modelUsuario->politicaPrivacidade = $post["politicaPrivacidade"];
                 $modelUsuario->politicaImagem = $post["politicaImagem"];
+                $modelUsuario->cpf = $post["cpf"];
                 if (!$modelUsuario->save()) {
                     $msg = 'Houve um erro no cadastro informe o NAS';
                     return $this->render('index', [

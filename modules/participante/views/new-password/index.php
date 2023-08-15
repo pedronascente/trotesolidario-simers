@@ -40,7 +40,10 @@ use kartik\alert\Alert;
                                     </div>
                                     <?php $form = ActiveForm::begin(); ?>
                                     <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
+                                    <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
+
                                     <?= $form->field($model, 'passwordHash', ['labelOptions' => ['style' => 'color:grey']])->label('Senha')->passwordInput(); ?>
+
 
 
                                 </div>
@@ -69,3 +72,13 @@ use kartik\alert\Alert;
     </div>
 
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#registerform-cpf").inputmask({
+            "mask": "999.999.999-99"
+        });
+    });
+</script>
