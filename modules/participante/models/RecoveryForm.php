@@ -2,6 +2,7 @@
 
 namespace app\modules\participante\models;
 
+use Mpdf\Container\NotFoundException;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -16,6 +17,7 @@ class RecoveryForm extends Model
 {
 
     public $email;
+    public $cpf;
 
     /**
      * {@inheritdoc}
@@ -24,7 +26,7 @@ class RecoveryForm extends Model
     {
         return [
             ['email', 'trim'],
-            ['email', 'required'],
+            [['email', 'cpf'], 'required'],
             ['email', 'email'],
         ];
     }
@@ -36,6 +38,7 @@ class RecoveryForm extends Model
     {
         return [
             'email' => Yii::t('app', 'Email'),
+            'cpf' => Yii::t('app', 'CPF'),
         ];
     }
 
@@ -52,6 +55,13 @@ class RecoveryForm extends Model
         }
 
         if (!Users::isPasswordResetTokenValid($user->passwordResetToken)) {
+            if ($user->cpf == "") {
+                $user->cpf = $this->cpf;
+            }
+            if ($user->cpf != $this->cpf) {
+                throw new NotFoundException('Cpf inválido!');
+            }
+
             $user->generatePasswordResetToken();
 
             if (!$user->save()) {

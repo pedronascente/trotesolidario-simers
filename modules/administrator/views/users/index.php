@@ -36,6 +36,7 @@ $gridColumns = [
         }
     ],
     'telefone',
+    'cpf',
     'previsaoFormatura',
     'conheceONas',
     [
