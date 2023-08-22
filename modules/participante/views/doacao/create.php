@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\alert\Alert;
+Yii::$app->language = "pt-BR";
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\participante\models\Users */

@@ -29,7 +29,7 @@ use app\modules\participante\models\Universidade;
                     //}
                     ?>
                     <?=
-                    $form->field($model, 'file')->label('Anexo doação')->widget(FileInput::classname(), [
+                    $form->field($model, 'file')->label('Anexo doação <br /><span class="badge badge-success">Formatos: JPEG, JPG, GIF e PNG</span>')->widget(FileInput::classname(), [
                         'options' => [
                             'accept' => 'image/*'
                         ],
