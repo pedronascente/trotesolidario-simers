@@ -140,9 +140,6 @@ class DoacaoController extends Controller
     public function actionCreate()
     {
 
-        if (strtotime(date('d-m-Y')) >= strtotime('31-10-' . date('Y'))) {
-            return $this->redirect(['index']);
-        }
         $model = new Doacao();
         $model->ativo = 1;
         $this->layout = 'adminsemjquery';
@@ -246,9 +243,6 @@ class DoacaoController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (strtotime(date('d-m-Y')) >= strtotime('31-10-' . date('Y'))) {
-            return $this->redirect(['index']);
-        }
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
 

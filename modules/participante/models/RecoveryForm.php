@@ -2,7 +2,6 @@
 
 namespace app\modules\participante\models;
 
-use Mpdf\Container\NotFoundException;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -57,9 +56,6 @@ class RecoveryForm extends Model
         if (!Users::isPasswordResetTokenValid($user->passwordResetToken)) {
             if ($user->cpf == "") {
                 $user->cpf = $this->cpf;
-            }
-            if ($user->cpf != $this->cpf) {
-                throw new NotFoundException('Cpf inválido!');
             }
 
             $user->generatePasswordResetToken();
