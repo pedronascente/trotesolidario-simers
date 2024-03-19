@@ -126,7 +126,7 @@ class CertificadoController extends Controller
         } else if ($_GET["troteid"] == 4 || $_GET["troteid"] == 5) {
             $htmlContent = $this->renderPartial('certificado202311', ['model' => $certificado]);
         } else if ($_GET["troteid"] == 6 || $_GET["troteid"] == 7) {
-            $htmlContent = $this->renderPartial('certificado202411', ['model' => $certificado]);
+            $htmlContent = $this->renderPartial('certificado202221', ['model' => $certificado]);
         }
 
 
@@ -141,7 +141,7 @@ class CertificadoController extends Controller
         } else if ($_GET["troteid"] == 4 || $_GET["troteid"] == 5) {
             $htmlContent = $this->renderPartial('certificado202312', ['model' => $certificado]);
         } else if ($_GET["troteid"] == 6 || $_GET["troteid"] == 7) {
-            $htmlContent = $this->renderPartial('certificado202412', ['model' => $certificado]);
+            $htmlContent = $this->renderPartial('certificado202222', ['model' => $certificado]);
         } else {
             $htmlContent = $this->renderPartial('certificado202212', ['model' => $certificado]);
         }
