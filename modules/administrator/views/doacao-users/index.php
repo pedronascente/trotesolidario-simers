@@ -88,7 +88,7 @@ $gridColumns = [
         'filterInputOptions' => ['placeholder' => '- Email -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
         'value' => function ($model) {
-            $user = Users::find()->where(['email' => $model->user_create_email])->one();
+            $user = Users::find()->where(['id' => $model->user_create])->one();
             return ($user) ? $user->email : "";
         }
     ],

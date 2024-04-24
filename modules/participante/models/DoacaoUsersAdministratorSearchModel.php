@@ -12,7 +12,6 @@ use app\modules\participante\models\Helper;
  */
 class DoacaoUsersAdministratorSearchModel extends Doacao
 {
-    public $user_create_email;
     /**
      * {@inheritdoc}
      */
@@ -50,6 +49,7 @@ class DoacaoUsersAdministratorSearchModel extends Doacao
             'query' => $query,
         ]);
 
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -61,6 +61,7 @@ class DoacaoUsersAdministratorSearchModel extends Doacao
 
         //Helper::d($params);
         if ($this->user_create_email) {
+
             $query->andWhere(["user_create" => $this->user_create_email]);
         }
         if ($this->user_create) {

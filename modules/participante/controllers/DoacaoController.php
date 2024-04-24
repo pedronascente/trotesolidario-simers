@@ -93,6 +93,7 @@ class DoacaoController extends Controller
 
         //Extensão permitida
         $arr_extensao = array("image/jpeg", "image/gif", "image/png");
+
         if ($model->load(Yii::$app->request->post())) {
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->user_create = Yii::$app->user->identity->id;
