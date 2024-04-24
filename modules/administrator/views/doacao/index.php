@@ -133,6 +133,21 @@ use app\modules\participante\models\Trote;
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                             ],
                             [
+                                'attribute' => 'user_create_email',
+                                'label' => 'Usuário Email',
+                                'format' => 'raw',
+                                'hAlign' => 'center',
+                                'vAlign' => 'center',
+                                'filterType' => GridView::FILTER_SELECT2,
+                                'filter' => ArrayHelper::map(Users::find()->where(['status' => '1'])->all(), 'id', 'email'),
+                                'filterInputOptions' => ['placeholder' => '- Email -'],
+                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
+                                'value' => function ($model) {
+                                    $user = Users::find()->where(['email' => $model->user_create_email])->one();
+                                    return ($user) ? $user->email : "";
+                                }
+                            ],
+                            [
                                 'attribute' => 'trote_id',
                                 'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => ArrayHelper::map(Trote::find()->all(), 'id', 'nome'),

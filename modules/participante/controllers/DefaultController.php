@@ -104,6 +104,7 @@ class DefaultController extends Controller
         $trote_atual = Trote::find()->where(['ativo' => 1])->orderBy(['id' => SORT_DESC])->one();
 
 
+
         $banner = Banner::find()->where(['posicao' => 2])->one();
         $informativos = Informativo::find()->all();
         $regulamentos = Regulamento::find()->all();
@@ -136,27 +137,30 @@ class DefaultController extends Controller
             '#E6E6FA',
             '#F5FFFA'
         ];
-        foreach ($universidades as $universidade) {
-            $dados_universidade = Users::find()
-                ->innerJoin('_trote', '_users.trote_id = _trote.id')
-                ->where([
-                    '_users.trote_id' => $trote_atual->id,
-                    '_users.status' => 1,
-                    '_users.estudante' => 'Sim',
-                    '_users.instituicao' => $universidade->id
-                ])
-                ->all();
+        if ($trote_atual) {
+            foreach ($universidades as $universidade) {
+                $dados_universidade = Users::find()
+                    ->innerJoin('_trote', '_users.trote_id = _trote.id')
+                    ->where([
+                        '_users.trote_id' => $trote_atual->id,
+                        '_users.status' => 1,
+                        '_users.estudante' => 'Sim',
+                        '_users.instituicao' => $universidade->id
+                    ])
+                    ->all();
 
-            array_push($dados, [
-                "name" => $universidade->nome,
-                "points" => count($dados_universidade),
-                "color" => $array_cores[array_rand($array_cores)],
-                "bullet" => "/img/{$universidade->icon}"
-            ]);
+                array_push($dados, [
+                    "name" => $universidade->nome,
+                    "points" => count($dados_universidade),
+                    "color" => $array_cores[array_rand($array_cores)],
+                    "bullet" => "/img/{$universidade->icon}"
+                ]);
+            }
         }
 
 
         return $this->render('home', [
+            'trote_atual' => $trote_atual,
             'universidades_botoes' => $universidades,
             'dados' => json_encode($dados),
             'banner' => $banner,

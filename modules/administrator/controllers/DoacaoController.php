@@ -4,7 +4,7 @@ namespace app\modules\administrator\controllers;
 
 use Yii;
 use app\modules\participante\models\Doacao;
-use app\modules\participante\models\DoacaoAdministratorSearchModel;
+use app\modules\participante\models\DoacaoUsersAdministratorSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -53,7 +53,7 @@ class DoacaoController extends Controller
     public function actionIndex()
     {
         $this->layout = 'adminsemjquery';
-        $searchModel = new DoacaoAdministratorSearchModel();
+        $searchModel = new DoacaoUsersAdministratorSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

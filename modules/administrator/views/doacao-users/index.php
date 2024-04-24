@@ -9,6 +9,7 @@ use kartik\export\ExportMenu;
 use yii\helpers\ArrayHelper;
 use app\modules\participante\models\Universidade;
 
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\participante\models\UsersSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -77,7 +78,7 @@ $gridColumns = [
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
     ],
     [
-        'attribute' => 'user_create',
+        'attribute' => 'user_create_email',
         'label' => 'Usuário Email',
         'format' => 'raw',
         'hAlign' => 'center',
@@ -87,8 +88,8 @@ $gridColumns = [
         'filterInputOptions' => ['placeholder' => '- Email -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
         'value' => function ($model) {
-            $user = Users::find()->where(['id' => $model->user_create])->one();
-            return $user->email;
+            $user = Users::find()->where(['email' => $model->user_create_email])->one();
+            return ($user) ? $user->email : "";
         }
     ],
     [
