@@ -104,7 +104,8 @@ use app\modules\participante\models\Trote;
                                 'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => [
                                     1 => 'Sim',
-                                    0 => 'Não'
+                                    0 => 'Não',
+                                    2 => 'Ainda não validado'
                                 ],
                                 'filterInputOptions' => ['placeholder' => '- Validados -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],

@@ -84,8 +84,6 @@ use app\modules\participante\models\Universidade;
                         'options' => ['placeholder' => '- Selecione uma opção -'],
                         'data' => [
                             'Alimentos' => 'Alimentos',
-                            'Comissão' => 'Comissão',
-                            'Participação Presencial' => 'Participação Presencial',
                             'Sangue' => 'Sangue',
                             'Medula Óssea' => 'Medula Óssea',
 

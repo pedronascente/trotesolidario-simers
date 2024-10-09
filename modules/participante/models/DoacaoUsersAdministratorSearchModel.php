@@ -19,7 +19,7 @@ class DoacaoUsersAdministratorSearchModel extends Doacao
     {
         return [
             [['id', 'usuario_validacao',], 'integer'],
-            [['arquivo', 'instituicao', 'validado', 'trote', 'tipo_doacao', 'data_create', 'data_update', 'ativo', 'user_create', 'user_update', 'user_create_email'], 'safe'],
+            [['arquivo', 'instituicao', 'validado', 'trote_id', 'trote', 'tipo_doacao', 'data_create', 'data_update', 'ativo', 'user_create', 'user_update', 'user_create_email'], 'safe'],
         ];
     }
 
@@ -73,8 +73,16 @@ class DoacaoUsersAdministratorSearchModel extends Doacao
         if ($this->instituicao) {
             $query->andWhere(["instituicao" => $this->instituicao]);
         }
-        if ($this->trote) {
-            $query->andWhere(["trote" => $this->trote]);
+        if ($this->trote_id) {
+            $query->andWhere(["trote_id" => $this->trote_id]);
+        }
+
+
+        if ($this->validado == 1 || $this->validado == 0) {
+            $query->andWhere("validado = '$this->validado'");
+        }
+        if ($this->validado == 2) {
+            $query->andWhere("validado IS NULL");
         }
 
         if ($this->ativo === '1') {

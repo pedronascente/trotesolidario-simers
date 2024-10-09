@@ -349,9 +349,9 @@ if (Yii::$app->user->identity->administrator == 0) {
                 <div class="container">
                     <div class="row">
                         <div class="col-md-1"></div>
-                        <div class="col-md-2">
+                       <!-- <div class="col-md-2">
                             <img src="/img/UnimedPoa.png" style="width: 100%;  padding: 10px;">
-                        </div>
+                        </div>-->
                         <div class="col-md-2">
                             <img src="/img/$408d94efdsk.png" style="width: 100%;  padding: 10px;">
                         </div>

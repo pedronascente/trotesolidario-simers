@@ -3,10 +3,13 @@
 use app\modules\participante\models\Helper;
 use yii\helpers\Url;
 
-$tipo = '';
+$tipo = ''; 
 if ($model['tipo_doacao'] == 'Comissão') {
     $model['frase_certificado'] .= ' 30 horas.';
     $tipo = ' na qualidade de MEMBRO DA COMISSÃO ORGANIZADORA';
+}else if ($model['tipo_doacao'] == 'Comissão organizadora') {
+        $model['frase_certificado'] .= ' 30 horas.';
+        $tipo = ' na qualidade de MEMBRO DA COMISSÃO ORGANIZADORA';
 } else if ($model['tipo_doacao'] == 'Sangue') {
     $model['frase_certificado'] .= ' 6 horas.';
     $tipo = ' na qualidade de PARTICIPANTE';

@@ -88,8 +88,8 @@ use app\modules\participante\models\Users;
                         'options' => ['placeholder' => '- Selecione uma opção -'],
                         'data' => [
                             'Alimentos' => 'Alimentos',
-                            'Comissão' => 'Comissão',
-                            'Participação Presencial' => 'Participação Presencial',
+                            'Participação Presencial' =>'Participação Presencial',
+                            'Comissão organizadora'=> 'Comissão organizadora',
                             'Sangue' => 'Sangue',
                             'Medula Óssea' => 'Medula Óssea',
                         ],

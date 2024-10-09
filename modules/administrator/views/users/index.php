@@ -27,7 +27,7 @@ $gridColumns = [
     [
         'attribute' => 'instituicao',
         'filterType' => GridView::FILTER_SELECT2,
-        'filter' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+        'filter' => ArrayHelper::map(Universidade::find()->all(), 'id', 'nome'),
         'filterInputOptions' => ['placeholder' => '- Instituição -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
         'value' => function ($model) {
