@@ -29,46 +29,48 @@ if ($model['tipo_doacao'] == 'Comissão') {
 
 ?>
 <style type="text/css">
-    .tg {}
+.tg {}
 
-    .tg td {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        overflow: hidden;
-        padding: 10px 5px;
-        word-break: normal;
-    }
+.tg td {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+}
 
-    .tg th {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        font-weight: normal;
-        overflow: hidden;
-        padding: 10px 5px;
-        word-break: normal;
-    }
+.tg th {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+}
 
-    .tg .tg-baqh {
-        text-align: center;
-        vertical-align: top
-    }
+.tg .tg-baqh {
+    text-align: center;
+    vertical-align: top
+}
 
-    .tg .tg-0lax {
-        text-align: left;
-        vertical-align: top
-    }
+.tg .tg-0lax {
+    text-align: left;
+    vertical-align: top
+}
 </style>
 
 <body class="body">
     <div style="background-color: #4b3c91;padding: 40px 40px 30px 40px;">
-        <div class="well" style="background-repeat: no-repeat; background-size: cover;background-image: url('<?= Url::to('@web/img/FUNDO.png') ?>');background-color: #fefefe; border-radius:36px;">
+        <div class="well"
+            style="background-repeat: no-repeat; background-size: cover;background-image: url('<?= Url::to('@web/img/FUNDO.png') ?>');background-color: #fefefe; border-radius:36px;">
             <div class="row">
                 <table class="tg" style="table-layout: fixed; width: 100%">
                     <thead>
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logo15trote.png') ?>" style="width:auto;height: 130px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/LOGO20242.png') ?>" style="width:auto;height: 130px;"
+                                    alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
                         </tr>
@@ -84,7 +86,9 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <td class="tg-0lax"></td>
                             <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                                <p style="color:#000;font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>, participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
+                                <p style="color:#000;font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>,
+                                    participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, promovido pelo
+                                    Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
                             </td>
                             <td class="tg-0lax"></td>
                         </tr>
@@ -95,11 +99,14 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <td class="tg-0lax"></td>
                             <td class="tg-0lax"></td>
-                            <th class="tg-baqh" style="  flex-direction: row; justify-content: start; text-align: left;">
-                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_vinicius.png') ?>" style="width:auto;height: 80px;" alt="logo" />
+                            <th class="tg-baqh"
+                                style="  flex-direction: row; justify-content: start; text-align: left;">
+                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_vinicius.png') ?>"
+                                    style="width:auto;height: 80px;" alt="logo" />
                             </th>
                             <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
-                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_rovinski.png') ?>" style="width:auto;height: 80px;" alt="logo" />
+                                <img src="<?= Url::to('@web/img/Assinaturas_NAS_rovinski.png') ?>"
+                                    style="width:auto;height: 80px;" alt="logo" />
 
                             </th>
                         </tr>

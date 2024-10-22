@@ -97,11 +97,7 @@ $gridColumns = [
             <!-- Illustrations -->
             <div class="card shadow mb-4">
                 <div class="p-3">
-                    <p>
-                        <?=
-                        Html::a('Doações Usuários', 'doacao-users', ['class' => 'btn btn-md btn-success'])
-                        ?>
-                    </p>
+
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,

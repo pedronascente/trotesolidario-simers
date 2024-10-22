@@ -15,22 +15,22 @@ use app\modules\participante\models\Universidade;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
 <style>
-    .image:hover {
-        margin: 0;
-        padding: 0;
-        width: 400% !important;
-        height: 400% !important;
-        z-index: 999 !important;
-        position: relative;
-        display: block;
-        /*        position: absolute;
+.image:hover {
+    margin: 0;
+    padding: 0;
+    width: 400% !important;
+    height: 400% !important;
+    z-index: 999 !important;
+    position: relative;
+    display: block;
+    /*        position: absolute;
                 display: flex;
                 left: 20%;
                 top: 10%;
                 width: auto;
                 height: 500px !important;*/
 
-    }
+}
 </style>
 <?php
 $gridColumns = [
@@ -151,7 +151,7 @@ $gridColumns = [
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"> Usuários</h1>
+        <h1 class="h3 mb-0 text-gray-800"> Doações Usuários</h1>
     </div>
     <!-- Color System -->
     <div class="row">
@@ -204,45 +204,46 @@ $gridColumns = [
     </div>
 </div>
 <script>
-    function validaDoacao(id) {
+function validaDoacao(id) {
 
-        $.ajax({
-            url: '/administrator/doacao/check',
-            data: {
-                "model_id": id
-            },
-            type: "POST",
-            dataType: 'json',
-            success: function(result) {
-                $('#doacao-' + id).remove();
-                $('#doacao-div-' + id).append(
-                    '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] + '" class="' + result[0] + '"></i></a>'
-                );
+    $.ajax({
+        url: '/administrator/doacao/check',
+        data: {
+            "model_id": id
+        },
+        type: "POST",
+        dataType: 'json',
+        success: function(result) {
+            $('#doacao-' + id).remove();
+            $('#doacao-div-' + id).append(
+                '<a href="#" id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' +
+                result[1] + '" class="' + result[0] + '"></i></a>'
+            );
 
 
-            },
-            error: function() {
-                alert('Erro: avisar a ti');
-            }
-        });
-    }
+        },
+        error: function() {
+            alert('Erro: avisar a ti');
+        }
+    });
+}
 
-    function salvaMotivo(id, texto) {
+function salvaMotivo(id, texto) {
 
-        $.ajax({
-            url: '/administrator/doacao/atualizamotivo',
-            data: {
-                "model_id": id,
-                "texto": texto
-            },
-            type: "POST",
-            dataType: 'json',
-            success: function(result) {
-                console.log(result);
-            },
-            error: function() {
-                alert('Erro: avisar a ti');
-            }
-        });
-    }
+    $.ajax({
+        url: '/administrator/doacao/atualizamotivo',
+        data: {
+            "model_id": id,
+            "texto": texto
+        },
+        type: "POST",
+        dataType: 'json',
+        success: function(result) {
+            console.log(result);
+        },
+        error: function() {
+            alert('Erro: avisar a ti');
+        }
+    });
+}
 </script>

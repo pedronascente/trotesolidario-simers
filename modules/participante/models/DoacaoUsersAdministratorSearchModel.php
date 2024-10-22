@@ -78,10 +78,12 @@ class DoacaoUsersAdministratorSearchModel extends Doacao
         }
 
 
-        if ($this->validado == 1 || $this->validado == 0) {
-            $query->andWhere("validado = '$this->validado'");
-        }
-        if ($this->validado == 2) {
+        if ($this->validado === 1) {
+            $query->andWhere("validado = 1");
+        } elseif ($this->validado === '0') {
+            $query->andWhere("validado = 0");
+        } elseif ($this->validado == 2 || $this->validado == null) {
+
             $query->andWhere("validado IS NULL");
         }
 
