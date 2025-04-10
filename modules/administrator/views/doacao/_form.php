@@ -91,7 +91,7 @@ use app\modules\participante\models\Users;
                             'Participação Presencial' =>'Participação Presencial',
                             'Comissão organizadora'=> 'Comissão organizadora',
                             'Sangue' => 'Sangue',
-                            'Medula Óssea' => 'Medula Óssea',
+                          
                         ],
                         'pluginOptions' => [
                             'allowClear' => true

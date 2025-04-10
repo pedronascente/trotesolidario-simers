@@ -85,8 +85,6 @@ use app\modules\participante\models\Universidade;
                         'data' => [
                             'Alimentos' => 'Alimentos',
                             'Sangue' => 'Sangue',
-                            'Medula Óssea' => 'Medula Óssea',
-
                         ],
                         'pluginOptions' => [
                             'allowClear' => true

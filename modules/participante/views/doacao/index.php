@@ -78,7 +78,7 @@ use app\modules\participante\models\Trote;
                                     'Comissão' => 'Comissão',
                                     'Participação Presencial' => 'Participação Presencial',
                                     'Sangue' => 'Sangue',
-                                    'Medula Óssea' => 'Medula Óssea',
+                                   
                                 ],
                                 'filterInputOptions' => ['placeholder' => '- Tipo de Doação -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
