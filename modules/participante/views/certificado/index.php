@@ -22,7 +22,7 @@ use app\modules\participante\models\Helper;
                 <div class="p-3">
                     <ul>
                         <?php foreach ($certificados as $certificado) : ?>
-                            <li><a href="certificado/imprime?name=<?= $certificado["name"] ?>&troteid=<?= $certificado["id"] ?>&trote=<?= $certificado["trote"] ?>&tipo_doacao=<?= $certificado["tipo_doacao"] ?>" target="_blank"><?= $certificado["trote"] ?></a></li>
+                            <li><a href="certificado/imprime?name=<?= $certificado["name"] ?>&troteid=<?= $certificado["id"] ?>&trote=<?= $certificado["trote"] ?>&tipo_doacao=<?= $certificado["tipo_doacao"] ?>" target="_blank"><?= $certificado["trote"] . " - " .$certificado["tipo_doacao"] ?></a></li>
                         <?php endforeach; ?>
                     </ul>
                 </div>

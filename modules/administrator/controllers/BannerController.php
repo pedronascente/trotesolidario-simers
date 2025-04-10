@@ -87,18 +87,39 @@ class BannerController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+
         $this->layout = 'adminsemjquery';
         if ($model->load(Yii::$app->request->post())) {
             $arquivo_dsk = UploadedFile::getInstance($model, 'file_dsk');
             $arquivo_mob = UploadedFile::getInstance($model, 'file_mob');
 
 
-
             if ($arquivo_dsk) {
+                if (!empty($model->img_dsk)) {
+                    $oldPath = Yii::$app->basePath . '/web/img/' . $model->img_dsk;
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+
+                $newNameDsk = md5(uniqid(rand(), true)) . '.' . $arquivo_dsk->getExtension();
+                $model->img_dsk = $newNameDsk;
+
                 $path = Yii::$app->basePath . '/web/img/' . $model->img_dsk;
                 $arquivo_dsk->saveAs($path);
             }
             if ($arquivo_mob) {
+                if (!empty($model->img_mob)) {
+                    $oldPath = Yii::$app->basePath . '/web/img/' . $model->img_mob;
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+
+                $newNameMob = md5(uniqid(rand(), true)) . '.' . $arquivo_mob->getExtension();
+                $model->img_mob = $newNameMob;
+
                 $path = Yii::$app->basePath . '/web/img/' . $model->img_mob;
                 $arquivo_mob->saveAs($path);
             }
