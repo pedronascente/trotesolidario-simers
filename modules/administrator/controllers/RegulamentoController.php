@@ -91,6 +91,16 @@ class RegulamentoController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $arquivo = UploadedFile::getInstance($model, 'file');
             if ($arquivo) {
+                if (!empty($model->arquivo)) {
+                    $oldPath = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+    
+                $newName = md5(uniqid(rand(), true)) . '.' . $arquivo->getExtension();
+                $model->arquivo = $newName; 
+    
                 $path = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
                 $arquivo->saveAs($path);
             }
