@@ -125,14 +125,20 @@ class DoacaoController extends Controller
                 }
 
 
-
+                $mimeTypeMap = [
+                    'image/jpeg' => 'jpg',
+                    'image/jpg' => 'jpg',
+                    'image/png' => 'png',
+                    'image/gif' => 'gif',
+                ];
 
                 $str_erro = '';
                 foreach ($erro as $value) {
                     $str_erro .= $value . ' <br>';
                 }
 
-                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
+                $extension = isset($mimeTypeMap[$arquivo->type]) ? $mimeTypeMap[$arquivo->type] : 'jpg';
+                $name = strtotime(date('Y-m-d H:i:s')) . "." . $extension;
                 $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
                 $arquivo->saveAs($path);

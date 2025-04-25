@@ -50,7 +50,7 @@ use yii\widgets\ActiveForm;
                 <div class="col-md-8 mx-auto" style="display: flex; flex-direction: column; align-items: center;">
                     <div><?= 'Registre-se para participar ' . Html::a('aqui', ['/participante/register']) ?></div>
                     <div><?= 'Esqueceu sua senha? Clique ' . Html::a('aqui', ['/participante/recovery-password']) ?></div>
-                    <div><?= 'Duvidas clique ' . Html::a('aqui', 'http://nucleoacademico.com.br/contato', ['target' => '_blank']) ?></div>
+                    <div><?= 'Dúvidas clique ' . Html::a('aqui', 'https://nucleoacademico.com.br/#signup', ['target' => '_blank']) ?></div>
                 </div>
             </div>
             <div class="row">

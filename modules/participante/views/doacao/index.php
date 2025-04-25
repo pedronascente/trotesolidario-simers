@@ -6,6 +6,19 @@ use yii\helpers\ArrayHelper;
 use app\modules\participante\models\Universidade;
 use app\modules\participante\models\Trote;
 ?>
+<style>
+.responsive-grid {
+    width: 100%;
+    max-width: 1800px;
+}
+
+@media (max-width: 768px) {
+    .responsive-grid {
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+</style>
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -25,11 +38,11 @@ use app\modules\participante\models\Trote;
                 <div class="p-3" style="overflow-x: auto; width: 100%;">
                     <?=
                     GridView::widget([
-                        'options' => ['style' => ['width' => '1800px']],
+                        'options' => ['class' => 'responsive-grid'],
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
                         'columns' => [
-                            [
+                            [   
                                 'attribute' => 'arquivo',
                                 'format' => 'raw',
                                 'hAlign' => 'center',
