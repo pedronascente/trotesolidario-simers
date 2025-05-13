@@ -99,6 +99,60 @@ class CertificadoController extends Controller
         if (!$certificado) {
             return false;
         }
+        if (isset($_GET["troteid"]) && $_GET["troteid"] == 8) {
+            $allDonations = $connection
+                ->createCommand(
+                    'SELECT 
+                                d.tipo_doacao
+                                FROM _doacao AS d 
+                                INNER JOIN _trote t on d.trote_id = t.id
+                                WHERE d.user_create = "' . Yii::$app->user->identity->id . '"
+                                AND d.validado = "1"
+                                AND t.id = "' . $_GET["troteid"] . '"
+                                AND d.ativo = "1"
+                                '
+                )
+                ->queryAll();
+
+            $totalHours = 0;
+            $donationTypes = [];
+
+            foreach ($allDonations as $donation) {
+                if (!in_array($donation['tipo_doacao'], $donationTypes)) {
+                    $donationTypes[] = $donation['tipo_doacao'];
+                }
+
+                switch ($donation['tipo_doacao']) {
+                    case 'Comissão':
+                    case 'Comissão organizadora':
+                        $totalHours = 40;
+                        break;
+                    case 'Sangue':
+                    case 'Medula Óssea':
+                        if ($totalHours < 40) {
+                            $totalHours += 8;
+                        }
+                        break;
+                    case 'Alimentos':
+                        if ($totalHours < 40) {
+                            $totalHours += 4;
+                        }
+                        break;
+                    case 'Participação Presencial':
+                        if ($totalHours < 40) {
+                            $totalHours += 6;
+                        }
+                        break;
+                }
+
+                if ($totalHours > 40) {
+                    $totalHours = 40;
+                }
+            }
+
+            $certificado['total_horas'] = $totalHours;
+            $certificado['all_donations'] = $donationTypes;
+        }
 
 
         $pdf = new \Mpdf\Mpdf([
@@ -106,6 +160,10 @@ class CertificadoController extends Controller
             'mode' => 'utf-8',
             'format' => 'A4',
             'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
         ]);
         $pdf->showImageErrors = true;
         $pdfExtra = new Pdf();
@@ -129,6 +187,8 @@ class CertificadoController extends Controller
             $htmlContent = $this->renderPartial('certificado202411', ['model' => $certificado]);
         } else if ($_GET["troteid"] == 7) {
             $htmlContent = $this->renderPartial('certificado202421', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 8) {
+            $htmlContent = $this->renderPartial('certificado202521', ['model' => $certificado]);
         }
 
 
@@ -146,6 +206,8 @@ class CertificadoController extends Controller
             $htmlContent = $this->renderPartial('certificado202412', ['model' => $certificado]);
         } else if ($_GET["troteid"] == 7) {
             $htmlContent = $this->renderPartial('certificado202422', ['model' => $certificado]);
+        } else if ($_GET["troteid"] == 8) {
+            $htmlContent = $this->renderPartial('certificado202511', ['model' => $certificado]);
         } else {
             $htmlContent = $this->renderPartial('certificado202212', ['model' => $certificado]);
         }
