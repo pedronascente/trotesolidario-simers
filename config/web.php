@@ -49,8 +49,8 @@ $config = [
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.gmail.com',
-                'username' => 'smtp.simers@simers.org.br',
-                'password' => 'Simers2017',
+                'username' => 'naoresponda@simers.org.br',
+                'password' => 'tvvmqzemmaiajgtg',
                 'port' => '587',
                 'encryption' => 'tls',
             ],
