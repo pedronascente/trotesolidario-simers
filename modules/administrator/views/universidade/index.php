@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'hover' => true,
                         //'showPageSummary' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-book"></i>  Universidades',
+                            'heading' => '<i class="fa fa-university" aria-hidden="true"></i>  Universidades',
                             'type' => 'success',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],

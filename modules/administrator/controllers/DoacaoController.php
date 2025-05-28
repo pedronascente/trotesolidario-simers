@@ -41,6 +41,7 @@ class DoacaoController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     //                    'logout' => ['post'],
+                    'check' => ['POST'],
                 ],
             ],
         ];
@@ -108,13 +109,13 @@ class DoacaoController extends Controller
 
 
                     if ($usuario = $user::findByEmail($email[0])) {
-                        $model  = new Doacao();
+                        $model = new Doacao();
                         //user
                         $model->user_create = $usuario->id;
                         $model->instituicao = !$usuario->instituicao ? 21 : $usuario->instituicao;
                         //doacao
                         $model->trote_id = $trote;
-                        $model->arquivo =  $name;
+                        $model->arquivo = $name;
                         $model->tipo_doacao = $tipoDoacao;
                         $model->validado = 1;
                         $model->usuario_validacao = Yii::$app->user->identity->id;
@@ -139,30 +140,37 @@ class DoacaoController extends Controller
      */
     public function actionCreate()
     {
-
         $model = new Doacao();
         $model->ativo = 1;
         $this->layout = 'adminsemjquery';
 
         $erro = $config = array();
-        // Tamanho máximo do arquivo (em bytes) 
-        $config["tamanho"] = 2000000;
-
-        // Largura máxima (pixels) 
+        $config["tamanho"] = 3000000;
         $config["largura"] = 640;
-
-        // Altura máxima (pixels) 
         $config["altura"] = 640;
 
-        //Extensão permitida
         $arr_extensao = array("image/jpeg", "image/gif", "image/png");
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) && !empty($model)) {
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->user_update = Yii::$app->user->identity->id;
             $model->data_create = date('Y-m-d H:i:s');
             $model->data_update = date('Y-m-d H:i:s');
 
             if ($arquivo) {
+                // Verifica e cria o diretório se não existir
+                $uploadDir = Yii::$app->basePath . '/web/imagens/doacoes/';
+                if (!file_exists($uploadDir)) {
+                    if (!mkdir($uploadDir, 0777, true)) {
+                        Yii::error("Falha ao criar diretório de upload: " . $uploadDir);
+                        return $this->render('create', [
+                            'model' => $model,
+                            'error' => true,
+                            'success' => false,
+                            'msg' => 'Erro ao criar diretório para upload'
+                        ]);
+                    }
+                }
+
                 if (!in_array($arquivo->type, $arr_extensao)) {
                     $erro[] = "Arquivo em formato inválido! A imagem deve ser jpg, jpeg, gif ou png. Envie outro arquivo";
                 }
@@ -171,7 +179,6 @@ class DoacaoController extends Controller
                     $erro[] = "Arquivo em tamanho muito grande! A imagem deve ser de no máximo " . $config["tamanho"] . " bytes. Envie outro arquivo";
                 }
 
-                // Para verificar as dimensões da imagem 
                 $tamanhos = getimagesize($arquivo->tempName);
 
                 // Verifica largura 
@@ -190,10 +197,17 @@ class DoacaoController extends Controller
                 }
 
                 $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
+                $path = $uploadDir . $name;
 
-                $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
-
-                $arquivo->saveAs($path);
+                if (!$arquivo->saveAs($path)) {
+                    Yii::error("Falha ao salvar arquivo: " . $path);
+                    return $this->render('create', [
+                        'model' => $model,
+                        'error' => true,
+                        'success' => false,
+                        'msg' => 'Erro ao salvar arquivo'
+                    ]);
+                }
                 $model->arquivo = $name;
             }
             if (!$model->save()) {
@@ -340,19 +354,47 @@ class DoacaoController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionValidar($id, $status)
+    {
+        $model = $this->findModel($id);
+        $model->validado = (int) $status;
+
+        if ($model->save(false)) {
+            Yii::$app->session->setFlash('success', 'Status atualizado com sucesso.');
+        } else {
+            Yii::$app->session->setFlash('error', 'Erro ao salvar.');
+        }
+
+        return $this->redirect(Yii::$app->request->referrer ?: ['index']);
+    }
+
     public function actionCheck()
     {
         $model = $this->findModel($_POST["model_id"]);
-        $model->validado = ($model->validado == 1) ? 0 : 1;
+        $novoValor = $_POST["novo_valor"] ?? null;
 
-        if (!$model->save()) {
-            Helper::d($model->getErrors());
-            return false;
+        if ($novoValor !== null) {
+            $model->validado = (int) $novoValor;
         }
-        $return = [];
-        $return = ($model->validado == 1) ? ["far fa-check-square ", "Desaprovar"] : ["far fa-square ", "Aprovar"];
+        if (!$model->save()) {
+            Yii::$app->response->statusCode = 404;
+            return json_encode(['Error' => 'Erro ao salvar']);
+        }
 
-        return json_encode($return);
+        $html = '';
+        if ($model->validado == 1) {
+            $html = Html::a('Reprovar', 'javascript:void(0)', [
+                'class' => 'btn btn-danger btn-sm',
+                'onclick' => 'validaDoacao(' . $model->id . ', 0)'
+            ]);
+        } else {
+            $html = Html::a('Aprovar', 'javascript:void(0)', [
+                'class' => 'btn btn-success btn-sm',
+                'onclick' => 'validaDoacao(' . $model->id . ', 1)'
+            ]);
+        }
+
+        return json_encode(['html' => $html]);
     }
 
     public function actionAtualizamotivo()

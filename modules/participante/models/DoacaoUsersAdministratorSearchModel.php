@@ -43,10 +43,12 @@ class DoacaoUsersAdministratorSearchModel extends Doacao
     {
         $query = Doacao::find();
 
-        // add conditions that should always apply here
-
+        $pageSize = isset($params['per-page']) ? (int) $params['per-page'] : 12;
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => $pageSize,
+            ],
         ]);
 
 

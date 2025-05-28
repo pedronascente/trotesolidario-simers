@@ -7,6 +7,8 @@ use yii\helpers\ArrayHelper;
 use app\modules\participante\models\Users;
 use app\modules\participante\models\Universidade;
 use app\modules\participante\models\Trote;
+use yii\helpers\Url;
+
 
 $gridColumns = [
     [
@@ -16,7 +18,27 @@ $gridColumns = [
         'vAlign' => 'center',
         'filter' => false,
         'value' => function ($model) {
-            return Html::img("/imagens/doacoes/$model->arquivo", ["class" => "image", "style" => "height: 80px;width: auto;"]);
+            $filePath = Yii::getAlias('@webroot') . "/imagens/doacoes/" . $model->arquivo;
+            $webPath = Yii::getAlias('@web') . "/imagens/doacoes/" . $model->arquivo;
+
+          
+            if (file_exists($filePath) && @getimagesize($filePath)) {
+                return Html::a(
+                    Html::img(Yii::$app->request->hostInfo . $webPath, [
+                        "class" => "image",
+                        "style" => "height: 80px; width: auto; cursor: pointer;",
+                    ]),
+                    Yii::$app->request->hostInfo . $webPath,
+                    [
+                        'data-fancybox' => 'gallery',
+                        'data-src' =>  Yii::$app->request->hostInfo . $webPath,
+                        'data-caption' => 'Doação - ' . $model->arquivo,
+                        'class' => 'fancybox-thumb',
+                    ]
+                );
+            } else {
+                return Html::tag('p', 'Sem arquivo', ['class' => 'username']);
+            }
         }
     ],
     [
@@ -60,22 +82,17 @@ $gridColumns = [
         'label' => 'Validados',
         'filterType' => GridView::FILTER_SELECT2,
         'filter' => [
-            1 => 'Sim',
-            0 => 'Não',
-            2 => 'Ainda não validado'
+            '1' => 'Sim',
+            '0' => 'Não',
+            '2' => 'Ainda não validado'
         ],
         'filterInputOptions' => ['placeholder' => '- Validados -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
         'value' => function ($model) {
-            $return = '';
-            if ($model->validado === 1) {
-                $return = "Aprovado";
-            } elseif ($model->validado === 0) {
-                $return = "Não aprovado";
-            } else {
-                $return = "Ainda não validado";
+            if ($model->validado === null) {
+                return "Ainda não validado";
             }
-            return $return;
+            return $model->validado == 1 ? "Aprovado" : "Não aprovado";
         }
     ],
     [
@@ -86,7 +103,7 @@ $gridColumns = [
             'Comissão' => 'Comissão',
             'Participação Presencial' => 'Participação Presencial',
             'Sangue' => 'Sangue',
-           
+
         ],
         'filterInputOptions' => ['placeholder' => '- Tipo de Doação -'],
         'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
@@ -119,43 +136,41 @@ $gridColumns = [
         'template' => '{check}',
         'buttons' => [
             'check' => function ($url, $model) {
+                $status = $model->validado == 1 ? 0 : 1;
+                $label = $model->validado == 1 ? 'Reprovar' : 'Aprovar';
+                $btnClass = $model->validado == 1 ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm';
 
-                $validado = [];
-                if ($model->validado === 1) {
-                    $validado = ["far fa-check-square ", "Desaprovar"];
-                } elseif ($model->validado === 0) {
-                    $validado = ["far fa-square ", "Aprovar"];
-                } else {
-                    $validado = ["far fa-square ", "Aprovar"];
-                }
-                return "<div id='doacao-div-" . $model->id . "'>
-            <a id='doacao" . $model->id . "' onclick='validaDoacao(" . $model->id . ")'>
-            <i class='" . $validado[0] . "' title='" . $validado[1] . "' data-toggle='tooltip'></i>
-            </a>
-            </div>";
-            },
-        ],
+                return Html::a($label, [
+                    'validar', // nome da action no controller
+                    'id' => $model->id,
+                    'status' => $status
+                ], [
+                    'class' => $btnClass,
+                    'data-method' => 'post',
+                    'data-confirm' => "Tem certeza que deseja $label essa doação?"
+                ]);
+            }
+        ]
     ],
 ];
 
 ?>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
 <style>
-.image:hover {
-    margin: 0;
-    padding: 0;
-    width: 400% !important;
-    height: 400% !important;
-    z-index: 999 !important;
-    position: relative;
-    display: block;
-    /*        position: absolute;
-                display: flex;
-                left: 20%;
-                top: 10%;
-                width: auto;
-                height: 500px !important;*/
-
-}
+    .image {
+        transition: transform 0.3s ease;
+    }
+    .image:hover {
+        transform: scale(1.1);
+    }
+    .fancybox-thumb {
+        display: inline-block;
+        text-decoration: none;
+    }
 </style>
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -220,46 +235,43 @@ $gridColumns = [
     </div>
 </div>
 <script>
-function validaDoacao(id) {
+    function validaDoacao(id, valor) {
 
-    $.ajax({
-        url: '/administrator/doacao/check',
-        data: {
-            "model_id": id
-        },
-        type: "POST",
-        dataType: 'json',
-        success: function(result) {
-            $('#doacao' + id).remove();
-            $('#doacao-div-' + id).append(
-                '<a id="doacao' + id + '" onclick="validaDoacao(' + id + ')"> <i title="' + result[1] +
-                '" class="' + result[0] + '"></i></a>'
-            );
+        $.ajax({
+            url: '/administrator/doacao/check',
+            data: {
+                "model_id": id,
+                "novo_valor": valor
+            },
+            type: "POST",
+            dataType: 'json',
+            success: function (result) {
+                $('#doacao-div-' + id).html(result.html);
+            },
+            error: function () {
+                alert('Erro: avisar a ti');
+            }
+        });
+    }
 
+    function salvaMotivo(id, texto) {
 
-        },
-        error: function() {
-            alert('Erro: avisar a ti');
-        }
-    });
-}
+        $.ajax({
+            url: '/administrator/doacao/atualizamotivo',
+            data: {
+                "model_id": id,
+                "texto": texto
+            },
+            type: "POST",
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+            },
+            error: function () {
+                alert('Erro: avisar a ti');
+            }
+        });
+    }
 
-function salvaMotivo(id, texto) {
-
-    $.ajax({
-        url: '/administrator/doacao/atualizamotivo',
-        data: {
-            "model_id": id,
-            "texto": texto
-        },
-        type: "POST",
-        dataType: 'json',
-        success: function(result) {
-            console.log(result);
-        },
-        error: function() {
-            alert('Erro: avisar a ti');
-        }
-    });
-}
+    Fancybox.bind('[data-fancybox]');
 </script>
