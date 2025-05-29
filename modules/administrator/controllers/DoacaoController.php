@@ -13,6 +13,7 @@ use app\modules\participante\models\Helper;
 use app\modules\participante\models\Users;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 /**
  * DoacaoController implements the CRUD actions for Doacao model.
@@ -377,24 +378,11 @@ class DoacaoController extends Controller
             $model->validado = (int) $novoValor;
         }
         if (!$model->save()) {
-            Yii::$app->response->statusCode = 404;
-            return json_encode(['Error' => 'Erro ao salvar']);
+            Yii::$app->response->statusCode = 500;
+            return json_encode(['error' => 'Erro ao salvar', 'details' => $model->getErrors()]);
         }
 
-        $html = '';
-        if ($model->validado == 1) {
-            $html = Html::a('Reprovar', 'javascript:void(0)', [
-                'class' => 'btn btn-danger btn-sm',
-                'onclick' => 'validaDoacao(' . $model->id . ', 0)'
-            ]);
-        } else {
-            $html = Html::a('Aprovar', 'javascript:void(0)', [
-                'class' => 'btn btn-success btn-sm',
-                'onclick' => 'validaDoacao(' . $model->id . ', 1)'
-            ]);
-        }
-
-        return json_encode(['html' => $html]);
+        return json_encode(['success' => true]);
     }
 
     public function actionAtualizamotivo()

@@ -12,6 +12,36 @@ use app\modules\participante\models\Trote;
     max-width: 1800px;
 }
 
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-approved {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.status-rejected {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.status-pending {
+    background-color: rgba(254, 209, 54, 0.1);
+    color: #fed136;
+}
+
+.motivo-box {
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #dc3545;
+    margin-top: 5px;
+}
+
 @media (max-width: 768px) {
     .responsive-grid {
         width: 100%;
@@ -67,21 +97,39 @@ use app\modules\participante\models\Trote;
                             ],
                             [
                                 'attribute' => 'validado',
-                                'label' => 'Validados',
+                                'label' => 'Status',
+                                'format' => 'raw',
                                 'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => [
-                                    1 => 'Sim',
-                                    0 => 'Não'
+                                    1 => 'Aprovado',
+                                    0 => 'Reprovado',
+                                    2 => 'Pendente'
                                 ],
-                                'filterInputOptions' => ['placeholder' => '- Validados -'],
+                                'filterInputOptions' => ['placeholder' => '- Status -'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                                 'value' => function ($model) {
-                                    return $model->validado ? "Sim" : "Não";
+                                    if ($model->validado === null) {
+                                        return '<span class="status-badge status-pending">Pendente</span>';
+                                    }
+                                    return $model->validado == 1 ? 
+                                        '<span class="status-badge status-approved">Aprovado</span>' : 
+                                        '<span class="status-badge status-rejected">Reprovado</span>';
                                 }
                             ],
                             [
                                 'attribute' => 'validado_motivo',
-                                'label' => 'Validados',
+                                'label' => 'Observações',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    if (empty($model->validado_motivo)) {
+                                        return '-';
+                                    }
+                                    $class = $model->validado == 0 ? 'danger' : 'success';
+                                    return '<div class="motivo-box" style="border-left-color: ' . 
+                                           ($model->validado == 0 ? '#dc3545' : '#28a745') . '">' . 
+                                           Html::encode($model->validado_motivo) . 
+                                           '</div>';
+                                }
                             ],
                             [
                                 'attribute' => 'tipo_doacao',

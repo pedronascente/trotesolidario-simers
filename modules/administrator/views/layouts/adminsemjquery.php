@@ -127,10 +127,6 @@ $menu_active = Yii::$app->controller->id;
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-            <!-- Sidebar Message -->
-            <div class="sidebar-card d-none">
-            </div>
-
         </ul>
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
