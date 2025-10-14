@@ -66,84 +66,213 @@ class DoacaoController extends Controller
 
 
     /**
+     * Corrige a orientação da imagem baseada nos dados EXIF
+     * @param string $filepath
+     * @return bool
+     */
+    private function corrigirOrientacaoImagem($filepath)
+    {
+        if (!function_exists('exif_read_data')) {
+            return false;
+        }
+
+        try {
+            $exif = @exif_read_data($filepath);
+
+            if (!$exif || !isset($exif['Orientation'])) {
+                return true;
+            }
+
+            $orientation = $exif['Orientation'];
+
+            $imageType = exif_imagetype($filepath);
+
+            switch ($imageType) {
+                case IMAGETYPE_JPEG:
+                    $image = imagecreatefromjpeg($filepath);
+                    break;
+                case IMAGETYPE_PNG:
+                    $image = imagecreatefrompng($filepath);
+                    break;
+                case IMAGETYPE_GIF:
+                    $image = imagecreatefromgif($filepath);
+                    break;
+                default:
+                    return false;
+            }
+
+            if (!$image) {
+                return false;
+            }
+
+            switch ($orientation) {
+                case 3:
+                    $image = imagerotate($image, 180, 0);
+                    break;
+                case 6:
+                    $image = imagerotate($image, -90, 0);
+                    break;
+                case 8:
+                    $image = imagerotate($image, 90, 0);
+                    break;
+            }
+
+            switch ($imageType) {
+                case IMAGETYPE_JPEG:
+                    imagejpeg($image, $filepath, 85);
+                    break;
+                case IMAGETYPE_PNG:
+                    imagepng($image, $filepath, 8);
+                    break;
+                case IMAGETYPE_GIF:
+                    imagegif($image, $filepath);
+                    break;
+            }
+
+            imagedestroy($image);
+            return true;
+        } catch (\Exception $e) {
+            Yii::error("Erro ao corrigir orientação: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Redimensiona imagem mantendo proporção
+     * @param string $filepath
+     * @param int $maxWidth
+     * @param int $maxHeight
+     * @return bool
+     */
+    private function redimensionarImagem($filepath, $maxWidth = 640, $maxHeight = 640)
+    {
+        try {
+            $imageType = exif_imagetype($filepath);
+
+            switch ($imageType) {
+                case IMAGETYPE_JPEG:
+                    $source = imagecreatefromjpeg($filepath);
+                    break;
+                case IMAGETYPE_PNG:
+                    $source = imagecreatefrompng($filepath);
+                    break;
+                case IMAGETYPE_GIF:
+                    $source = imagecreatefromgif($filepath);
+                    break;
+                default:
+                    return false;
+            }
+
+            if (!$source) {
+                return false;
+            }
+
+            $width = imagesx($source);
+            $height = imagesy($source);
+
+            if ($width > $maxWidth || $height > $maxHeight) {
+                $ratio = min($maxWidth / $width, $maxHeight / $height);
+                $newWidth = (int)($width * $ratio);
+                $newHeight = (int)($height * $ratio);
+
+                $thumb = imagecreatetruecolor($newWidth, $newHeight);
+
+                if ($imageType == IMAGETYPE_PNG) {
+                    imagealphablending($thumb, false);
+                    imagesavealpha($thumb, true);
+                }
+
+                imagecopyresampled($thumb, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                switch ($imageType) {
+                    case IMAGETYPE_JPEG:
+                        imagejpeg($thumb, $filepath, 85);
+                        break;
+                    case IMAGETYPE_PNG:
+                        imagepng($thumb, $filepath, 8);
+                        break;
+                    case IMAGETYPE_GIF:
+                        imagegif($thumb, $filepath);
+                        break;
+                }
+
+                imagedestroy($thumb);
+            }
+
+            imagedestroy($source);
+            return true;
+        } catch (\Exception $e) {
+            Yii::error("Erro ao redimensionar: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Creates a new Doacao model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-
         if (Yii::$app->user->identity->trote_id == 1) {
-
             return $this->redirect(['users/perfil']);
         }
+
         $model = new Doacao();
         $model->ativo = 1;
         $this->layout = 'adminsemjquery';
-
         $erro = $config = array();
-        // Tamanho máximo do arquivo (em bytes) 
         $config["tamanho"] = 2500000;
-
-        // Largura máxima (pixels) 
         $config["largura"] = 640;
-
-        // Altura máxima (pixels) 
         $config["altura"] = 640;
-
-        //Extensão permitida
-        $arr_extensao = array("image/jpeg", "image/gif", "image/png");
+        $arr_extensao = array("image/jpeg", "image/jpg", "image/png", "image/gif");
 
         if ($model->load(Yii::$app->request->post())) {
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->user_create = Yii::$app->user->identity->id;
             $model->data_create = date('Y-m-d H:i:s');
 
-
             if ($arquivo) {
                 if (!in_array($arquivo->type, $arr_extensao)) {
-                    $erro[] = "Arquivo em formato inválido! A imagem deve ser jpg, jpeg, gif ou png. Envie outro arquivo";
+                    $erro[] = "Arquivo em formato inválido! A imagem deve ser jpg, jpeg, gif ou png.";
                 }
 
                 if ($arquivo->size > $config["tamanho"]) {
-                    $erro[] = "Arquivo em tamanho muito grande! A imagem deve ser de no máximo " . $config["tamanho"] . " bytes. Envie outro arquivo";
+                    $erro[] = "Arquivo muito grande! Máximo " . ($config["tamanho"] / 1000000) . "MB";
                 }
 
-                // Para verificar as dimensões da imagem 
+                if (empty($erro)) {
+                    $mimeTypeMap = [
+                        'image/jpeg' => 'jpg',
+                        'image/jpg' => 'jpg',
+                        'image/png' => 'png',
+                        'image/gif' => 'gif',
+                    ];
 
-                if ($arquivo->tempName) {
-                    $tamanhos = getimagesize($arquivo->tempName);
-                    // Verifica largura 
-                    //if ($tamanhos[0] > $config["largura"]) {
-                    //    $erro[] = "Largura da imagem não deve ultrapassar " . $config["largura"] . " pixels. Largura Atual: " . $tamanhos[0];
-                    // }
+                    $extension = isset($mimeTypeMap[$arquivo->type]) ? $mimeTypeMap[$arquivo->type] : 'jpg';
+                    $name = strtotime(date('Y-m-d H:i:s')) . "." . $extension;
+                    $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
 
-                    // Verifica altura 
-                    //if ($tamanhos[1] > $config["altura"]) {
-                    //    $erro[] = "Altura da imagem não deve ultrapassar " . $config["altura"] . " pixels. Altura Atual: " . $tamanhos[1];
-                    //}
+                    if ($arquivo->saveAs($path)) {
+                        $this->corrigirOrientacaoImagem($path);
+
+                        $this->redimensionarImagem($path, $config["largura"], $config["altura"]);
+
+                        $model->arquivo = $name;
+                    }
                 }
-
-
-                $mimeTypeMap = [
-                    'image/jpeg' => 'jpg',
-                    'image/jpg' => 'jpg',
-                    'image/png' => 'png',
-                    'image/gif' => 'gif',
-                ];
-
-                $str_erro = '';
-                foreach ($erro as $value) {
-                    $str_erro .= $value . ' <br>';
-                }
-
-                $extension = isset($mimeTypeMap[$arquivo->type]) ? $mimeTypeMap[$arquivo->type] : 'jpg';
-                $name = strtotime(date('Y-m-d H:i:s')) . "." . $extension;
-                $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
-
-                $arquivo->saveAs($path);
-                $model->arquivo = $name;
             }
+
+            if (!empty($erro)) {
+                $str_erro = implode('<br>', $erro);
+                return $this->render('create', [
+                    'model' => $model,
+                    'error' => true,
+                    'success' => false,
+                    'msg' => $str_erro
+                ]);
+            }
+
             if (!$model->save()) {
                 return $this->render('create', [
                     'model' => $model,
@@ -180,20 +309,13 @@ class DoacaoController extends Controller
     {
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
-        $this->layout = 'adminsemjquery';
 
         $erro = $config = array();
-        // Tamanho máximo do arquivo (em bytes) 
         $config["tamanho"] = 2500000;
-
-        // Largura máxima (pixels) 
         $config["largura"] = 640;
-
-        // Altura máxima (pixels) 
         $config["altura"] = 640;
+        $arr_extensao = array("image/jpeg", "image/jpg", "image/png", "image/gif");
 
-        //Extensão permitida
-        $arr_extensao = array("image/jpeg", "image/gif", "image/png");
         if ($model->load(Yii::$app->request->post())) {
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->user_update = Yii::$app->user->identity->id;
@@ -201,41 +323,43 @@ class DoacaoController extends Controller
 
             if ($arquivo) {
                 if (!in_array($arquivo->type, $arr_extensao)) {
-                    $erro[] = "Arquivo em formato inválido! A imagem deve ser jpg, jpeg, gif ou png. Envie outro arquivo";
+                    $erro[] = "Arquivo em formato inválido!";
                 }
 
                 if ($arquivo->size > $config["tamanho"]) {
-                    $erro[] = "Arquivo em tamanho muito grande! A imagem deve ser de no máximo " . $config["tamanho"] . " bytes. Envie outro arquivo";
+                    $erro[] = "Arquivo muito grande!";
                 }
 
-                // Para verificar as dimensões da imagem 
-                if ($arquivo->tempName) {
-                    $tamanhos = getimagesize($arquivo->tempName);
+                if (empty($erro)) {
+                    $mimeTypeMap = [
+                        'image/jpeg' => 'jpg',
+                        'image/jpg' => 'jpg',
+                        'image/png' => 'png',
+                        'image/gif' => 'gif',
+                    ];
 
-                    // Verifica largura 
-                    if ($tamanhos[0] > $config["largura"]) {
-                        $erro[] = "Largura da imagem não deve ultrapassar " . $config["largura"] . " pixels. Largura Atual: " . $tamanhos[0];
+                    $extension = isset($mimeTypeMap[$arquivo->type]) ? $mimeTypeMap[$arquivo->type] : 'jpg';
+                    $name = strtotime(date('Y-m-d H:i:s')) . "." . $extension;
+                    $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
+
+                    if ($arquivo->saveAs($path)) {
+                        $this->corrigirOrientacaoImagem($path);
+                        $this->redimensionarImagem($path, $config["largura"], $config["altura"]);
+
+                        $model->arquivo = $name;
                     }
-
-                    // Verifica altura 
-                    if ($tamanhos[1] > $config["altura"]) {
-                        $erro[] = "Altura da imagem não deve ultrapassar " . $config["altura"] . " pixels. Altura Atual: " . $tamanhos[1];
-                    }
                 }
-
-
-                $str_erro = '';
-                foreach ($erro as $value) {
-                    $str_erro .= $value . ' <br>';
-                }
-                $name = strtotime(date('Y-m-d H:i:s')) . "." . explode("/", $arquivo->type)[1];
-
-
-                $path = Yii::$app->basePath . '/web/imagens/doacoes/' . $name;
-
-                $arquivo->saveAs($path);
-                $model->arquivo = $name;
             }
+
+            if (!empty($erro)) {
+                return $this->render('update', [
+                    'model' => $model,
+                    'error' => true,
+                    'success' => false,
+                    'msg' => implode('<br>', $erro)
+                ]);
+            }
+
             if (!$model->save()) {
                 return $this->render('update', [
                     'model' => $model,

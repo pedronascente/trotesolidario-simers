@@ -20,14 +20,6 @@ use app\modules\participante\models\Universidade;
             <?php $form = ActiveForm::begin(); ?>
             <div class="row">
                 <div class="col-md-6">
-                    <?php
-                    //if($teste){
-                    //foreach($teste as $value){
-
-                    //  echo 'teste';
-                    //}
-                    //}
-                    ?>
                     <?=
                     $form->field($model, 'file')->label('Anexo doação <br /><span class="badge badge-success">Formatos: JPEG, JPG, GIF e PNG</span>')->widget(FileInput::classname(), [
                         'options' => [
@@ -35,8 +27,6 @@ use app\modules\participante\models\Universidade;
                         ],
                         'pluginOptions' => [
                             'resizeImage' => true,
-                            //'maxImageWidth' => 640,
-                            //'maxImageHeight' => 640,
                             'maxFileSize' => 2500,
                             'resizePreference' => 'width',
                             'showCaption' => false,
@@ -46,7 +36,8 @@ use app\modules\participante\models\Universidade;
                             'browseIcon' => '<i class="fas fa-camera"></i>',
                             'browseLabel' => 'Anexar comprovante de doação',
                             'allowedFileExtensions' => ['jpeg', 'jpg', 'gif', 'png'],
-                            'overwriteInitial' => false
+                            'overwriteInitial' => false,
+                            'autoOrientImage' => true,
                         ],
                     ]);
                     ?>
