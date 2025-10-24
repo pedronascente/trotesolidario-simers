@@ -65,7 +65,7 @@ $model['frase_certificado'] .= " {$totalHoras} horas.";
 </style>
 
 <body class="body">
-    <div style="background-color:#520EBA; background-repeat: no-repeat; background-size: cover;background-image: url('<?= Url::to('@web/img/bg-certificado-2025_resized.png') ?>');">
+    <div style="background-color:#520EBA; background-repeat: no-repeat; background-size: cover;background-image: url('<?= Yii::getAlias('@webroot') ?>/img/bg-certificado-2025_resized.png');">
         <div class="well"
             style="background-color: transparent; border:none;height: 530px;">
             <div class="row" style="padding:20px">
@@ -74,7 +74,7 @@ $model['frase_certificado'] .= " {$totalHoras} horas.";
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logo-site-2025.png') ?>" style="width:auto;height: 130px;"
+                                <img src="<?= realpath(Yii::getAlias('@webroot') . '/img/logo-site.png') ?>" style="width:auto;height: 130px;"
                                     alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
@@ -91,8 +91,8 @@ $model['frase_certificado'] .= " {$totalHoras} horas.";
                         <tr>
                             <td class="tg-0lax"></td>
                             <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                                <p style="color: #2e056b; font-size: 22px; padding">Certificamos que <b><?= $model['name'] ?></b>,
-                                    participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, na qualidade de voluntário(a)<?= $doacoesTexto ?>
+                                <p style="color: #2e056b; font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>,
+                                    participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, como voluntário(a),<?= $doacoesTexto ?>
                                     promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
                             </td>
                             <td class="tg-0lax"></td>
@@ -106,11 +106,11 @@ $model['frase_certificado'] .= " {$totalHoras} horas.";
                             <td class="tg-0lax"></td>
                             <th class="tg-baqh"
                                 style="  flex-direction: row; justify-content: start; text-align: left;">
-                                <img src="<?= Url::to('@web/img/assinatura-marcia.png') ?>"
+                                <img src="<?= realpath(Yii::getAlias('@webroot') . '/img/assinatura-marcia.png') ?>"
                                     style="width:auto;height: 80px;" alt="logo" />
                             </th>
                             <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
-                                <img src="<?= Url::to('@web/img/assinatura-marcelo.png') ?>"
+                                <img src="<?= realpath(Yii::getAlias('@webroot') . '/img/assinatura-marcelo.png') ?>"
                                     style="width:auto;height: 80px;" alt="logo" />
 
                             </th>
