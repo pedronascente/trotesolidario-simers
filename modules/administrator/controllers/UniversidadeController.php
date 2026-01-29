@@ -11,9 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
-/**
- * UniversidadeController implements the CRUD actions for Universidade model.
- */
+
 class UniversidadeController extends Controller
 {
     /**
@@ -31,10 +29,7 @@ class UniversidadeController extends Controller
         ];
     }
 
-    /**
-     * Lists all Universidade models.
-     * @return mixed
-     */
+
     public function actionIndex()
     {
         $this->layout = 'adminsemjquery';
@@ -47,12 +42,6 @@ class UniversidadeController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Universidade model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionView($id)
     {
         return $this->render('view', [
@@ -60,11 +49,6 @@ class UniversidadeController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Universidade model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
     public function actionCreate()
     {
         $model = new Universidade();
@@ -78,13 +62,7 @@ class UniversidadeController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing Universidade model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionUpdate($id)
     {
         $this->layout = 'adminsemjquery';
@@ -121,13 +99,6 @@ class UniversidadeController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing Universidade model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
@@ -140,13 +111,6 @@ class UniversidadeController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Universidade model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Universidade the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     protected function findModel($id)
     {
         if (($model = Universidade::findOne($id)) !== null) {

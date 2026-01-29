@@ -15,6 +15,15 @@ $this->title = 'Universidades';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<style>
+    .btn-group-actions {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
 <div class="container-fluid">
 
     <!-- Page Heading -->
@@ -31,24 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
-                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'], // offset from top
-                        //'floatHeader' => true, // table header floats when you scroll
-                        //'floatPageSummary' => true, // table page summary floats when you scroll
-                        //'floatFooter' => false, // disable floating of table footer
-                        'pjax' => true, // pjax is set to always false for this demo
-                        // parameters from the demo form
-                        //  'responsive' => true,
-                        //'bordered' => true,
-                        //'striped' => true,
-                        //'condensed' => true,
+                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'], 
+
+                        'pjax' => true,
                         'hover' => true,
-                        //'showPageSummary' => true,
                         'panel' => [
                             'heading' => '<i class="fa fa-university" aria-hidden="true"></i>  Universidades',
-                            'type' => 'success',
+                            'type' => 'primary',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        // set export properties
                         'export' => [
                             'fontAwesome' => true
                         ],
@@ -57,7 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             'csv' => [],
                             'txt' => [],
                             'xls' => [],
-                            //'pdf' => [],
                             'json' => [],
                         ],
                         'columns' => [
@@ -65,13 +64,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             'nome',
                             'link_doacao_alimento',
                             [
-                                'headerOptions' => ['style' => 'width:10%'],
+                                'headerOptions' => ['style' => 'width:5%'],
                                 'format' => 'raw',
                                 'filter' => false,
                                 'attribute' => 'icon',
                                 'label' => 'Icon',
                                 'value' => function ($model) {
-                                    return Html::img(Yii::$app->getUrlManager()->getBaseUrl() . '/img/' . $model->icon, ['class' => 'img-thumbnail']);
+                                    return Html::img(Yii::$app->getUrlManager()->getBaseUrl() . '/img/' . $model->icon, 
+                                        [
+                                            'class' => 'img-thumbnail',
+                                            'style'=>'max-width:60px; heght:auto;'
+                                        ]
+                                    );
                                 },
                                 'hiddenFromExport' => true,
                             ],
@@ -100,51 +104,37 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
                                 'class' => '\kartik\grid\ActionColumn',
-                                'template' => '{update} {delete}',
-                                //'template' => '{view} {update} {download}',
+                                'template' => '<div class="btn-group-actions">{update} {delete}</div>',
                                 'buttons' => [
-                                    /*'view' => function ($url, $model) {
-                                        return Html::a(
-
-                                            '<i class="fa fa-eye" aria-hidden="true"></i>',
-                                            $url,
-                                            [
-                                                'class' => 'btn btn-small btn-dark',
-                                                'data-toggle' => 'tooltip',
-                                                'data-method' => "post",
-                                                'data-original-title' => 'Excluir',
-                                                'data-pjax' => '0',
-                                            ]
-                                        );
-                                    },*/
                                     'update' => function ($url) {
                                         return Html::a(
                                             '<i class="fas fa-pencil-alt"></i>',
                                             $url,
                                             [
-                                                'class' => 'btn btn-small btn-success',
-                                                'data-toggle' => 'tooltip',
-                                                'data-original-title' => 'Editar',
+                                                'class' => 'btn btn-sm btn-primary',
+                                                'title' => 'Editar',
                                                 'data-pjax' => '0',
                                             ]
                                         );
                                     },
                                     'delete' => function ($url, $model) {
-                                        return Html::a(
+                                        $ativo = $model->ativo == 1;
 
-                                            '<i class="fa ' . (($model->ativo == 1) ? 'fa-trash' : 'fa-reply') . '" aria-hidden="true"></i>',
+                                        return Html::a(
+                                            '<i class="fa ' . ($ativo ? 'fa-ban' : 'fa-check') . '"></i>',
                                             $url,
                                             [
-                                                'class' => 'btn btn-small ' . (($model->ativo == 1) ? 'btn-danger' : 'btn-warning'),
-                                                'data-toggle' => 'tooltip',
-                                                'data-method' => "post",
-                                                'data-original-title' => 'Excluir',
+                                                'class' => 'btn btn-sm ' . ($ativo ? 'btn-danger' : 'btn-success'),
+                                                'title' => $ativo ? 'Desativar' : 'Ativar',
+                                                'data-method' => 'post',
                                                 'data-pjax' => '0',
                                             ]
                                         );
                                     },
+
                                 ],
                             ],
+
                         ],
                     ]); ?>
 
