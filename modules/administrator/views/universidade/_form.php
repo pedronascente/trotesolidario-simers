@@ -14,56 +14,64 @@ use yii\widgets\ActiveForm;
 
 <div class="universidade-form container-fluid">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => ['enctype' => 'multipart/form-data'],
+        'enableClientValidation' => true,
+    ]); ?>
+
     <div class="row">
         <div class="col-md-6">
 
+            <!-- Nome -->
+            <?= $form->field($model, 'nome')->textInput(['maxlength' => true, 'class' => 'form-control'])?>
 
-            <?= $form->field($model, 'nome') ?>
-            <?= $form->field($model, 'link_doacao_alimento') ?>
-            <?= $form->field($model, 'trote_id')->label('Evento')->widget(Select2::classname(), [
-                'options' => ['placeholder' => '- Selecione uma opção -'],
-                'data' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
-            ]);
-            ?>
-            <?=
-            $form->field($model, 'file')->label('Imagem')->widget(FileInput::classname(), [
-                'options' => [
-                    'accept' => 'image/*'
-                ],
+            <!-- Link de Doação -->
+            <?= $form->field($model, 'link_doacao_alimento')->textInput(['maxlength' => true]) ?>
+
+            <!-- Evento -->
+            <?= $form->field($model, 'trote_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(Trote::find()->where(['ativo' => 1])->all(), 'id', 'nome'),
+                'options' => ['placeholder' => '- Selecione um Evento -'],
+                'pluginOptions' => ['allowClear' => true],
+            ])->label('Evento'); ?>
+
+            <!-- Upload de imagem -->
+            <?= $form->field($model, 'file')->widget(FileInput::classname(), [
+                'options' => ['accept' => 'image/*'],
                 'pluginOptions' => [
-                    'resizeImage' => true,
-                    // 'maxImageWidth' => 200,
-                    // 'maxImageHeight' => 200,
-                    'resizePreference' => 'width',
                     'showCaption' => false,
                     'showRemove' => false,
                     'showUpload' => false,
                     'browseClass' => 'btn btn-primary btn-block',
-                    'browseIcon' => '<i class="fas fa-camera"></i>',
+                    'browseIcon' => '<i class="fas fa-camera"></i> ',
                     'browseLabel' => 'Anexar imagem',
-                    'allowedFileExtensions' => ['jpg', 'gif', 'png'],
-                    'overwriteInitial' => false
+                    'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif'],
+                    'overwriteInitial' => false,
+                    'initialPreview' => $model->icon ? ["/img/{$model->icon}"] : [],
+                    'initialPreviewAsData' => true,
+                    'initialPreviewConfig' => [],
                 ],
-            ]);
-            ?>
-            <?= $form->field($model, 'ativo')->label('Ativo')->widget(Select2::classname(), [
-                'options' => ['placeholder' => '- Status -'],
+            ])->label('Imagem'); ?>
+
+            <!-- Status -->
+            <?= $form->field($model, 'ativo')->widget(Select2::classname(), [
                 'data' => ['1' => 'Ativo', '0' => 'Inativo'],
-            ]);
-            ?>
+                'options' => ['placeholder' => '- Status -'],
+                'pluginOptions' => ['allowClear' => true],
+            ])->label('Status'); ?>
+
         </div>
-        <div class="col-md-6">
-            <img src="/img/<?= $model->icon ?>" class="img-fluid" />
-        </div>
+
+        <!-- Preview da imagem atual -->
+        <?php if ($model->icon): ?>
+            <div class="col-md-6">
+                <label>Imagem atual</label>
+                <img src="/img/<?= $model->icon ?>" class="img-fluid img-thumbnail" />
+            </div>
+        <?php endif; ?>
     </div>
 
-
-
-
-
-
-    <div class="form-group">
+    <div class="form-group mt-3">
         <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
     </div>
 

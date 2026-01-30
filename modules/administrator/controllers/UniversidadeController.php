@@ -2,7 +2,6 @@
 
 namespace app\modules\administrator\controllers;
 
-use app\modules\participante\models\Helper;
 use Yii;
 use app\modules\participante\models\Universidade;
 use app\modules\participante\models\UniversidadeSearchModel;
@@ -11,24 +10,19 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
-
 class UniversidadeController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
         ];
     }
-
 
     public function actionIndex()
     {
@@ -51,52 +45,74 @@ class UniversidadeController extends Controller
 
     public function actionCreate()
     {
-        $model = new Universidade();
         $this->layout = 'adminsemjquery';
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model = new Universidade();
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $arquivo = UploadedFile::getInstance($model, 'file');
+
+            if ($arquivo) {
+                $dir = Yii::getAlias('@webroot/img/');
+                if (!is_dir($dir)) mkdir($dir, 0775, true);
+
+                $model->icon = uniqid('uni_') . '.' . $arquivo->extension;
+            }
+
+            if ($model->validate() && $model->save(false)) {
+
+                if ($arquivo) {
+                    $arquivo->saveAs(Yii::getAlias('@webroot/img/') . $model->icon);
+                }
+
+                Yii::$app->session->setFlash('success', 'Universidade criada com sucesso');
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Erro ao criar Universidade');
+            }
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', ['model' => $model]);
     }
-
 
     public function actionUpdate($id)
     {
         $this->layout = 'adminsemjquery';
         $model = $this->findModel($id);
+        $imagemAntiga = $model->icon;
 
         if ($model->load(Yii::$app->request->post())) {
+
             $arquivo = UploadedFile::getInstance($model, 'file');
+
             if ($arquivo) {
-                $path = Yii::$app->basePath . '/web/img/' . $model->icon;
-                $arquivo->saveAs($path);
-            }
-            if (!$model->save()) {
-                return $this->render('update', [
-                    'model' => $model,
-                    'error' => true,
-                    'success' => false,
-                    'msg' => 'Erro ao atualizar Universidade'
-                ]);
+                $dir = Yii::getAlias('@webroot/img/');
+                if (!is_dir($dir)) mkdir($dir, 0775, true);
+
+                $nomeArquivo = uniqid('uni_') . '.' . $arquivo->extension;
+
+                if ($arquivo->saveAs($dir . $nomeArquivo)) {
+                    $model->icon = $nomeArquivo;
+
+                    // remove arquivo antigo
+                    if ($imagemAntiga && file_exists($dir . $imagemAntiga)) {
+                        @unlink($dir . $imagemAntiga);
+                    }
+                }
+            } else {
+                // mantém imagem antiga se nenhum arquivo novo enviado
+                $model->icon = $imagemAntiga;
             }
 
-            return $this->render('update', [
-                'model' => $model,
-                'success' => true,
-                'error' => false,
-                'msg' => 'Universidade atualizada com sucesso'
-            ]);
+            if ($model->validate() && $model->save(false)) {
+                Yii::$app->session->setFlash('success', 'Universidade atualizada com sucesso');
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Erro ao atualizar Universidade');
+            }
         }
 
-        return $this->render('update', [
-            'model' => $model,
-            'success' => false,
-            'error' => false,
-            'msg' => ''
-        ]);
+        return $this->render('update', ['model' => $model]);
     }
 
     public function actionDelete($id)
@@ -104,10 +120,12 @@ class UniversidadeController extends Controller
         $model = $this->findModel($id);
         $model->ativo = ($model->ativo == 1) ? 0 : 1;
 
-        if (!$model->save()) {
-            Helper::d($model->getErrors());
-            return $this->redirect(['index']);
+        if ($model->save()) {
+            Yii::$app->session->setFlash('success', 'Status alterado com sucesso');
+        } else {
+            Yii::$app->session->setFlash('error', 'Erro ao alterar status');
         }
+
         return $this->redirect(['index']);
     }
 
@@ -116,7 +134,6 @@ class UniversidadeController extends Controller
         if (($model = Universidade::findOne($id)) !== null) {
             return $model;
         }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('Universidade não encontrada.');
     }
 }

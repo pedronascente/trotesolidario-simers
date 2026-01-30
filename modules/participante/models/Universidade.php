@@ -4,74 +4,54 @@ namespace app\modules\participante\models;
 
 use Yii;
 
-/**
- * This is the model class for table "_universidade".
- *
- * @property int $id
- * @property int|null $trote_id
- * @property string|null $nome
- * @property string|null $icon
- * @property string|null $link_doacao_alimento
- * @property int|null $ativo
- *
- * @property Trote $trote
- * @property Users[] $users
- */
 class Universidade extends \yii\db\ActiveRecord
 {
     public $file;
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
+
+    public static function tableName(){
         return '_universidade';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
+    public function rules(){
         return [
+            [['nome', 'trote_id', 'ativo'], 'required'],
             [['trote_id', 'ativo'], 'integer'],
-            [['nome', 'icon', 'link_doacao_alimento'], 'string'],
-            [['trote_id'], 'exist', 'skipOnError' => true, 'targetClass' => Trote::className(), 'targetAttribute' => ['trote_id' => 'id']],
+            [['nome'], 'string', 'max' => 255],
+            [['icon'], 'string', 'max' => 255],
+            [['link_doacao_alimento'], 'string', 'max' => 500],
+            ['link_doacao_alimento', 'url', 'defaultScheme' => 'https'],
+            [['trote_id'], 'exist', 'skipOnError' => true, 'targetClass' => Trote::class, 'targetAttribute' => ['trote_id' => 'id']],
+            [
+                'file',
+                'file',
+                'skipOnEmpty' => true,
+                'extensions' => ['jpg', 'jpeg', 'png', 'gif'],
+                'maxSize' => 1024 * 1024 * 2,
+                'mimeTypes' => 'image/*',
+            ],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
             'id' => 'ID',
-            'trote_id' => 'Trote ID',
-            'nome' => 'Nome',
-            'icon' => 'Icon',
-            'link_doacao_alimento' => 'Link Doacao Alimento',
-            'ativo' => 'Ativo',
+            'trote_id' => 'Evento',
+            'nome' => 'Nome da Universidade',
+            'icon' => 'Imagem',
+            'file' => 'Imagem',
+            'link_doacao_alimento' => 'Link para Doação de Alimentos',
+            'ativo' => 'Status',
         ];
     }
 
-    /**
-     * Gets query for [[Trote]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getTrote()
     {
-        return $this->hasOne(Trote::className(), ['id' => 'trote_id']);
+        return $this->hasOne(Trote::class, ['id' => 'trote_id']);
     }
 
-    /**
-     * Gets query for [[Users]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getUsers()
     {
-        return $this->hasMany(Users::className(), ['instituicao' => 'id']);
+        return $this->hasMany(Users::class, ['instituicao' => 'id']);
     }
 }

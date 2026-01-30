@@ -46,6 +46,11 @@ class UniversidadeSearchModel extends Universidade
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
+            ],
         ]);
 
         $this->load($params);
@@ -69,4 +74,6 @@ class UniversidadeSearchModel extends Universidade
 
         return $dataProvider;
     }
+
+    
 }
