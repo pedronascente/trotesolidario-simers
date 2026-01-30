@@ -6,46 +6,29 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\participante\models\Trote;
 
-/**
- * TroteSearchModel represents the model behind the search form of `app\modules\participante\models\Trote`.
- */
-class TroteSearchModel extends Trote
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
+class TroteSearchModel extends Trote{
+    
+    public function rules(){
         return [
             [['id', 'ativo'], 'integer'],
             [['nome', 'frase_certificado'], 'safe'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
+    public function scenarios(){
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
-    {
+    public function search($params){
         $query = Trote::find();
-
-        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
+            ],
         ]);
 
         $this->load($params);

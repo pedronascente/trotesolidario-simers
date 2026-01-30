@@ -4,38 +4,30 @@ namespace app\modules\participante\models;
 
 use Yii;
 
-/**
- * This is the model class for table "_trote".
- *
- * @property int $id
- * @property string|null $nome
- * @property string|null $frase_certificado
- * @property int|null $ativo
- */
-class Trote extends \yii\db\ActiveRecord
-{
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
+class Trote extends \yii\db\ActiveRecord{
+
+    public static function tableName(){
         return '_trote';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            [['nome', 'frase_certificado'], 'string'],
-            [['ativo'], 'integer'],
+            [
+                ['nome', 'frase_certificado'], 
+                'string'
+            ],
+            [
+                ['nome', 'frase_certificado'], 
+                'required'
+            ],
+            [
+                ['ativo'], 
+                'integer'
+            ],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
@@ -46,3 +38,4 @@ class Trote extends \yii\db\ActiveRecord
         ];
     }
 }
+ 

@@ -10,16 +10,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * TroteController implements the CRUD actions for Trote model.
- */
-class TroteController extends Controller
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
+
+class TroteController extends Controller{
+    
+    public function behaviors(){
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -30,89 +24,57 @@ class TroteController extends Controller
         ];
     }
 
-    /**
-     * Lists all Trote models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new TroteSearchModel();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    public function actionIndex(){
         $this->layout = 'adminsemjquery';
-
+        $searchModel  = new TroteSearchModel();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+      
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]
+        );
     }
 
-    /**
-     * Displays a single Trote model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
+    public function actionView($id){
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    /**
-     * Creates a new Trote model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
+    public function actionCreate(){
         $model = new Trote();
         $model->ativo = 1;
         $this->layout = 'adminsemjquery';
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        }
 
-        return $this->render('create', [
-            'model' => $model,
-            'error' => false,
-            'success' => false,
-            'msg' => ''
-        ]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate() && $model->save(false)) {
+                Yii::$app->session->setFlash('success', 'Trote criada com sucesso');
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Erro ao criar Trote');
+            }
+        }
+        return $this->render('create', ['model' => $model]); 
     }
 
-    /**
-     * Updates an existing Trote model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id){
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        }
 
-        return $this->render('update', [
-            'model' => $model,
-            'error' => false,
-            'success' => false,
-            'msg' => ''
-        ]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate() && $model->save(false)) {
+                Yii::$app->session->setFlash('success', 'Trote atualizada com sucesso');
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Erro ao atualizar Trote');
+            }
+        }
+        return $this->render('update', ['model' => $model]);
     }
 
-    /**
-     * Deletes an existing Trote model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
+  
+    public function actionDelete($id){
         $model = $this->findModel($id);
         $model->ativo = ($model->ativo == 1) ? 0 : 1;
 
@@ -123,15 +85,8 @@ class TroteController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Trote model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Trote the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     protected function findModel($id)
-    {
+{
         if (($model = Trote::findOne($id)) !== null) {
             return $model;
         }
