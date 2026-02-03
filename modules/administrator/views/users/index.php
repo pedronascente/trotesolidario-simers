@@ -2,12 +2,12 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\participante\models\Helper;
-use app\modules\participante\models\Users;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Helper;
+use app\modules\common\models\Users;
+use app\modules\common\models\Trote;
 use kartik\export\ExportMenu;
 use yii\helpers\ArrayHelper;
-use app\modules\participante\models\Universidade;
+use app\modules\common\models\Universidade;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\UsersSearchModel */

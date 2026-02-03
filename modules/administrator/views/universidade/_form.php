@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Trote;
 use kartik\file\FileInput;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
@@ -8,7 +8,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Universidade */
+/* @var $model app\modules\common\models\Universidade */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 

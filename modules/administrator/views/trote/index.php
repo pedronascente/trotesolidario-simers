@@ -1,12 +1,12 @@
 <?php
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Trote;
 use yii\helpers\ArrayHelper;
 use kartik\alert\Alert;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\participante\models\UniversidadeSearchModel */
+/* @var $searchModel app\modules\common\models\UniversidadeSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Universidades';

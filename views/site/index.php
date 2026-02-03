@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 
 $countbanner = 0;
 $countbanneractive = 0;

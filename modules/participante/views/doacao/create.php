@@ -4,9 +4,9 @@ use yii\helpers\Html;
 use kartik\alert\Alert;
 Yii::$app->language = "pt-BR";
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Users */
-?>
+                    /* @var $this yii\web\View */
+                    /* @var $model app\modules\common\models\Users */
+                    ?>
 <!-- Begin Page Content -->
 <div class="container-fluid">
 

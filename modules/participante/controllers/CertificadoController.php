@@ -1,15 +1,15 @@
 <?php
 
-namespace app\modules\participante\controllers;
+namespace app\modules\common\controllers;
 
 use Yii;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\DoacaoSearchModel;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\DoacaoSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 use yii\filters\AccessControl;
 use kartik\mpdf\Pdf;
 
@@ -51,7 +51,7 @@ class CertificadoController extends Controller
      */
     public function actionIndex()
     {
-        $this->layout = 'participante';
+        $this->layout = 'common';
         $connection = Yii::$app->getDb();
         $certificados = $connection
             ->createCommand(
@@ -75,7 +75,7 @@ class CertificadoController extends Controller
 
     public function actionImprime()
     {
-        $this->layout = 'participante';
+        $this->layout = 'common';
         $connection = Yii::$app->getDb();
         $certificado = $connection
             ->createCommand(

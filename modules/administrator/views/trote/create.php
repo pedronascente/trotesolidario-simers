@@ -3,7 +3,7 @@
 use kartik\alert\Alert;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Universidade */
+/* @var $model app\modules\common\models\Universidade */
 
 ?>
 

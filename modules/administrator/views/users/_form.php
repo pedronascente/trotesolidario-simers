@@ -6,7 +6,7 @@ use kartik\select2\Select2;
 use kartik\alert\Alert;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Users */
+/* @var $model app\modules\common\models\Users */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <style>

@@ -1,16 +1,13 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\Helper;
 
-/**
- * DoacaoSearchModel represents the model behind the search form of `app\modules\participante\models\Doacao`.
- */
-class DoacaoAdministratorSearchModel extends Doacao
+class DoacaoUsersAdministratorSearchModel extends Doacao
 {
     /**
      * {@inheritdoc}
@@ -18,8 +15,8 @@ class DoacaoAdministratorSearchModel extends Doacao
     public function rules()
     {
         return [
-            [['id', 'usuario_validacao', 'ativo', 'user_create', 'trote_id', 'user_update'], 'integer'],
-            [['arquivo', 'instituicao', 'validado', 'validado_motivo',  'tipo_doacao', 'data_create', 'data_update'], 'safe'],
+            [['id', 'usuario_validacao',], 'integer'],
+            [['arquivo', 'instituicao', 'validado', 'trote_id', 'trote', 'tipo_doacao', 'data_create', 'data_update', 'ativo', 'user_create', 'user_update', 'user_create_email'], 'safe'],
         ];
     }
 
@@ -43,11 +40,14 @@ class DoacaoAdministratorSearchModel extends Doacao
     {
         $query = Doacao::find();
 
-        // add conditions that should always apply here
-
+        $pageSize = isset($params['per-page']) ? (int) $params['per-page'] : 12;
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => $pageSize,
+            ],
         ]);
+
 
         $this->load($params);
 
@@ -58,24 +58,32 @@ class DoacaoAdministratorSearchModel extends Doacao
         }
 
 
-        if ($this->tipo_doacao) {
-            $query->andWhere("tipo_doacao = '$this->tipo_doacao'");
-        }
-        if ($this->instituicao) {
-            $query->andWhere("instituicao = '$this->instituicao'");
-        }
-        if ($this->trote_id) {
-            $query->andWhere("trote_id = '$this->trote_id'");
+        //Helper::d($params);
+        if ($this->user_create_email) {
+
+            $query->andWhere(["user_create" => $this->user_create_email]);
         }
         if ($this->user_create) {
-            $query->andWhere("user_create = '$this->user_create'");
+            $query->andWhere(["user_create" => $this->user_create]);
+        }
+        if ($this->tipo_doacao) {
+            $query->andWhere(["tipo_doacao" => $this->tipo_doacao]);
+        }
+        if ($this->instituicao) {
+            $query->andWhere(["instituicao" => $this->instituicao]);
+        }
+        if ($this->trote_id) {
+            $query->andWhere(["trote_id" => $this->trote_id]);
         }
 
-        if ($this->validado === '1') {
-            $query->andWhere("validado = '$this->validado'");
-        }
-        if ($this->validado === '0') {
-            $query->andWhere("validado = '$this->validado' OR validado is null");
+
+        if ($this->validado === 1) {
+            $query->andWhere("validado = 1");
+        } elseif ($this->validado === '0') {
+            $query->andWhere("validado = 0");
+        } elseif ($this->validado == 2 || $this->validado == null) {
+
+            $query->andWhere("validado IS NULL");
         }
 
         if ($this->ativo === '1') {

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use Yii;
 use yii\helpers\VarDumper;
@@ -237,7 +237,7 @@ class Helper {
 
     public static function getComboSimNao() {
         $tipo = 'Não definido';
-        switch ($this->tipo) {
+        switch ($tipo) {
             case 1:
                 $tipo = 'Sim';
                 break;

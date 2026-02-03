@@ -4,7 +4,7 @@
 
 use app\assets\AdminAsset;
 use yii\helpers\Url;
-use app\module\participante\models\Helper;
+use app\module\common\models\Helper;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;

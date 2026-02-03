@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 ?>
 
 <style>

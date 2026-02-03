@@ -3,8 +3,8 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\participante\models\Regulamento;
-use app\modules\participante\models\RegulamentoSearchModel;
+use app\modules\common\models\Regulamento;
+use app\modules\common\models\RegulamentoSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

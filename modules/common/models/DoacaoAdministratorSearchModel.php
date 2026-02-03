@@ -1,16 +1,13 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\Helper;
 
-/**
- * DoacaoSearchModel represents the model behind the search form of `app\modules\participante\models\Doacao`.
- */
-class DoacaoSearchModel extends Doacao
+class DoacaoAdministratorSearchModel extends Doacao
 {
     /**
      * {@inheritdoc}
@@ -18,8 +15,8 @@ class DoacaoSearchModel extends Doacao
     public function rules()
     {
         return [
-            [['id', 'usuario_validacao', 'ativo', 'user_create', 'user_update'], 'integer'],
-            [['arquivo', 'instituicao', 'validado', 'trote', 'tipo_doacao', 'data_create', 'data_update'], 'safe'],
+            [['id', 'usuario_validacao', 'ativo', 'user_create', 'trote_id', 'user_update'], 'integer'],
+            [['arquivo', 'instituicao', 'validado', 'validado_motivo',  'tipo_doacao', 'data_create', 'data_update'], 'safe'],
         ];
     }
 
@@ -64,8 +61,18 @@ class DoacaoSearchModel extends Doacao
         if ($this->instituicao) {
             $query->andWhere("instituicao = '$this->instituicao'");
         }
-        if ($this->trote) {
-            $query->andWhere("trote = '$this->trote'");
+        if ($this->trote_id) {
+            $query->andWhere("trote_id = '$this->trote_id'");
+        }
+        if ($this->user_create) {
+            $query->andWhere("user_create = '$this->user_create'");
+        }
+
+        if ($this->validado === '1') {
+            $query->andWhere("validado = '$this->validado'");
+        }
+        if ($this->validado === '0') {
+            $query->andWhere("validado = '$this->validado' OR validado is null");
         }
 
         if ($this->ativo === '1') {
@@ -76,7 +83,6 @@ class DoacaoSearchModel extends Doacao
             $query->andWhere("ativo IN ('0','1')");
         }
 
-        $query->andWhere("user_create = " . \Yii::$app->user->identity->id . " OR user_update = " . \Yii::$app->user->identity->id);
         return $dataProvider;
     }
 }

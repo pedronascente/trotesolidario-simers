@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\alert\Alert;
-use app\modules\participante\models\Universidade;
+use app\modules\common\models\Universidade;
 use yii\helpers\ArrayHelper;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Trote;
 ?>
 <style>
     .field-registerform-outrainstituicao {
@@ -182,7 +182,7 @@ use app\modules\participante\models\Trote;
                                     <?= Html::submitButton('Salvar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
                                     <br>
                                     <br>
-                                    <?= 'Ja possui um usuário? Clique ' . Html::a('aqui', ['/participante']) ?>
+                                    <?= 'Ja possui um usuário? Clique ' . Html::a('aqui', ['/common']) ?>
                                     <br>
                                     <br>
                                     <?= 'Esqueceu sua senha? Clique ' . Html::a('aqui', ['/revoery-password']) ?>

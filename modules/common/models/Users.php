@@ -1,11 +1,11 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use Yii;
 use \yii\web\IdentityInterface;
 use \yii\base\NotSupportedException;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Trote;
 
 /**
  * This is the model class for table "_users".

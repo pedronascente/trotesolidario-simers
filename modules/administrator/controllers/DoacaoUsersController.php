@@ -3,15 +3,15 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\DoacaoAdministratorSearchModel;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\DoacaoAdministratorSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 use yii\filters\AccessControl;
-use \app\modules\participante\models\DoacaoUsersAdministratorSearchModel;
+use \app\modules\common\models\DoacaoUsersAdministratorSearchModel;
 
 /**
  * DoacaoController implements the CRUD actions for Doacao model.

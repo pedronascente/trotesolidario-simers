@@ -3,10 +3,10 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\DoacaoSearchModel */
-/* @var $form yii\widgets\ActiveForm */
-?>
+    /* @var $this yii\web\View */
+    /* @var $model app\modules\common\models\DoacaoSearchModel */
+    /* @var $form yii\widgets\ActiveForm */
+    ?>
 
 <div class="doacao-search">
 

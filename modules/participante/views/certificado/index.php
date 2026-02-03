@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 ?>
 <style>
 .certificate-grid {

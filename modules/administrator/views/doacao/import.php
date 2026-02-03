@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Trote;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use yii\bootstrap4\Button;

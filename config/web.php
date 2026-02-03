@@ -34,7 +34,7 @@ $config = [
              * Chama o model que ira implementar a interface IdentityInterface 
              * e os métodos de autenticação.
              */
-            'identityClass' => 'app\modules\participante\models\Users',
+            'identityClass' => 'app\modules\common\models\Users',
             /**
              * É responsável por definir a rota (URL) padrão de login
              */
@@ -107,20 +107,20 @@ $config = [
     'params' => $params,
 ];
 
-// if (YII_ENV_DEV) {
-//     // configuration adjustments for 'dev' environment
-//     $config['bootstrap'][] = 'debug';
-//     $config['modules']['debug'] = [
-//         'class' => 'yii\debug\Module',
-//         // uncomment the following to add your IP if you are not connecting from localhost.
-//         'allowedIPs' => ['*'],
-//     ];
-//     $config['bootstrap'][] = 'gii';
-//     $config['modules']['gii'] = [
-//         'class' => 'yii\gii\Module',
-//         // uncomment the following to add your IP if you are not connecting from localhost.
-//         'allowedIPs' => ['*'],
-//     ];
-// }
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        'allowedIPs' => ['*'],
+    ];
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        'allowedIPs' => ['*'],
+    ];
+}
 
 return $config;

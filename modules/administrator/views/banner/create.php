@@ -2,10 +2,10 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Banner */
+    /* @var $this yii\web\View */
+    /* @var $model app\modules\common\models\Banner */
 
-$this->title = 'Create Banner';
+    $this->title = 'Create Banner';
 $this->params['breadcrumbs'][] = ['label' => 'Banners', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

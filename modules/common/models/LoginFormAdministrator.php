@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use Yii;
 use yii\base\Model;
@@ -11,7 +11,7 @@ use yii\base\Model;
  * @property User|null $user This property is read-only.
  *
  */
-class LoginForm extends Model
+class LoginFormAdministrator extends Model
 {
     public $username;
     public $password;
@@ -90,9 +90,9 @@ class LoginForm extends Model
     {
         if ($this->_user === false) {
             if (Users::findByEmail($this->username)) {
-                return $this->_user = Users::findByEmail($this->username);
+                return $this->_user = Users::findByEmailAdministrator($this->username);
             }
-            $this->_user = Users::findByUsername($this->username);
+            $this->_user = Users::findByUsernameAdministrator($this->username);
         }
 
         return $this->_user;

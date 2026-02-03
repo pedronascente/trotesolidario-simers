@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Regulamento */
+/* @var $model app\modules\common\models\Regulamento */
 
 $this->title = 'Create Regulamento';
 $this->params['breadcrumbs'][] = ['label' => 'Regulamentos', 'url' => ['index']];

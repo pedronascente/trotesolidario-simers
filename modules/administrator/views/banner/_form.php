@@ -4,10 +4,10 @@ use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Banner */
-/* @var $form yii\widgets\ActiveForm */
-?>
+    /* @var $this yii\web\View */
+    /* @var $model app\modules\common\models\Banner */
+    /* @var $form yii\widgets\ActiveForm */
+    ?>
 
 <div class="banner-form container-fluid">
 

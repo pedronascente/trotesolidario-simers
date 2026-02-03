@@ -2,11 +2,11 @@
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\participante\models\Helper;
-use app\modules\participante\models\Users;
+use app\modules\common\models\Helper;
+use app\modules\common\models\Users;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\participante\models\UsersSearchModel */
+/* @var $searchModel app\modules\common\models\UsersSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
 <!-- Begin Page Content -->

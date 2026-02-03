@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use Yii;
 
@@ -11,10 +11,10 @@ class Universidade extends \yii\db\ActiveRecord
     public static function tableName(){
         return '_universidade';
     }
-
+ 
     public function rules(){
         return [
-            [['nome', 'trote_id', 'ativo'], 'required'],
+            [['nome', 'trote_id', 'ativo', 'link_doacao_alimento'], 'required'],
             [['trote_id', 'ativo'], 'integer'],
             [['nome'], 'string', 'max' => 255],
             [['icon'], 'string', 'max' => 255],

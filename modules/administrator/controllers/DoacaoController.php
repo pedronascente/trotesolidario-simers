@@ -3,14 +3,14 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\DoacaoUsersAdministratorSearchModel;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\DoacaoUsersAdministratorSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use app\modules\participante\models\Helper;
-use app\modules\participante\models\Users;
+use app\modules\common\models\Helper;
+use app\modules\common\models\Users;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\helpers\Html;

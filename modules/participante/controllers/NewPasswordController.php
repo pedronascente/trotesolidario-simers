@@ -1,17 +1,17 @@
 <?php
 
-namespace app\modules\participante\controllers;
+namespace app\modules\common\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\modules\participante\models\RecoveryForm;
-use app\modules\participante\models\Helper;
-use app\modules\participante\models\Users;
+use app\modules\common\models\RecoveryForm;
+use app\modules\common\models\Helper;
+use app\modules\common\models\Users;
 
 /**
- * Default controller for the `participante` module
+ * Default controller for the `common` module
  */
 class NewPasswordController extends Controller
 {

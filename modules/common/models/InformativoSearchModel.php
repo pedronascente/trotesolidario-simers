@@ -1,15 +1,12 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\participante\models\Regulamento;
+use app\modules\common\models\Informativo;
 
-/**
- * RegulamentoSearchModel represents the model behind the search form of `app\modules\participante\models\Regulamento`.
- */
-class RegulamentoSearchModel extends Regulamento
+class InformativoSearchModel extends Informativo
 {
     /**
      * {@inheritdoc}
@@ -40,7 +37,7 @@ class RegulamentoSearchModel extends Regulamento
      */
     public function search($params)
     {
-        $query = Regulamento::find();
+        $query = Informativo::find();
 
         // add conditions that should always apply here
 

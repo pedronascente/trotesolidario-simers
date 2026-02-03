@@ -1,12 +1,12 @@
 <?php
 
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
-use app\modules\participante\models\Users;
-use app\modules\participante\models\Universidade;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Users;
+use app\modules\common\models\Universidade;
+use app\modules\common\models\Trote;
 
 ?>
 <?php $this->registerCssFile('@web/css/styles.css'); ?>

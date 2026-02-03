@@ -1,18 +1,18 @@
 <?php
 
-use app\modules\participante\models\Trote;
-use app\modules\participante\models\Universidade;
+use app\modules\common\models\Trote;
+use app\modules\common\models\Universidade;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
 use kartik\widgets\Select2;
-use app\modules\participante\models\Users;
+use app\modules\common\models\Users;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Doacao */
-/* @var $form yii\widgets\ActiveForm */
-?>
+            /* @var $this yii\web\View */
+            /* @var $model app\modules\common\models\Doacao */
+            /* @var $form yii\widgets\ActiveForm */
+            ?>
 
 <div class="container">
     <div class="row">

@@ -2,7 +2,7 @@
 
 use kartik\alert\Alert;
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\trote */
+/* @var $model app\modules\common\models\trote */
 ?>
 <div class="container-fluid">
 

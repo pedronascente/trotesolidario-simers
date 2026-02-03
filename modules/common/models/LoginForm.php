@@ -1,17 +1,11 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use Yii;
 use yii\base\Model;
 
-/**
- * LoginForm is the model behind the login form.
- *
- * @property User|null $user This property is read-only.
- *
- */
-class LoginFormAdministrator extends Model
+class LoginForm extends Model
 {
     public $username;
     public $password;
@@ -90,9 +84,9 @@ class LoginFormAdministrator extends Model
     {
         if ($this->_user === false) {
             if (Users::findByEmail($this->username)) {
-                return $this->_user = Users::findByEmailAdministrator($this->username);
+                return $this->_user = Users::findByEmail($this->username);
             }
-            $this->_user = Users::findByUsernameAdministrator($this->username);
+            $this->_user = Users::findByUsername($this->username);
         }
 
         return $this->_user;

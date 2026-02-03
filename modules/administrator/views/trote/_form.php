@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Trote */
+/* @var $model app\modules\common\models\Trote */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 

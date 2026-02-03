@@ -3,17 +3,18 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\participante\models\Universidade;
-use app\modules\participante\models\UniversidadeSearchModel;
+use app\modules\common\models\Universidade;
+use app\modules\common\models\UniversidadeSearchModel;
+use app\modules\common\models\Trote;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\ArrayHelper;
 
-class UniversidadeController extends Controller
-{
-    public function behaviors()
-    {
+class UniversidadeController extends Controller{
+
+    public function behaviors(){
         return [
             'verbs' => [
                 'class' => VerbFilter::class,
@@ -24,27 +25,34 @@ class UniversidadeController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex(){
         $this->layout = 'adminsemjquery';
         $searchModel = new UniversidadeSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $trotes = ArrayHelper::map(
+            Trote::find()
+                ->where(['ativo' => 1])
+                ->orderBy('nome')
+                ->all(),
+            'id',
+            'nome'
+        );
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'trotes' => $trotes,
         ]);
     }
 
-    public function actionView($id)
-    {
+    public function actionView($id){
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    public function actionCreate()
-    {
+    public function actionCreate(){ 
         $this->layout = 'adminsemjquery';
         $model = new Universidade();
 
@@ -75,8 +83,7 @@ class UniversidadeController extends Controller
         return $this->render('create', ['model' => $model]);
     }
 
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id){
         $this->layout = 'adminsemjquery';
         $model = $this->findModel($id);
         $imagemAntiga = $model->icon;
@@ -115,8 +122,7 @@ class UniversidadeController extends Controller
         return $this->render('update', ['model' => $model]);
     }
 
-    public function actionDelete($id)
-    {
+    public function actionDelete($id){
         $model = $this->findModel($id);
         $model->ativo = ($model->ativo == 1) ? 0 : 1;
 
@@ -129,8 +135,7 @@ class UniversidadeController extends Controller
         return $this->redirect(['index']);
     }
 
-    protected function findModel($id)
-    {
+    protected function findModel($id){
         if (($model = Universidade::findOne($id)) !== null) {
             return $model;
         }

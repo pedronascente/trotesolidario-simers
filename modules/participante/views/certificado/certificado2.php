@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 use yii\helpers\Url;
 ?>
 <style type="text/css">

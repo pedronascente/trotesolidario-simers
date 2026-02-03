@@ -1,17 +1,17 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Universidade;
 
-class TroteSearchModel extends Trote{
-    
+class UniversidadeSearchModel extends Universidade{
+
     public function rules(){
         return [
-            [['id', 'ativo'], 'integer'],
-            [['nome', 'frase_certificado'], 'safe'],
+            [['id', 'trote_id', 'ativo'], 'integer'],
+            [['nome', 'icon', 'link_doacao_alimento'], 'safe'],
         ];
     }
 
@@ -20,7 +20,7 @@ class TroteSearchModel extends Trote{
     }
 
     public function search($params){
-        $query = Trote::find();
+        $query = Universidade::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -34,20 +34,20 @@ class TroteSearchModel extends Trote{
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'trote_id' => $this->trote_id,
             'ativo' => $this->ativo,
         ]);
 
         $query->andFilterWhere(['like', 'nome', $this->nome])
-            ->andFilterWhere(['like', 'frase_certificado', $this->frase_certificado]);
+            ->andFilterWhere(['like', 'icon', $this->icon])
+            ->andFilterWhere(['like', 'link_doacao_alimento', $this->link_doacao_alimento]);
 
         return $dataProvider;
-    }
+    }    
 }

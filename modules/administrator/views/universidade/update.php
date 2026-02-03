@@ -2,7 +2,7 @@
 
 use kartik\alert\Alert;
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Universidade */
+/* @var $model app\modules\common\models\Universidade */
 ?>
 <div class="container-fluid">
 
@@ -32,7 +32,7 @@ use kartik\alert\Alert;
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card shadow mb-4">
-                <div class="card-header bg-dark text-white py-3">
+                <div class="card-header  py-3">
                     Atualizar Universidade
                 </div>
                 <div class="p-3">

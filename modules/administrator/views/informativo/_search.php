@@ -3,10 +3,10 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\InformativoSearchModel */
-/* @var $form yii\widgets\ActiveForm */
-?>
+    /* @var $this yii\web\View */
+    /* @var $model app\modules\common\models\InformativoSearchModel */
+    /* @var $form yii\widgets\ActiveForm */
+    ?>
 
 <div class="informativo-search">
 

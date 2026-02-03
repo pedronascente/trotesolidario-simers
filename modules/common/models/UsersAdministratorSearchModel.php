@@ -1,15 +1,13 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\participante\models\Users;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Users;
+use app\modules\common\models\Helper;
 
-/**
- * UsersSearchModel represents the model behind the search form of `app\modules\participante\models\Users`.
- */
+
 class UsersAdministratorSearchModel extends Users
 {
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace app\modules\participante\controllers;
+namespace app\modules\common\controllers;
 
 use Yii;
-use app\modules\participante\models\Users;
+use app\modules\common\models\Users;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 use yii\filters\AccessControl;
 
 /**

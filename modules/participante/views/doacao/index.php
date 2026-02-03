@@ -3,8 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
-use app\modules\participante\models\Universidade;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Universidade;
+use app\modules\common\models\Trote;
 ?>
 <style>
 .responsive-grid {

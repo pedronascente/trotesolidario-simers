@@ -1,12 +1,10 @@
 <?php
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\participante\models\Trote;
-use yii\helpers\ArrayHelper;
 use kartik\alert\Alert;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\participante\models\UniversidadeSearchModel */
+/* @var $searchModel app\modules\common\models\UniversidadeSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Universidades';
@@ -65,18 +63,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'hover' => true,
                         'panel' => [
                             'heading' => '<i class="fa fa-university"></i>  Universidades',
-                            'type' => 'dark',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
                         'export' => ['fontAwesome' => true],
                         'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                         'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            
-
                             'nome',
                             'link_doacao_alimento',
-
                             [
                                 'headerOptions' => ['style' => 'width:5%'],
                                 'format' => 'raw',
@@ -93,21 +86,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'hiddenFromExport' => true,
                             ],
 
-                            // Trote (relacionamento protegido)
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
                                 'attribute' => 'trote_id',
                                 'label' => 'Evento',
-                                'value' => function ($model) {
-                                    return $model->trote?->nome ?? '-';
-                                },
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => ArrayHelper::map(Trote::find()->where(['ativo' => 1])->all(), 'id', 'nome'),
-                                'filterInputOptions' => ['placeholder' => 'Trote'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                            ],
+                                'value' => fn($model) => $model->trote->nome ?? '-',
 
-                            // Status
+                                'filterType' => GridView::FILTER_SELECT2,
+                                'filter' => $trotes,
+                                'filterInputOptions' => ['placeholder' => 'Trote'],
+                                'filterWidgetOptions' => [
+                                    'pluginOptions' => ['allowClear' => true]
+                                ],
+                            ],
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
                                 'attribute' => 'ativo',
@@ -120,7 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'filterInputOptions' => ['placeholder' => 'Status'],
                                 'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                             ],
-
                             // Ações
                             [
                                 'headerOptions' => ['style' => 'width:10%'],

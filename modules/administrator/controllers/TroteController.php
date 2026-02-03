@@ -2,10 +2,10 @@
 
 namespace app\modules\administrator\controllers;
 
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Helper;
 use Yii;
-use app\modules\participante\models\Trote;
-use app\modules\participante\models\TroteSearchModel;
+use app\modules\common\models\Trote;
+use app\modules\common\models\TroteSearchModel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Informativo */
+/* @var $model app\modules\common\models\Informativo */
 
 $this->title = 'Create Informativo';
 $this->params['breadcrumbs'][] = ['label' => 'Informativos', 'url' => ['index']];

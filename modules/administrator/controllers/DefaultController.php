@@ -6,10 +6,10 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\modules\participante\models\LoginFormAdministrator;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\Helper;
-use app\modules\participante\models\Users;
+use app\modules\common\models\LoginFormAdministrator;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\Helper;
+use app\modules\common\models\Users;
 
 /**
  * Default controller for the `admin` module

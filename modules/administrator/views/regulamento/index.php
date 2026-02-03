@@ -1,14 +1,14 @@
 <?php
 
-use app\modules\participante\models\Users;
+use app\modules\common\models\Users;
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\participante\models\Trote;
+use app\modules\common\models\Trote;
 use kartik\export\ExportMenu;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\participante\models\UniversidadeSearchModel */
+/* @var $searchModel app\modules\common\models\UniversidadeSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Regulamento';

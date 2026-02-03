@@ -2,23 +2,21 @@
 
 namespace app\modules\participante\controllers;
 
-use app\modules\participante\models\Banner;
+use app\modules\common\models\Banner;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\modules\participante\models\LoginForm;
-use app\modules\participante\models\Doacao;
-use app\modules\participante\models\Helper;
-use app\modules\participante\models\Informativo;
-use app\modules\participante\models\Regulamento;
-use app\modules\participante\models\Trote;
-use app\modules\participante\models\Users;
-use app\modules\participante\models\Universidade;
+use app\modules\common\models\LoginForm;
+use app\modules\common\models\Doacao;
+use app\modules\common\models\Helper;
+use app\modules\common\models\Informativo;
+use app\modules\common\models\Regulamento;
+use app\modules\common\models\Trote;
+use app\modules\common\models\Users;
+use app\modules\common\models\Universidade;
 
-/**
- * Default controller for the `participante` module
- */
+
 class DefaultController extends Controller
 {
 
@@ -55,7 +53,8 @@ class DefaultController extends Controller
     {
         $universidades = Universidade::find()
             ->where(['ativo' => 1])
-            ->andWhere(['<=', 'id', '20'])->all();
+            ->all();
+            //->andWhere(['<=', 'id', '20'])->all();
         Yii::$app->cache->flush();
         $capa = Banner::find()->where(['posicao' => 1])->one();
 

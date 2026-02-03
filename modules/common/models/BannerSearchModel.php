@@ -1,14 +1,11 @@
 <?php
 
-namespace app\modules\participante\models;
+namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\participante\models\Banner;
+use app\modules\common\models\Banner;
 
-/**
- * BannerSearchModel represents the model behind the search form of `app\modules\participante\models\Banner`.
- */
 class BannerSearchModel extends Banner
 {
     /**

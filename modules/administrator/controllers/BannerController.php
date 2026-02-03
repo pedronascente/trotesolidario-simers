@@ -3,9 +3,9 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\participante\models\Banner;
-use app\modules\participante\models\BannerSearchModel;
-use app\modules\participante\models\Helper;
+use app\modules\common\models\Banner;
+use app\modules\common\models\BannerSearchModel;
+use app\modules\common\models\Helper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

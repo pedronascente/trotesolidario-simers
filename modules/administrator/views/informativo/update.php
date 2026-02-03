@@ -3,10 +3,10 @@
 use kartik\alert\Alert;
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\participante\models\Universidade */
+                    /* @var $this yii\web\View */
+                    /* @var $model app\modules\common\models\Universidade */
 
-$this->title = 'Update Informativo: ' . $model->id;
+                    $this->title = 'Update Informativo: ' . $model->id;
 ?>
 <div class="container-fluid">
 
