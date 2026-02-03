@@ -4,13 +4,7 @@ namespace app\modules\common\models;
 
 use Yii;
 
-/**
- * This is the model class for table "_informativo".
- *
- * @property int $id
- * @property string|null $nome
- * @property string|null $arquivo
- */
+
 class Informativo extends \yii\db\ActiveRecord
 {
     public $file;
@@ -29,6 +23,7 @@ class Informativo extends \yii\db\ActiveRecord
     {
         return [
             [['nome', 'arquivo'], 'string'],
+            [['nome', 'arquivo'], 'required'],
         ];
     }
 

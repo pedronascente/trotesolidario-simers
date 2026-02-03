@@ -10,14 +10,9 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
-/**
- * InformativoController implements the CRUD actions for Informativo model.
- */
 class InformativoController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function behaviors()
     {
         return [
@@ -30,11 +25,7 @@ class InformativoController extends Controller
         ];
     }
 
-    /**
-     * Lists all Informativo models.
-     * @return mixed
-     */
-    public function actionIndex()
+     public function actionIndex()
     {
         $searchModel = new InformativoSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -45,12 +36,6 @@ class InformativoController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Informativo model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionView($id)
     {
         return $this->render('view', [
@@ -58,81 +43,77 @@ class InformativoController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Informativo model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
     public function actionCreate()
     {
+        $this->layout = 'adminsemjquery';
         $model = new Informativo();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($this->handleUpload($model) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Informativo criado com sucesso');
+                return $this->redirect(['index']);
+            }
+
+            Yii::$app->session->setFlash('error', 'Erro ao criar Informativo');
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $model
         ]);
     }
 
-    /**
-     * Updates an existing Informativo model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-            $arquivo = UploadedFile::getInstance($model, 'file');
-            if ($arquivo) {
-                $path = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
-                $arquivo->saveAs($path);
+
+            if ($this->handleUpload($model) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Informativo atualizado com sucesso');
+                return $this->redirect(['index']);
             }
-            if (!$model->save()) {
-                return $this->render('update', [
-                    'model' => $model,
-                    'error' => true,
-                    'success' => false,
-                    'msg' => 'Erro ao atualizar Universidade'
-                ]);
-            }
+
+            Yii::$app->session->setFlash('error', 'Erro ao atualizar Informativo');
         }
 
         return $this->render('update', [
-            'model' => $model,
-            'success' => false,
-            'error' => false,
-            'msg' => ''
+            'model' => $model
         ]);
     }
 
-    /**
-     * Deletes an existing Informativo model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->layout = 'adminsemjquery';
+        $model = $this->findModel($id);
+
+        // caminho do arquivo (se existir)
+        $filePath = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
+
+        if ($model->delete()) {
+
+            // remove o arquivo físico
+            if (!empty($model->arquivo) && file_exists($filePath)) {
+                @unlink($filePath);
+            }
+
+            Yii::$app->session->setFlash('success', 'Informativo excluído com sucesso');
+        } else {
+            Yii::$app->session->setFlash('error', 'Erro ao excluir Informativo');
+        }
 
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Informativo model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Informativo the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
+    // public function actionDelete($id)
+    // {
+    //     $this->findModel($id)->delete();
+
+    //     return $this->redirect(['index']);
+    // }
+
     protected function findModel($id)
     {
         if (($model = Informativo::findOne($id)) !== null) {
@@ -140,5 +121,19 @@ class InformativoController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function handleUpload(Informativo $model): bool
+    {
+        $arquivo = UploadedFile::getInstance($model, 'file');
+
+        if ($arquivo) {
+            $model->arquivo = $arquivo->baseName . '.' . $arquivo->extension;
+            $path = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
+
+            return $arquivo->saveAs($path);
+        }
+
+        return true;
     }
 }
