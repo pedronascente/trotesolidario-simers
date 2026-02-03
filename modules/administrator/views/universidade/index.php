@@ -3,10 +3,6 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\alert\Alert;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\modules\common\models\UniversidadeSearchModel */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
 $this->title = 'Universidades';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -15,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
     .btn-group-actions {
         display: flex;
         gap: 6px;
-        justify-content: center;
+        justify-content: center; 
         align-items: center;
     }
 </style>
