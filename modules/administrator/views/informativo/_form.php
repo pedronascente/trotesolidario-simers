@@ -17,8 +17,6 @@ use kartik\file\FileInput;
         ],
         'pluginOptions' => [
             'resizeImage' => true,
-            // 'maxImageWidth' => 200,
-            // 'maxImageHeight' => 200,
             'resizePreference' => 'width',
             'showCaption' => false,
             'showRemove' => false,

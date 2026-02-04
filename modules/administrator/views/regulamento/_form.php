@@ -3,10 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\file\FileInput;
-
-/* @var $this yii\web\View */
-/* @var $model app\modules\common\models\Regulamento */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="regulamento-form">
@@ -21,8 +17,6 @@ use kartik\file\FileInput;
         ],
         'pluginOptions' => [
             'resizeImage' => true,
-            // 'maxImageWidth' => 200,
-            // 'maxImageHeight' => 200,
             'resizePreference' => 'width',
             'showCaption' => false,
             'showRemove' => false,

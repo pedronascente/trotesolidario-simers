@@ -1,53 +1,66 @@
 <?php
 
-use app\modules\common\models\Users;
 use yii\helpers\Html;
 use kartik\grid\GridView;
-use app\modules\common\models\Trote;
-use kartik\export\ExportMenu;
-use yii\helpers\ArrayHelper;
-
-/* @var $this yii\web\View */
-/* @var $searchModel app\modules\common\models\UniversidadeSearchModel */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+use kartik\alert\Alert;
 
 $this->title = 'Regulamento';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<style>
+    .btn-group-actions {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
 <div class="container-fluid">
 
-    <!-- Page Heading -->
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <?= Alert::widget([
+            'type' => Alert::TYPE_SUCCESS,
+            'title' => 'Regulamento',
+            'icon' => 'fas fa-check-circle',
+            'body' => Yii::$app->session->getFlash('success'),
+            'showSeparator' => true,
+            'delay' => 4000,
+        ]) ?>
+    <?php endif; ?>
+
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <?= Alert::widget([
+            'type' => Alert::TYPE_DANGER,
+            'title' => 'Regulamento',
+            'icon' => 'fas fa-times-circle',
+            'body' => Yii::$app->session->getFlash('error'),
+            'showSeparator' => true,
+            'delay' => 4000,
+        ]) ?>
+    <?php endif; ?>
+
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"> Regulamento</h1>
     </div>
-    <!-- Color System -->
+
     <div class="row">
         <div class="col-lg-12 mb-4">
-            <!-- Illustrations -->
             <div class="card shadow mb-4">
                 <div class="p-3">
+                    <p>
+                        <?= Html::a('Criar Regulamento', ['create'], ['class' => 'btn btn-success']) ?>
+                    </p>
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
-                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'], // offset from top
-                        //'floatHeader' => true, // table header floats when you scroll
-                        //'floatPageSummary' => true, // table page summary floats when you scroll
-                        //'floatFooter' => false, // disable floating of table footer
-                        //'pjax' => true, // pjax is set to always false for this demo
-                        // parameters from the demo form
-                        //  'responsive' => true,
-                        //'bordered' => true,
-                        //'striped' => true,
-                        //'condensed' => true,
+                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'],
                         'hover' => true,
-                        //'showPageSummary' => true,
                         'panel' => [
                             'heading' => '<i class="fa fa-book"></i>  Regulamento',
-                            'type' => 'success',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        // set export properties
                         'export' => [
                             'fontAwesome' => true
                         ],
@@ -56,7 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             'csv' => [],
                             'txt' => [],
                             'xls' => [],
-                            //'pdf' => [],
                             'json' => [],
                         ],
                         'columns' => [
@@ -76,23 +88,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
                                 'class' => '\kartik\grid\ActionColumn',
-                                'template' => '{update}',
-                                //'template' => '{view} {update} {download}',
+                                'template' => '<div class="btn-group-actions">{update} {delete}</div>',
                                 'buttons' => [
-                                    /*'view' => function ($url, $model) {
-                                        return Html::a(
 
-                                            '<i class="fa fa-eye" aria-hidden="true"></i>',
-                                            $url,
-                                            [
-                                                'class' => 'btn btn-small btn-dark',
-                                                'data-toggle' => 'tooltip',
-                                                'data-method' => "post",
-                                                'data-original-title' => 'Excluir',
-                                                'data-pjax' => '0',
-                                            ]
-                                        );
-                                    },*/
                                     'update' => function ($url) {
                                         return Html::a(
                                             '<i class="fas fa-pencil-alt"></i>',
@@ -105,22 +103,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ]
                                         );
                                     },
-                                    /*'delete' => function ($url, $model) {
-                                        return Html::a(
 
-                                            '<i class="fa ' . (($model->ativo == 1) ? 'fa-trash' : 'fa-reply') . '" aria-hidden="true"></i>',
-                                            $url,
+                                    'delete' => function ($url, $model) {
+                                        return Html::a(
+                                            '<i class="fas fa-trash-alt"></i>',
+                                            ['delete', 'id' => $model->id],
                                             [
-                                                'class' => 'btn btn-small ' . (($model->ativo == 1) ? 'btn-danger' : 'btn-warning'),
+                                                'class' => 'btn btn-small btn-danger',
+                                                'data' => [
+                                                    'confirm' => 'Tem certeza que deseja excluir este regulamento?',
+                                                    'method' => 'post',
+                                                ],
                                                 'data-toggle' => 'tooltip',
-                                                'data-method' => "post",
                                                 'data-original-title' => 'Excluir',
-                                                'data-pjax' => '0',
                                             ]
                                         );
-                                    },*/
+                                    },
                                 ],
                             ],
+
                         ],
                     ]); ?>
 

@@ -9,7 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-
+use yii\db\ActiveRecord; 
 class RegulamentoController extends Controller
 {
    
@@ -45,66 +45,64 @@ class RegulamentoController extends Controller
 
     public function actionCreate()
     {
+       $this->layout = 'adminsemjquery';
         $model = new Regulamento();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($this->handleUpload($model) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Informativo criado com sucesso');
+                return $this->redirect(['index']);
+            }
+
+            Yii::$app->session->setFlash('error', 'Erro ao criar Informativo');
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $model
         ]);
     }
 
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+
         $this->layout = 'adminsemjquery';
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-            $arquivo = UploadedFile::getInstance($model, 'file');
-            if ($arquivo) {
-                if (!empty($model->arquivo)) {
-                    $oldPath = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-    
-                $newName = md5(uniqid(rand(), true)) . '.' . $arquivo->getExtension();
-                $model->arquivo = $newName; 
-    
-                $path = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
-                $arquivo->saveAs($path);
-            }
-            if (!$model->save()) {
-                return $this->render('update', [
-                    'model' => $model,
-                    'error' => true,
-                    'success' => false,
-                    'msg' => 'Erro ao atualizar Universidade'
-                ]);
+
+            if ($this->handleUpload($model) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Informativo atualizado com sucesso');
+                return $this->redirect(['index']);
             }
 
-            return $this->render('update', [
-                'model' => $model,
-                'success' => true,
-                'error' => false,
-                'msg' => 'Universidade atualizada com sucesso'
-            ]);
+            Yii::$app->session->setFlash('error', 'Erro ao atualizar Informativo');
         }
 
         return $this->render('update', [
-            'model' => $model,
-            'success' => false,
-            'error' => false,
-            'msg' => ''
+            'model' => $model
         ]);
     }
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->layout = 'adminsemjquery';
+        $model = $this->findModel($id);
+
+        // caminho do arquivo (se existir)
+        $filePath = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
+
+        if ($model->delete()) {
+
+            // remove o arquivo físico
+            if (!empty($model->arquivo) && file_exists($filePath)) {
+                @unlink($filePath);
+            }
+
+            Yii::$app->session->setFlash('success', 'Informativo excluído com sucesso');
+        } else {
+            Yii::$app->session->setFlash('error', 'Erro ao excluir Informativo');
+        }
 
         return $this->redirect(['index']);
     }
@@ -117,4 +115,23 @@ class RegulamentoController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    
+    private function handleUpload(ActiveRecord $model): bool
+    {
+        $arquivo = UploadedFile::getInstance($model, 'file');
+
+        if (!$arquivo) {
+            return true; // upload não é obrigatório
+        }
+
+        $ext = $arquivo->getExtension();
+        $fileName = md5(uniqid('', true)) . '.' . $ext;
+
+        $model->arquivo = $fileName;
+
+        $path = Yii::$app->basePath . '/web/pdf/' . $fileName;
+
+        return $arquivo->saveAs($path);
+    }
 }
+

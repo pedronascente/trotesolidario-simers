@@ -3,12 +3,12 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\common\models\RegulamentoSearchModel */
-/* @var $form yii\widgets\ActiveForm */
-?>
+    /* @var $this yii\web\View */
+    /* @var $model app\modules\common\models\RegulamentoSearchModel */
+    /* @var $form yii\widgets\ActiveForm */
+    ?>
 
-<div class="regulamento-search">
+<div class="informativo-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],

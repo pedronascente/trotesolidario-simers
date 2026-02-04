@@ -29,6 +29,7 @@ class Regulamento extends \yii\db\ActiveRecord
     {
         return [
             [['nome', 'arquivo'], 'string'],
+            [['nome'], 'required'],
         ];
     }
 

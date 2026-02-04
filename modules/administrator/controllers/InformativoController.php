@@ -9,7 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-
+use yii\db\ActiveRecord; 
 class InformativoController extends Controller
 {
 
@@ -115,17 +115,22 @@ class InformativoController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function handleUpload(Informativo $model): bool
+   private function handleUpload(ActiveRecord $model): bool
     {
         $arquivo = UploadedFile::getInstance($model, 'file');
 
-        if ($arquivo) {
-            $model->arquivo = $arquivo->baseName . '.' . $arquivo->extension;
-            $path = Yii::$app->basePath . '/web/pdf/' . $model->arquivo;
-
-            return $arquivo->saveAs($path);
+        if (!$arquivo) {
+            return true; // upload não é obrigatório
         }
 
-        return true;
+        $ext = $arquivo->getExtension();
+        $fileName = md5(uniqid('', true)) . '.' . $ext;
+
+        $model->arquivo = $fileName;
+
+        $path = Yii::$app->basePath . '/web/pdf/' . $fileName;
+
+        return $arquivo->saveAs($path);
     }
 }
+
