@@ -25,7 +25,7 @@ class InformativoController extends Controller
         ];
     }
 
-     public function actionIndex()
+    public function actionIndex()
     {
         $searchModel = new InformativoSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -105,14 +105,6 @@ class InformativoController extends Controller
 
         return $this->redirect(['index']);
     }
-
-
-    // public function actionDelete($id)
-    // {
-    //     $this->findModel($id)->delete();
-
-    //     return $this->redirect(['index']);
-    // }
 
     protected function findModel($id)
     {
