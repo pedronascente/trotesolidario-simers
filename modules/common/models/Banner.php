@@ -3,48 +3,57 @@
 namespace app\modules\common\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\web\UploadedFile;
 
-/**
- * This is the model class for table "_banner".
- *
- * @property int $id
- * @property string|null $posicao
- * @property string|null $img_mob
- * @property string|null $img_dsk
- */
-class Banner extends \yii\db\ActiveRecord
-{
+class Banner extends ActiveRecord{
+
+    public const POSICAO_LOGIN       = 'Login';
+    public const POSICAO_INFORMATIVO = 'Informativo';
+    public const POSICAO_HOME        = 'Home';
+
     public $file_dsk;
     public $file_mob;
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
+    public static function tableName(){
         return '_banner';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
+    public function rules(){
         return [
-            [['posicao', 'img_mob', 'img_dsk'], 'string'],
+            [['posicao','ativo'], 'required'],
+            [['ativo'], 'integer'],
+            [
+                ['file_dsk', 'file_mob'],
+                'file',
+                'extensions' => ['jpg', 'jpeg', 'png'],
+                'mimeTypes' => ['image/jpeg', 'image/png'],
+                'skipOnEmpty' => true, 
+            ],
+
+            [['img_dsk', 'img_mob'], 'string'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
+    public function attributeLabels(){
         return [
-            'id' => 'ID',
-            'posicao' => 'Posicao',
-            'img_mob' => 'Img Mob',
-            'img_dsk' => 'Img Dsk',
+            'posicao'  => 'Posição do Banner',
+            'file_dsk' => 'Imagem Desktop',
+            'file_mob' => 'Imagem Mobile',
+            'ativo' => 'Ativo',
         ];
+    }
+
+    public static function getPosicoes(): array{
+        return [
+            self::POSICAO_LOGIN => 'Imagem da pagina de login dos Participantes',
+            self::POSICAO_INFORMATIVO => 'Informativo',
+            self::POSICAO_HOME => 'Home',
+        ];
+    }
+
+    public function afterFind(){
+        parent::afterFind();
+        $this->ativo = (int) $this->ativo;
     }
 }

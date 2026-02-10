@@ -3,27 +3,37 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
-use app\modules\common\models\Banner;
-use app\modules\common\models\BannerSearchModel;
-use app\modules\common\models\Helper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
-/**
- * BannerController implements the CRUD actions for Banner model.
- */
-class BannerController extends Controller
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
+use app\modules\common\models\Banner;
+use app\modules\common\models\BannerSearchModel;
+use app\modules\common\services\contracts\BannerServiceInterface;
+
+class BannerController extends Controller{
+
+    private BannerServiceInterface $service;
+
+    public function __construct($id,$module,BannerServiceInterface $service,$config = []) {
+        parent::__construct($id, $module, $config);
+        $this->service = $service;
+    }
+
+    public function behaviors(): array{
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -31,150 +41,85 @@ class BannerController extends Controller
         ];
     }
 
-    /**
-     * Lists all Banner models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new BannerSearchModel();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    public function actionIndex(){
+
         $this->layout = 'adminsemjquery';
+
+        $searchModel  = new BannerSearchModel();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'searchModel'  => $searchModel,
+            'dataProvider'=> $dataProvider,
         ]);
     }
 
-    /**
-     * Displays a single Banner model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
+    public function actionView($id){
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    /**
-     * Creates a new Banner model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Banner();
+    public function actionCreate(){
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $this->layout = 'adminsemjquery';
+        $banner = new Banner();
+
+        if ($banner->load(Yii::$app->request->post())) {
+
+            if ($this->service->create($banner)) {
+                Yii::$app->session->setFlash('success', 'Banner criado com sucesso.');
+                return $this->redirect(['index']);
+            }
+
+            Yii::$app->session->setFlash('error', 'Erro ao criar banner.');
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $banner,
         ]);
     }
 
-    /**
-     * Updates an existing Banner model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
+    public function actionUpdate($id){
 
         $this->layout = 'adminsemjquery';
-        if ($model->load(Yii::$app->request->post())) {
-            $arquivo_dsk = UploadedFile::getInstance($model, 'file_dsk');
-            $arquivo_mob = UploadedFile::getInstance($model, 'file_mob');
+        $banner = $this->findModel($id);
 
+        if ($banner->load(Yii::$app->request->post())) {
 
-            if ($arquivo_dsk) {
-                if (!empty($model->img_dsk)) {
-                    $oldPath = Yii::$app->basePath . '/web/img/' . $model->img_dsk;
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                $newNameDsk = md5(uniqid(rand(), true)) . '.' . $arquivo_dsk->getExtension();
-                $model->img_dsk = $newNameDsk;
-
-                $path = Yii::$app->basePath . '/web/img/' . $model->img_dsk;
-                $arquivo_dsk->saveAs($path);
-            }
-            if ($arquivo_mob) {
-                if (!empty($model->img_mob)) {
-                    $oldPath = Yii::$app->basePath . '/web/img/' . $model->img_mob;
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
-                    }
-                }
-
-                $newNameMob = md5(uniqid(rand(), true)) . '.' . $arquivo_mob->getExtension();
-                $model->img_mob = $newNameMob;
-
-                $path = Yii::$app->basePath . '/web/img/' . $model->img_mob;
-                $arquivo_mob->saveAs($path);
-            }
-            if (!$model->save()) {
-                return $this->render('update', [
-                    'model' => $model,
-                    'error' => true,
-                    'success' => false,
-                    'msg' => 'Erro ao atualizar Banner'
-                ]);
+            if ($this->service->update($banner)) {
+                Yii::$app->session->setFlash('success', 'Banner atualizado com sucesso.');
+                return $this->redirect(['index']);
             }
 
-            return $this->render('update', [
-                'model' => $model,
-                'success' => true,
-                'error' => false,
-                'msg' => 'Banner atualizada com sucesso'
-            ]);
+            Yii::$app->session->setFlash('error', 'Erro ao atualizar banner.');
         }
 
         return $this->render('update', [
-            'model' => $model,
-            'success' => false,
-            'error' => false,
-            'msg' => ''
+            'model' => $banner,
         ]);
     }
 
-    /**
-     * Deletes an existing Banner model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+    public function actionDelete($id){
+
+        $banner = $this->findModel($id);
+
+        if ($this->service->delete($banner)) {
+            Yii::$app->session->setFlash('success', 'Banner excluído com sucesso.');
+        } else {
+            Yii::$app->session->setFlash('error', 'Erro ao excluir banner.');
+        }
 
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Banner model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Banner the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
+    protected function findModel($id): Banner{
+
         if (($model = Banner::findOne($id)) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('Banner não encontrado.');
     }
 }
