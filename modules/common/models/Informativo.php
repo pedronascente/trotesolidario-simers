@@ -4,34 +4,21 @@ namespace app\modules\common\models;
 
 use Yii;
 
-
-class Informativo extends \yii\db\ActiveRecord
-{
+class Informativo extends \yii\db\ActiveRecord{
     public $file;
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
+    
+    public static function tableName(){
         return '_informativo';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
+    public function rules(){
         return [
             [['nome', 'arquivo'], 'string'],
-            [['nome', 'arquivo'], 'required'],
+            [['nome'], 'required'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
+    public function attributeLabels(){
         return [
             'id' => 'ID',
             'nome' => 'Nome',
@@ -39,3 +26,4 @@ class Informativo extends \yii\db\ActiveRecord
         ];
     }
 }
+ 

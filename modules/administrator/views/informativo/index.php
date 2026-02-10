@@ -81,7 +81,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'arquivo',
                                 'label' => 'Icon',
                                 'value' => function ($model) {
-                                    return Html::a('Link do arquivo', Yii::$app->getUrlManager()->getBaseUrl() . '/pdf/' . $model->arquivo, ['target' => '_blank']);
+                                    if ($model->arquivo) {
+                                        return Html::a(
+                                            'Link do arquivo',
+                                            Yii::$app->request->baseUrl . '/pdf/' . $model->arquivo,
+                                            ['target' => '_blank']
+                                        );
+                                    }
+                                    return null;
                                 },
                                 'hiddenFromExport' => true,
                             ],
@@ -90,7 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => '\kartik\grid\ActionColumn',
                                 'template' => '<div class="btn-group-actions">{update} {delete}</div>',
                                 'buttons' => [
-
                                     'update' => function ($url) {
                                         return Html::a(
                                             '<i class="fas fa-pencil-alt"></i>',

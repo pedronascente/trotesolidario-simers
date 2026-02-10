@@ -27,7 +27,6 @@ use kartik\alert\Alert;
         ]) ?>
     <?php endif; ?>
 
-
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card shadow mb-4">
