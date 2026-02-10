@@ -13,6 +13,8 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
+        '@pdf'   => '@app/web/pdf',
+        '@img'   => '@app/web/img',
     ],
     'components' => [
         'assetManager' => [
@@ -105,6 +107,10 @@ $config = [
         ]
     ],
     'params' => $params,
+    'container' => [
+       'definitions' => require __DIR__ . '/container.php',
+    ],
+
 ];
 
 if (YII_ENV_DEV) {
