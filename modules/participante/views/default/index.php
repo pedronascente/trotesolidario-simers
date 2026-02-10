@@ -11,7 +11,14 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-lg-9 mx-auto">
             <div style="padding: 15px 0;">
-                <img src="/img/<?= !Helper::isMobile() ? $capa->img_dsk : $capa->img_mob ?>" style="width: 100%;height: auto;">
+               <?php if ($capa && ($capa->img_dsk || $capa->img_mob) && $capa->ativo ==1 && $capa->posicao =="Login" ): ?>
+                    <img
+                        src="/img/<?= !Helper::isMobile() ? $capa->img_dsk : $capa->img_mob ?>"
+                        style="width:100%;height:auto;"
+                    >
+                <?php else: ?>
+                    echo 'Nenhuma capa foi registrada';
+                <?php endif; ?>
             </div>
             <div class="px-4">
                 <?php
@@ -70,8 +77,6 @@ use yii\widgets\ActiveForm;
                     </div>
                 <?php endforeach; ?>
             </div>
-
-
         </div>
     </div>
 </div>

@@ -54,10 +54,16 @@ class DefaultController extends Controller
         $universidades = Universidade::find()
             ->where(['ativo' => 1])
             ->all();
-            //->andWhere(['<=', 'id', '20'])->all();
-        Yii::$app->cache->flush();
-        $capa = Banner::find()->where(['posicao' => 1])->one();
 
+        Yii::$app->cache->flush();
+
+        
+            $capa = Banner::find()
+                ->where(['ativo' => 1])
+                ->andWhere(['posicao' => 'Login'])
+                ->one();
+
+                
         $this->layout = 'adminindex';
         if (!Yii::$app->user->isGuest) {
 

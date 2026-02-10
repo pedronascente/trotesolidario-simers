@@ -15,17 +15,10 @@ use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-/**
- * DoacaoController implements the CRUD actions for Doacao model.
- */
-class DoacaoController extends Controller
-{
+class DoacaoController extends Controller{
 
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
+    
+    public function behaviors(){
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -48,12 +41,7 @@ class DoacaoController extends Controller
         ];
     }
 
-    /**
-     * Lists all Doacao models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
+    public function actionIndex(){
         $this->layout = 'adminsemjquery';
         $searchModel = new DoacaoUsersAdministratorSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -63,9 +51,7 @@ class DoacaoController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    public function actionImport()
-    {
-
+    public function actionImport(){
 
         $this->layout = 'adminsemjquery';
         $model = new Doacao();
@@ -134,13 +120,8 @@ class DoacaoController extends Controller
 
         ]);
     }
-    /**
-     * Creates a new Doacao model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
+
+    public function actionCreate(){
         $model = new Doacao();
         $model->ativo = 1;
         $this->layout = 'adminsemjquery';
@@ -249,15 +230,7 @@ class DoacaoController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing Doacao model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
         $this->layout = 'adminsemjquery';
 
@@ -336,15 +309,7 @@ class DoacaoController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing Doacao model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id){
         $model = $this->findModel($id);
         $model->ativo = ($model->ativo == 1) ? 0 : 1;
 
@@ -355,8 +320,7 @@ class DoacaoController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionValidar($id, $status)
-    {
+    public function actionValidar($id, $status){
         $model = $this->findModel($id);
         $model->validado = (int) $status;
 
@@ -369,8 +333,7 @@ class DoacaoController extends Controller
         return $this->redirect(Yii::$app->request->referrer ?: ['index']);
     }
 
-    public function actionCheck()
-    {
+    public function actionCheck(){
         $model = $this->findModel($_POST["model_id"]);
         $novoValor = $_POST["novo_valor"] ?? null;
 
@@ -385,8 +348,7 @@ class DoacaoController extends Controller
         return json_encode(['success' => true]);
     }
 
-    public function actionAtualizamotivo()
-    {
+    public function actionAtualizamotivo(){
 
         $model = $this->findModel($_POST["model_id"]);
         $model->validado_motivo = $_POST["texto"];
@@ -398,15 +360,7 @@ class DoacaoController extends Controller
         return true;
     }
 
-    /**
-     * Finds the Doacao model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Doacao the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
+    protected function findModel($id){
         if (($model = Doacao::findOne($id)) !== null) {
             return $model;
         }

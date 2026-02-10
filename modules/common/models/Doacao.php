@@ -4,49 +4,17 @@ namespace app\modules\common\models;
 
 use Yii;
 
-/**
- * This is the model class for table "_doacao".
- *
- * @property int $id
- * @property string $arquivo
- * @property string $instituicao
- * @property int $trote_id
- * @property string $tipo_doacao
- * @property int|null $validado
- * @property string|null $validado_motivo
- * @property int|null $usuario_validacao
- * @property int|null $user_create
- * @property string|null $data_create
- * @property int|null $user_update
- * @property string|null $data_update
- * @property int|null $ativo
- *
- * @property Trote $trote
- * @property Users $userCreate
- * @property Users $userUpdate
- * @property Users $usuarioValidacao
- */
-class Doacao extends \yii\db\ActiveRecord
-{
+class Doacao extends \yii\db\ActiveRecord{
 
     public $file;
     public $user_create_email;
     public $comprovante;
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
+    public static function tableName(){
         return '_doacao';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
+    public function rules(){
         return [
             [['arquivo', 'instituicao', 'trote_id', 'tipo_doacao'], 'required'],
             [['arquivo', 'tipo_doacao', 'validado_motivo'], 'string'],
@@ -59,11 +27,8 @@ class Doacao extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
+    
+    public function attributeLabels(){
         return [
             'id' => 'ID',
             'arquivo' => 'Arquivo',
@@ -81,43 +46,19 @@ class Doacao extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Trote]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrote()
-    {
+    public function getTrote(){
         return $this->hasOne(Trote::className(), ['id' => 'trote_id']);
     }
-
-    /**
-     * Gets query for [[UserCreate]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserCreate()
-    {
+   
+    public function getUserCreate(){
         return $this->hasOne(Users::className(), ['id' => 'user_create']);
     }
 
-    /**
-     * Gets query for [[UserUpdate]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserUpdate()
-    {
+    public function getUserUpdate(){
         return $this->hasOne(Users::className(), ['id' => 'user_update']);
     }
 
-    /**
-     * Gets query for [[UsuarioValidacao]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsuarioValidacao()
-    {
+    public function getUsuarioValidacao(){
         return $this->hasOne(Users::className(), ['id' => 'usuario_validacao']);
     }
 }

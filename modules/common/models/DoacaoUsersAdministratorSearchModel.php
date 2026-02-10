@@ -7,37 +7,22 @@ use yii\data\ActiveDataProvider;
 use app\modules\common\models\Doacao;
 use app\modules\common\models\Helper;
 
-class DoacaoUsersAdministratorSearchModel extends Doacao
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
+class DoacaoUsersAdministratorSearchModel extends Doacao{
+   
+    public function rules(){
         return [
             [['id', 'usuario_validacao',], 'integer'],
             [['arquivo', 'instituicao', 'validado', 'trote_id', 'trote', 'tipo_doacao', 'data_create', 'data_update', 'ativo', 'user_create', 'user_update', 'user_create_email'], 'safe'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
+    
+    public function scenarios(){
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
-    {
+    public function search($params){
+        
         $query = Doacao::find();
 
         $pageSize = isset($params['per-page']) ? (int) $params['per-page'] : 12;

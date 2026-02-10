@@ -51,7 +51,7 @@ class CertificadoController extends Controller
      */
     public function actionIndex()
     {
-        $this->layout = 'common';
+        $this->layout = 'participante';
         $connection = Yii::$app->getDb();
         $certificados = $connection
             ->createCommand(
@@ -75,7 +75,7 @@ class CertificadoController extends Controller
 
     public function actionImprime()
     {
-        $this->layout = 'common';
+        $this->layout = 'participante';
         $connection = Yii::$app->getDb();
         $certificado = $connection
             ->createCommand(

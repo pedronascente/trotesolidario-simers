@@ -10,27 +10,24 @@ class Trote extends \yii\db\ActiveRecord{
         return '_trote';
     }
 
-    public function rules()
-    {
+   public function rules(){
         return [
-            [
-                ['nome', 'frase_certificado'], 
-                'string'
-            ],
-            [
-                ['nome', 'frase_certificado'], 
-                'required'
-            ],
-            [
-                ['ativo'], 
-                'integer'
-            ],
+            // obrigatórios
+            [['nome', 'frase_certificado', 'ativo'], 'required'],
+
+            // strings
+            [['nome'], 'string', 'max' => 255],
+            [['frase_certificado'], 'string', 'max' => 500],
+
+            // status
+            [['ativo'], 'in', 'range' => [0, 1]],
         ];
     }
 
+
     public function attributeLabels()
     {
-        return [
+        return [  
             'id' => 'ID',
             'nome' => 'Nome',
             'frase_certificado' => 'Frase Certificado',
