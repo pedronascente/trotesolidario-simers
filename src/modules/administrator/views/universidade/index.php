@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
         justify-content: center;
         align-items: center;
     }
-</style>
+</style> 
 
 <div class="container-fluid">
 

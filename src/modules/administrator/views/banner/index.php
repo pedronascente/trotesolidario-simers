@@ -53,24 +53,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
-                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'],
                         'pjax' => true,
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-book"></i>  Banners',
+                            'heading' => '<i class="fa fa-university"></i> Universidades',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        // set export properties
-                        'export' => [
-                            'fontAwesome' => true
-                        ],
-                        'exportConfig' => [
-                            'html' => [],
-                            'csv' => [],
-                            'txt' => [],
-                            'xls' => [],
-                            'json' => [],
-                        ],
+                        'export' => ['fontAwesome' => true],
+                        'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                         'columns' => [
 
                             [
@@ -118,11 +108,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'ativo',
                                 'label' => 'ATIVO',
                                 'value' => function ($model) {
-                                    return ($model->ativo===1) ? "SIM" : "NÃO";
+                                    return ($model->ativo === 1) ? "SIM" : "NÃO";
                                 },
                                 'hiddenFromExport' => true,
                             ],
-                           
+
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
                                 'class' => '\kartik\grid\ActionColumn',

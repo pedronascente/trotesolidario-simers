@@ -9,10 +9,10 @@ use kartik\file\FileInput;
 use kartik\widgets\Select2;
 use app\modules\common\models\Users;
 
-            /* @var $this yii\web\View */
-            /* @var $model app\modules\common\models\Doacao */
-            /* @var $form yii\widgets\ActiveForm */
-            ?>
+/* @var $this yii\web\View */
+/* @var $model app\modules\common\models\Doacao */
+/* @var $form yii\widgets\ActiveForm */
+?>
 
 <div class="container">
     <div class="row">
@@ -88,8 +88,8 @@ use app\modules\common\models\Users;
                         'options' => ['placeholder' => '- Selecione uma opção -'],
                         'data' => [
                             'Alimentos' => 'Alimentos',
-                            'Participação Presencial' =>'Participação Presencial',
-                            'Comissão organizadora'=> 'Comissão organizadora',
+                            'Participação Presencial' => 'Participação Presencial',
+                            'Comissão organizadora' => 'Comissão organizadora',
                             'Sangue' => 'Sangue',
                         ],
                         'pluginOptions' => [
@@ -101,8 +101,9 @@ use app\modules\common\models\Users;
             </div>
 
 
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
+                <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
             </div>
 
             <?php ActiveForm::end(); ?>

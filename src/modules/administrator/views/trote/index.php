@@ -62,15 +62,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                'filterModel'  => $searchModel,
-
-                // CONFIGURAÇÕES ESSENCIAIS (SEM ERRO)
-                'pjax'              => true,
-                'hover'             => true,
-                'export'            => false,
-                'resizableColumns'  => false,
-                'persistResize'     => false,
-                'toolbar'           => false,
+                'filterModel' => $searchModel,
+                'pjax' => true,
+                'hover' => true,
+                'panel' => [
+                    'heading' => '<i class="fa fa-university"></i> Universidades',
+                    'before' => '<div style="padding-top: 7px;"><em></em></div>',
+                ],
+                'export' => ['fontAwesome' => true],
+                'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
 
                 // Destaque visual
                 'rowOptions' => function ($model) {

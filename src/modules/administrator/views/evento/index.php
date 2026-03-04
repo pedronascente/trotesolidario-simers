@@ -62,20 +62,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
-                        'filterModel'  => $searchModel,
-                        'hover'        => true,
-                        'panel'        => [
-                            'heading' => '<i class="fa fa-calendar"></i> Eventos',
-                            'before'  => '<div style="padding-top: 7px;"><em>Filtre os eventos abaixo:</em></div>',
+                        'filterModel' => $searchModel,
+                        'pjax' => true,
+                        'hover' => true,
+                        'panel' => [
+                            'heading' => '<i class="fa fa-university"></i> Universidades',
+                            'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        'export'       => false,
-                        'exportConfig' => [
-                            'html' => [],
-                            'csv'  => [],
-                            'txt'  => [],
-                            'xls'  => [],
-                            'json' => [],
-                        ],
+                        'export' => ['fontAwesome' => true],
+                        'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],
 
@@ -86,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label'     => 'Trote',
                                 'value'     => function ($model) {
                                     return $model->trote
-                                        ? $model->trote->titulo  
+                                        ? $model->trote->titulo
                                         : '-';
                                 },
                                 'filter' => \yii\helpers\ArrayHelper::map(

@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "f4a583f91e6bc1447adccce83a752085",
+    "packages": [
+        {
+            "name": "yidas/yii2-composer-bower-skip",
+            "version": "2.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yidas/yii2-composer-bower-skip.git",
+                "reference": "1156ed4dc2ddca811bd2582d09e8885585fbd0cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yidas/yii2-composer-bower-skip/zipball/1156ed4dc2ddca811bd2582d09e8885585fbd0cb",
+                "reference": "1156ed4dc2ddca811bd2582d09e8885585fbd0cb",
+                "shasum": ""
+            },
+            "provide": {
+                "bower-asset/bootstrap": "*",
+                "bower-asset/inputmask": "*",
+                "bower-asset/jquery": "*",
+                "bower-asset/punycode": "*",
+                "bower-asset/typeahead.js": "*",
+                "bower-asset/yii2-pjax": "*"
+            },
+            "type": "yii2-extension",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Composer package that allows you to install or update Yii2 without Bower-Asset",
+            "keywords": [
+                "bower",
+                "bower asset",
+                "framework",
+                "yii2"
+            ],
+            "support": {
+                "issues": "https://github.com/yidas/yii2-composer-bower-skip/issues?state=open",
+                "source": "https://github.com/yidas/yii2-composer-bower-skip"
+            },
+            "time": "2017-11-03T06:28:14+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
+}

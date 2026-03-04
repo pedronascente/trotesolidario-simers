@@ -40,7 +40,7 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
         <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>

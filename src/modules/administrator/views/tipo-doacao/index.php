@@ -62,20 +62,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
-                        'filterModel'  => $searchModel,
-                        'hover'        => true,
-                        'panel'        => [
-                            'heading' => '<i class="fa fa-donate"></i> Tipos de Doação',
-                            'before'  => '<div style="padding-top: 7px;"><em>Filtre os tipos de doação abaixo:</em></div>',
+                        'filterModel' => $searchModel,
+                        'pjax' => true,
+                        'hover' => true,
+                        'panel' => [
+                            'heading' => '<i class="fa fa-university"></i> Universidades',
+                            'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        'export'       => false,
-                        'exportConfig' => [
-                            'html' => [],
-                            'csv'  => [],
-                            'txt'  => [],
-                            'xls'  => [],
-                            'json' => [],
-                        ],
+                        'export' => ['fontAwesome' => true],
+                        'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],
 

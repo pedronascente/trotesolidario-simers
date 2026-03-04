@@ -34,8 +34,9 @@ use kartik\file\FileInput;
             ],
         ]); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <div class="form-group mt-3">
+        <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
