@@ -16,11 +16,22 @@ class TipoDoacao extends ActiveRecord
     {
         return [
             [['nome', 'carga_horaria', 'pontuacao_ranking'], 'required'],
+
             [['nome'], 'string', 'max' => 150],
             [['descricao'], 'string', 'max' => 255],
+
             [['carga_horaria', 'pontuacao_ranking', 'ativo'], 'integer'],
-            [['ativo'], 'default', 'value' => 1], // assume ativo por padrão
-            [['nome'], 'unique'], // se quiser nome único
+
+            // 🔒 REGRA DE NEGÓCIO: NÃO PERMITIR VALORES NEGATIVOS
+            [
+                ['carga_horaria', 'pontuacao_ranking'],
+                'number',
+                'min' => 0,
+                'tooSmall' => '{attribute} não pode ser negativo.'
+            ],
+
+            [['ativo'], 'default', 'value' => 1],
+            [['nome'], 'unique'],
         ];
     }
 
