@@ -1,0 +1,9 @@
+/* Override SB Admin 2 base font */
+html {
+    font-size: 1rem;
+    /* volta ao padrão do navegador */
+}
+
+body {
+    font-size: 1rem;
+}
