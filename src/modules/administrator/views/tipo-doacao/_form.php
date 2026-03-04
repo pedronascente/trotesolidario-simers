@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['index'], ['class' => 'btn btn-secondary']) ?>
+        <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
