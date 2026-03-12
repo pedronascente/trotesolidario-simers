@@ -3,45 +3,27 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\alert\Alert;
+
 $this->title = 'Informativo';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
-    .btn-group-actions {
-        display: flex;
-        gap: 6px;
-        justify-content: center;
-        align-items: center;
-    }
+    .btn-group-actions { display: flex;  gap: 6px; justify-content: center; align-items: center; }
 </style>
 
 <div class="container-fluid">
 
     <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <?= Alert::widget([
-            'type' => Alert::TYPE_SUCCESS,
-            'title' => 'Informativo',
-            'icon' => 'fas fa-check-circle',
-            'body' => Yii::$app->session->getFlash('success'),
-            'showSeparator' => true,
-            'delay' => 4000,
-        ]) ?>
+        <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Informativo', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000,]) ?>
     <?php endif; ?>
 
     <?php if (Yii::$app->session->hasFlash('error')): ?>
-        <?= Alert::widget([
-            'type' => Alert::TYPE_DANGER,
-            'title' => 'Informativo',
-            'icon' => 'fas fa-times-circle',
-            'body' => Yii::$app->session->getFlash('error'),
-            'showSeparator' => true,
-            'delay' => 4000,
-        ]) ?>
+        <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Informativo', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000,]) ?>
     <?php endif; ?>
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"> Informativo</h1>
+        <h1 class="h3 mb-0 text-gray-800"> <?= Html::encode($this->title); ?></h1>
     </div>
 
     <div class="row">
@@ -57,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'],
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-book"></i>  Informativo',
+                            'heading' => '<i class="fa fa-book"></i> Lista',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
                         'export' => [
@@ -71,7 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             'json' => [],
                         ],
                         'columns' => [
-
                             'nome',
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
@@ -108,7 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ]
                                         );
                                     },
-
                                     'delete' => function ($url, $model) {
                                         return Html::a(
                                             '<i class="fas fa-trash-alt"></i>',
@@ -126,10 +106,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     },
                                 ],
                             ],
-
                         ],
                     ]); ?>
-
                 </div>
             </div>
         </div>

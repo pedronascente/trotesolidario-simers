@@ -23,18 +23,24 @@ composer.phar
 
 # phpunit itself is not needed
 phpunit.phar
+
 # local phpunit config
 /phpunit.xml
 
 tests/_output/*
 tests/_support/_generated
 
-#vagrant folder
+# vagrant folder
 /.vagrant
+
+# uploads
 /web/img/*
 /web/imagens/*
-# uploads
-src/web/imagens/doacoes/*
-src/web/img/*
-src/web/pdf/*
+
+# uploads src
+/src/web/imagens/doacoes/*
+/src/web/img/*
+/src/web/pdf/*
+
+# vendor
 src/vendor

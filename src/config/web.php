@@ -15,6 +15,7 @@ $config = [
         '@npm' => '@vendor/npm-asset',
         '@pdf'   => '@app/web/pdf',
         '@img'   => '@app/web/img',
+        '@imgArquivosDoacao'   => '/imagens/doacoes',
     ],
     'components' => [
         'assetManager' => [

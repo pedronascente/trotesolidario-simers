@@ -93,10 +93,10 @@ AppAsset::register($this);
                     <div class="col-lg-4 my-3 my-lg-0">
                         <div class="row text-right">
                             <div class="col-md-12">
-                                <!-- TODO: redes sociais do simers -->
+                              
 <!--                                <a class="btn btn-dark btn-social mx-2" href="https://www.facebook.com/simers.rs/" target="_blank"><i class="fab fa-facebook fa-w-10"></i></a>
                                 <a class="btn btn-dark btn-social mx-2" href="https://www.instagram.com/simers_rs/" target="_blank"><i class="fab fa-instagram"></i></a>
-                                <a class="btn btn-dark btn-social mx-2" href="https://www.youtube.com/channel/UCyr842A7X7aWQnDW6R0BNAw" target="_blank"><i class="fab fa-youtube"></i></a>-->
+                                <a class="btn btn-dark btn-social mx-2" href="https://www.youtube.com/channel/UCyr842A7X7aWQnDW6R0BNAw" target="_blank"><i class="fab fa-youtube"></i></a> -->
                             </div>
                         </div>
                         <div class="row">

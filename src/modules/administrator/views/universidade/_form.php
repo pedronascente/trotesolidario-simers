@@ -2,12 +2,13 @@
 
 use kartik\file\FileInput;
 use kartik\select2\Select2;
-use yii\helpers\Html;
+use yii\helpers\Html; 
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Universidade */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="universidade-form container-fluid">
@@ -83,15 +84,12 @@ use yii\widgets\ActiveForm;
             ])->label('Imagem'); ?>
         </div>
     </div>
-</div>
 
-<div class="form-group mt-3">
-    <?= Html::submitButton(
-        $model->isNewRecord ? 'Criar Universidade' : 'Atualizar Universidade',
-        ['class' => 'btn btn-success']
-    ) ?>
-</div>
+    <div class="form-group mt-3">
+        <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
+    </div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

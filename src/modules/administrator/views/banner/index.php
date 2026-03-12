@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\alert\Alert;
 
-$this->title = 'Informativo';
+$this->title = 'Banner';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"> Banners</h1>
+        <h1 class="h3 mb-0 text-gray-800"> <?= Html::encode($this->title); ?></h1>
     </div>
     <div class="row">
         <div class="col-lg-12 mb-4">
@@ -53,24 +53,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
-                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'],
                         'pjax' => true,
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-book"></i>  Banners',
+                            'heading' => '<i class="fa fa-book"></i> Lista',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        // set export properties
-                        'export' => [
-                            'fontAwesome' => true
-                        ],
-                        'exportConfig' => [
-                            'html' => [],
-                            'csv' => [],
-                            'txt' => [],
-                            'xls' => [],
-                            'json' => [],
-                        ],
+                        'export' => ['fontAwesome' => true],
+                        'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                         'columns' => [
 
                             [
@@ -118,11 +108,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'ativo',
                                 'label' => 'ATIVO',
                                 'value' => function ($model) {
-                                    return ($model->ativo===1) ? "SIM" : "NÃO";
+                                    return ($model->ativo === 1) ? "SIM" : "NÃO";
                                 },
                                 'hiddenFromExport' => true,
                             ],
-                           
+
                             [
                                 'headerOptions' => ['style' => 'width:10%'],
                                 'class' => '\kartik\grid\ActionColumn',

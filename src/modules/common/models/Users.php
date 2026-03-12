@@ -8,13 +8,15 @@ use \yii\base\NotSupportedException;
 use app\modules\common\models\Trote;
 
 
-class Users extends \yii\db\ActiveRecord implements IdentityInterface{
+class Users extends \yii\db\ActiveRecord implements IdentityInterface
+{
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE  = 1;
 
 
-    public static function tableName(){
-        return '_users';
+    public static function tableName()
+    {
+        return 'user';
     }
 
     public function rules(){
@@ -177,5 +179,15 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface{
 
     public function setUpdated(){
         $this->updated_at = date("Y-m-d H:i:s");
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            // Remove pontuação do CPF antes de salvar
+            $this->cpf = str_replace(['.', '-'], '', $this->cpf);
+            return true;
+        }
+        return false;
     }
 }

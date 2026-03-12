@@ -8,42 +8,23 @@ use kartik\alert\Alert;
 /* @var $searchModel app\models\EventoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Eventos';
+$this->title = 'Evento';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
-    .btn-group-actions {
-        display: flex;
-        gap: 6px;
-        justify-content: center;
-        align-items: center;
-    }
+    .btn-group-actions {  display: flex; gap: 6px;  justify-content: center; align-items: center; }
 </style>
 
 <div class="container-fluid">
 
     <!-- Alertas -->
     <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <?= Alert::widget([
-            'type' => Alert::TYPE_SUCCESS,
-            'title' => 'Informativo',
-            'icon' => 'fas fa-check-circle',
-            'body' => Yii::$app->session->getFlash('success'),
-            'showSeparator' => true,
-            'delay' => 4000,
-        ]) ?>
+        <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Informativo', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000, ]) ?>
     <?php endif; ?>
 
     <?php if (Yii::$app->session->hasFlash('error')): ?>
-        <?= Alert::widget([
-            'type' => Alert::TYPE_DANGER,
-            'title' => 'Informativo',
-            'icon' => 'fas fa-times-circle',
-            'body' => Yii::$app->session->getFlash('error'),
-            'showSeparator' => true,
-            'delay' => 4000,
-        ]) ?>
+        <?= Alert::widget([ 'type' => Alert::TYPE_DANGER, 'title' => 'Informativo',  'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000,  ]) ?>
     <?php endif; ?>
 
     <!-- Cabeçalho -->
@@ -62,31 +43,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
-                        'filterModel'  => $searchModel,
-                        'hover'        => true,
-                        'panel'        => [
-                            'heading' => '<i class="fa fa-calendar"></i> Eventos',
-                            'before'  => '<div style="padding-top: 7px;"><em>Filtre os eventos abaixo:</em></div>',
+                        'filterModel' => $searchModel,
+                        'pjax' => true,
+                        'hover' => true,
+                        'panel' => [
+                            'heading' => '<i class="fa fa-book"></i> Lista',
+                            'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
-                        'export'       => false,
-                        'exportConfig' => [
-                            'html' => [],
-                            'csv'  => [],
-                            'txt'  => [],
-                            'xls'  => [],
-                            'json' => [],
-                        ],
+                        'export' => ['fontAwesome' => true],
+                        'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],
-
                             'nome',
-
                             [
                                 'attribute' => 'trote_id',
                                 'label'     => 'Trote',
                                 'value'     => function ($model) {
                                     return $model->trote
-                                        ? $model->trote->titulo  
+                                        ? $model->trote->titulo
                                         : '-';
                                 },
                                 'filter' => \yii\helpers\ArrayHelper::map(
@@ -98,12 +72,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'titulo'
                                 ),
                             ],
-
                             [
                                 'attribute' => 'data_evento',
                                 'format'    => ['date', 'php:d/m/Y'],
                             ],
-
                             [
                                 'attribute' => 'ativo',
                                 'format'    => 'raw',
@@ -114,21 +86,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                         : '<span class="badge badge-secondary">Não</span>';
                                 },
                             ],
-
                             [
                                 'headerOptions' => ['style' => 'width:12%'],
-                                'class'         => '\kartik\grid\ActionColumn',
-                                'template'      => '<div class="btn-group-actions">{update} {delete}</div>',
-                                'buttons'       => [
+                                'class' => '\kartik\grid\ActionColumn',
+                                'template'=> '<div class="btn-group-actions">{update} {delete}</div>',
+                                'buttons' => [
                                     'update' => function ($url, $model) {
                                         return Html::a(
                                             '<i class="fas fa-pencil-alt"></i>',
                                             ['update', 'id' => $model->id],
                                             [
-                                                'class'                => 'btn btn-sm btn-success',
-                                                'data-toggle'          => 'tooltip',
-                                                'data-original-title'  => 'Editar',
-                                                'data-pjax'            => '0',
+                                                'class' => 'btn btn-sm btn-success',
+                                                'data-toggle' => 'tooltip',
+                                                'data-original-title'=> 'Editar',
+                                                'data-pjax' => '0',
                                             ]
                                         );
                                     },
@@ -137,12 +108,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             '<i class="fas fa-trash-alt"></i>',
                                             ['delete', 'id' => $model->id],
                                             [
-                                                'class'               => 'btn btn-sm btn-danger',
-                                                'data'                => [
+                                                'class' => 'btn btn-sm btn-danger',
+                                                'data' => [
                                                     'confirm' => 'Tem certeza que deseja excluir este evento?',
-                                                    'method'  => 'post',
+                                                    'method'=> 'post',
                                                 ],
-                                                'data-toggle'         => 'tooltip',
+                                                'data-toggle' => 'tooltip',
                                                 'data-original-title' => 'Excluir',
                                             ]
                                         );
@@ -151,7 +122,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                     ]); ?>
-
                 </div>
             </div>
         </div>

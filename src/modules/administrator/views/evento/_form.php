@@ -12,8 +12,6 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?php if ($model->isNewRecord): ?>
-
-        <!-- CREATE: pode escolher o trote -->
         <?= $form->field($model, 'trote_id')->dropDownList(
             $trotes,
             ['prompt' => 'Selecione um Trote']

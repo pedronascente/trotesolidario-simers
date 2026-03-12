@@ -65,10 +65,8 @@ use app\modules\common\models\Trote;
     </div> -->
 
     <div class="form-group mt-3">
-        <?= Html::submitButton(
-            $model->isNewRecord ? 'Criar Trote' : 'Atualizar Trote',
-            ['class' => 'btn btn-success']
-        ) ?>
+        <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

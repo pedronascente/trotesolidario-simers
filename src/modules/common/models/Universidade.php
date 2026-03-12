@@ -35,7 +35,7 @@ class Universidade extends \yii\db\ActiveRecord
             [['link_doacao_alimento'], 'string', 'max' => 500],
             ['link_doacao_alimento', 'url', 'defaultScheme' => 'https'],
             [
-                'file',
+                ['file'],
                 'file',
                 'skipOnEmpty' => true,
                 'extensions' => ['jpg', 'jpeg', 'png', 'gif'],
@@ -48,7 +48,7 @@ class Universidade extends \yii\db\ActiveRecord
     public function attributeLabels(){
         return [
             'id' => 'ID',
-            'nome' => 'Nome da Universidade',
+            'nome' => 'Universidade',
             'cidade' => 'Cidade',
             'uf' => 'Estado',
             'icon' => 'Imagem',

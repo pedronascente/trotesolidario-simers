@@ -1,6 +1,0 @@
-.DS_Store
-/vendor
-/composer.lock
-/build
-/.php_cs.cache
-/nbproject

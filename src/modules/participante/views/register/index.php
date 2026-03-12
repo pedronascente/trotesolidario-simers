@@ -6,6 +6,15 @@ use kartik\alert\Alert;
 use app\modules\common\models\Universidade;
 use yii\helpers\ArrayHelper;
 use app\modules\common\models\Trote;
+
+                                    // Array de demo
+    $tretesDemo = [
+        ['id' => 1, 'nome' => 'Trote Demo 1'],
+        ['id' => 2, 'nome' => 'Trote Demo 2'],
+        ['id' => 3, 'nome' => 'Trote Demo 3'],
+        ['id' => 4, 'nome' => 'Trote Demo 4'],
+        ['id' => 5, 'nome' => 'Trote Demo 5'],
+    ];
 ?>
 <style>
     .field-registerform-outrainstituicao {
@@ -15,7 +24,12 @@ use app\modules\common\models\Trote;
     .div-estudante {
         display: none;
     }
+
+    .bg-gradient-success {
+        background: #fdfdfd
+    }
 </style>
+
 <div class="container">
     <!-- Outer Row -->
     <div class="row justify-content-center">
@@ -55,17 +69,32 @@ use app\modules\common\models\Trote;
                                     <?= $form->field($model, 'password', ['labelOptions' => ['style' => 'color:grey']])->passwordInput() ?>
                                     <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
                                     <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                                    <?=
-                                    $form
+                                    <?php
+                                    // $form
+                                    //     ->field($model, 'trote_id')
+                                    //     ->dropDownList(
+                                    //         ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                                    //         [
+                                    //             'prompt' => '- Selecione o Trote -',
+                                    //             'onchange' => 'outraInstituicao()'
+                                    //         ] // $data should be the same as the items provided to a regular yii2 dropdownlist
+                                    //     );
+
+
+
+                                 echo    $form
                                         ->field($model, 'trote_id')
                                         ->dropDownList(
-                                            ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
+                                            ArrayHelper::map($tretesDemo, 'id', 'nome'), // converte array para formato id=>nome
                                             [
                                                 'prompt' => '- Selecione o Trote -',
-                                                'onchange' => 'outraInstituicao()'
-                                            ] // $data should be the same as the items provided to a regular yii2 dropdownlist
+                                                'onchange' => 'outraInstituicao()' // JS que você já tinha
+                                            ]
                                         );
+
                                     ?>
+
+
                                     <?=
                                     $form
                                         ->field($model, 'estudante')
