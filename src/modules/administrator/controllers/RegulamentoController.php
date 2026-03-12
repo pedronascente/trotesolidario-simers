@@ -36,15 +36,18 @@ class RegulamentoController extends Controller{
         ]; 
     }
 
+    public function beforeAction($action)
+    {
+        $this->layout = 'adminsemjquery';
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $searchModel = new DocumentoSearchModel();
-
         $params = Yii::$app->request->queryParams;
         $params['DocumentoSearchModel']['tipo'] = \app\modules\common\models\Documento::TIPO_REGULAMENTO;
         $dataProvider = $searchModel->search($params);
-        $this->layout = 'adminsemjquery';
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -69,13 +72,14 @@ class RegulamentoController extends Controller{
         ]);
     }
 
-    public function actionCreate(){
-
-        $this->layout = 'adminsemjquery';
+    public function actionCreate()
+    {
         $regulamento = new Documento();
 
-        if ($regulamento->load(Yii::$app->request->post())) {
-            if($this->service->create($regulamento)){
+        if ($regulamento->load(Yii::$app->request->post())) 
+        {
+            if($this->service->create($regulamento))
+            {
                 Yii::$app->session->setFlash('success', 'Regulamento criado com sucesso');
                 return $this->redirect(['index']);
             }
@@ -87,13 +91,14 @@ class RegulamentoController extends Controller{
         ]);
     }
 
-    public function actionUpdate($id){
-        $this->layout = 'adminsemjquery';
+    public function actionUpdate($id)
+    {
         $regulamento = $this->findModel($id);
 
-        if ($regulamento->load(Yii::$app->request->post())) {
-
-            if ($this->service->update($regulamento)) {
+        if ($regulamento->load(Yii::$app->request->post())) 
+        {
+            if ($this->service->update($regulamento)) 
+            {
                 Yii::$app->session->setFlash('success', 'Regulamento atualizado com sucesso');
                 return $this->redirect(['index']);
             }
@@ -106,11 +111,13 @@ class RegulamentoController extends Controller{
         ]);
     }
 
-    public function actionDelete($id){
-        $this->layout = 'adminsemjquery';
+    public function actionDelete($id)
+    {
+      
         $regulamento = $this->findModel($id);
 
-        if ($this->service->delete($regulamento)) {
+        if ($this->service->delete($regulamento)) 
+        {
             Yii::$app->session->setFlash('success', 'Regulamento excluído com sucesso');
         } else {
             Yii::$app->session->setFlash('error', 'Erro ao excluir Regulamento');
@@ -119,8 +126,10 @@ class RegulamentoController extends Controller{
         return $this->redirect(['index']);
     }
 
-    protected function findModel($id){
-        if (($model = Documento::findOne($id)) !== null) {
+    protected function findModel($id)
+    {
+        if (($model = Documento::findOne($id)) !== null) 
+        {
             return $model;
         }
 

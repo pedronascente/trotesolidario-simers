@@ -16,12 +16,14 @@ class BannerController extends Controller{
 
     private BannerServiceInterface $service;
 
-    public function __construct($id,$module,BannerServiceInterface $service,$config = []) {
+    public function __construct($id,$module,BannerServiceInterface $service,$config = []) 
+    {
         parent::__construct($id, $module, $config);
         $this->service = $service;
     }
 
-    public function behaviors(): array{
+    public function behaviors(): array
+    {
         return [
             'access' => [
                 'class' => AccessControl::class,
@@ -41,10 +43,14 @@ class BannerController extends Controller{
         ];
     }
 
-    public function actionIndex(){
-
+    public function beforeAction($action)
+    {
         $this->layout = 'adminsemjquery';
+        return parent::beforeAction($action);
+    }
 
+    public function actionIndex()
+    {
         $searchModel  = new BannerSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -54,21 +60,21 @@ class BannerController extends Controller{
         ]);
     }
 
-    public function actionView($id){
-
+    public function actionView($id)
+    {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    public function actionCreate(){
-
-        $this->layout = 'adminsemjquery';
+    public function actionCreate()
+    {
         $banner = new Banner();
 
-        if ($banner->load(Yii::$app->request->post())) {
-
-            if ($this->service->create($banner)) {
+        if ($banner->load(Yii::$app->request->post())) 
+        {
+            if ($this->service->create($banner)) 
+            {
                 Yii::$app->session->setFlash('success', 'Banner criado com sucesso.');
                 return $this->redirect(['index']);
             }
@@ -81,18 +87,17 @@ class BannerController extends Controller{
         ]);
     }
 
-    public function actionUpdate($id){
-
-        $this->layout = 'adminsemjquery';
+    public function actionUpdate($id)
+    {
         $banner = $this->findModel($id);
 
-        if ($banner->load(Yii::$app->request->post())) {
-
-            if ($this->service->update($banner)) {
+        if ($banner->load(Yii::$app->request->post())) 
+        {
+            if ($this->service->update($banner)) 
+            {
                 Yii::$app->session->setFlash('success', 'Banner atualizado com sucesso.');
                 return $this->redirect(['index']);
             }
-
             Yii::$app->session->setFlash('error', 'Erro ao atualizar banner.');
         }
 
@@ -101,11 +106,12 @@ class BannerController extends Controller{
         ]);
     }
 
-    public function actionDelete($id){
-
+    public function actionDelete($id)
+    {
         $banner = $this->findModel($id);
 
-        if ($this->service->delete($banner)) {
+        if ($this->service->delete($banner))
+        {
             Yii::$app->session->setFlash('success', 'Banner excluído com sucesso.');
         } else {
             Yii::$app->session->setFlash('error', 'Erro ao excluir banner.');
@@ -114,12 +120,12 @@ class BannerController extends Controller{
         return $this->redirect(['index']);
     }
 
-    protected function findModel($id): Banner{
-
-        if (($model = Banner::findOne($id)) !== null) {
+    protected function findModel($id): Banner
+    {
+        if (($model = Banner::findOne($id)) !== null) 
+        {
             return $model;
         }
-
         throw new NotFoundHttpException('Banner não encontrado.');
     }
 }

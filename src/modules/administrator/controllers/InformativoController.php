@@ -6,13 +6,12 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
-
 use app\modules\common\models\Documento;
 use app\modules\common\models\DocumentoSearchModel;
 use app\modules\common\services\contracts\DocumentoServiceInterface;
 
-class InformativoController extends Controller{
+class InformativoController extends Controller
+{
 
     private DocumentoServiceInterface $service;
 
@@ -38,6 +37,12 @@ class InformativoController extends Controller{
         ];
     }
 
+    public function beforeAction($action)
+    {
+        $this->layout = 'adminsemjquery';
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $searchModel = new DocumentoSearchModel();
@@ -45,8 +50,6 @@ class InformativoController extends Controller{
         $params = Yii::$app->request->queryParams;
         $params['DocumentoSearchModel']['tipo'] = \app\modules\common\models\Documento::TIPO_INFORMATIVO;
         $dataProvider = $searchModel->search($params);
-        $this->layout = 'adminsemjquery';
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -73,7 +76,6 @@ class InformativoController extends Controller{
 
     public function actionCreate()
     {
-        $this->layout = 'adminsemjquery';
         $informativo = new Documento();
         
         if($informativo->load(Yii::$app->request->post())){
@@ -91,12 +93,12 @@ class InformativoController extends Controller{
 
     public function actionUpdate($id)
     {
-         
-        $this->layout = 'adminsemjquery';
         $informativo = $this->findModel($id);
        
-        if($informativo->load(Yii::$app->request->post())){
-            if($this->service->update($informativo)){
+        if($informativo->load(Yii::$app->request->post()))
+        {
+            if($this->service->update($informativo))
+            {
                 Yii::$app->session->setFlash('success', 'Informativo atualizada com sucesso');
                 return $this->redirect(['index']);
             }  
@@ -109,10 +111,10 @@ class InformativoController extends Controller{
 
     public function actionDelete($id)
     {
-        $this->layout = 'adminsemjquery';
         $informativo = $this->findModel($id);
       
-        if($this->service->delete($informativo)){
+        if($this->service->delete($informativo))
+        {
              Yii::$app->session->setFlash('success', 'Informativo excluído com sucesso');
         } else {
              Yii::$app->session->setFlash('error', 'Erro ao excluir Informativo');
@@ -122,7 +124,8 @@ class InformativoController extends Controller{
 
     protected function findModel($id)
     {
-        if (($informativo = Documento::findOne($id)) !== null) {
+        if (($informativo = Documento::findOne($id)) !== null) 
+        {
             return $informativo;
         }
 

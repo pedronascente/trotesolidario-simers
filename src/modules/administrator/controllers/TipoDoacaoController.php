@@ -37,9 +37,6 @@ class TipoDoacaoController extends Controller
         ];
     }
 
-    /**
-     * Define layout padrão antes de qualquer action
-     */
     public function beforeAction($action)
     {
         $this->layout = 'adminsemjquery';
