@@ -34,3 +34,6 @@ tests/_support/_generated
 /web/img/*
 /web/imagens/*
 src/vendor
+/src/web/imagens/doacoes/*
+/src/web/img/*
+/src/web/pdf/*
