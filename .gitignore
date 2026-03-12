@@ -33,3 +33,4 @@ tests/_support/_generated
 /.vagrant
 /web/img/*
 /web/imagens/*
+src/vendor
