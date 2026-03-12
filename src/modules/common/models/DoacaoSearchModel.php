@@ -2,79 +2,77 @@
 
 namespace app\modules\common\models;
 
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\common\models\Doacao;
-use app\modules\common\models\Helper;
-
 
 class DoacaoSearchModel extends Doacao
 {
-    /**
-     * {@inheritdoc}
-     */
+    // Campos virtuais para filtro
+    public $universidade_nome;
+    public $trote_titulo;
+    public $evento_nome;
+
     public function rules()
     {
         return [
-            [['id', 'usuario_validacao', 'ativo', 'user_create', 'user_update'], 'integer'],
-            [['arquivo', 'instituicao', 'validado', 'trote', 'tipo_doacao', 'data_create', 'data_update'], 'safe'],
+            [['id', 'evento_id', 'user_id', 'tipo_doacao_id', 'universidade_id'], 'integer'],
+            [['status', 'universidade_nome', 'trote_titulo', 'evento_nome', 'user_nome'], 'safe'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
-
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
-        $query = Doacao::find();
-
-        // add conditions that should always apply here
+        // Faz join com as relações para poder filtrar pelo nome/titulo
+        $query = Doacao::find()
+            ->joinWith(['universidade', 'trote', 'evento','user'])
+            ->with(['user',  'tipoDoacao']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['id' => SORT_DESC],
+                'attributes' => [
+                    'id',
+                    'status',
+                    'user_id',
+                    'tipo_doacao_id',
+                    // sort pelos campos virtuais
+                    'universidade_nome' => [
+                        'asc' => ['universidade.nome' => SORT_ASC],
+                        'desc' => ['universidade.nome' => SORT_DESC],
+                    ],
+                    'trote_titulo' => [
+                        'asc' => ['trote.titulo' => SORT_ASC],
+                        'desc' => ['trote.titulo' => SORT_DESC],
+                    ],
+                    'evento_nome' => [
+                        'asc' => ['evento.nome' => SORT_ASC],
+                        'desc' => ['evento.nome' => SORT_DESC],
+                    ],
+                ],
+            ],
+            'pagination' => ['pageSize' => 20],
         ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
+        // Filtros padrão
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'tipo_doacao_id' => $this->tipo_doacao_id,
+        ]);
 
-        if ($this->tipo_doacao) {
-            $query->andWhere("tipo_doacao = '$this->tipo_doacao'");
-        }
-        if ($this->instituicao) {
-            $query->andWhere("instituicao = '$this->instituicao'");
-        }
-        if ($this->trote) {
-            $query->andWhere("trote = '$this->trote'");
-        }
+        $query->andFilterWhere(['like', 'status', $this->status]);
 
-        if ($this->ativo === '1') {
-            $query->andWhere("ativo = '$this->ativo'");
-        } elseif ($this->ativo === '0') {
-            $query->andWhere("ativo = '$this->ativo'");
-        } else {
-            $query->andWhere("ativo IN ('0','1')");
-        }
+        // Filtros pelos campos virtuais
+        $query->andFilterWhere(['like', 'universidade.nome', $this->universidade_nome])
+            ->andFilterWhere(['like', 'trote.titulo', $this->trote_titulo])
+            ->andFilterWhere(['like', 'evento.nome', $this->evento_nome]);
 
-        $query->andWhere("user_create = " . \Yii::$app->user->identity->id . " OR user_update = " . \Yii::$app->user->identity->id);
         return $dataProvider;
     }
 }
