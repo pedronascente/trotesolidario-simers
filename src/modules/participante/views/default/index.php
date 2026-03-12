@@ -3,6 +3,7 @@
 use app\modules\common\models\Helper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 ?>
 
@@ -11,11 +12,10 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-lg-9 mx-auto">
             <div style="padding: 15px 0;">
-               <?php if ($capa && ($capa->img_dsk || $capa->img_mob) && $capa->ativo ==1 && $capa->tipo =="Login" ): ?>
+                <?php if ($capa && ($capa->img_dsk || $capa->img_mob) && $capa->ativo == 1 && $capa->tipo == "Login"): ?>
                     <img
                         src="/img/<?= !Helper::isMobile() ? $capa->img_dsk : $capa->img_mob ?>"
-                        style="width:100%;height:auto;"
-                    >
+                        style="width:100%;height:auto;">
                 <?php else: ?>
                     echo 'Nenhuma capa foi registrada';
                 <?php endif; ?>
@@ -27,30 +27,43 @@ use yii\widgets\ActiveForm;
                     'class' => 'user'
                 ]);
                 ?>
-                <div class="row">
-                    <div class="col-md-7">
-                        <?= $form->field($model, 'username',)->textInput(['id' => 'username', 'autofocus' => true]) ?>
-                    </div>
-                    <div class="col-md-5 d-flex justify-content-center " style="flex-direction: column;">
-                        <?= Html::submitButton('Entrar', ['id' => 'btnlogin', 'class' => 'btn', 'style' => 'background: #1f1d44; color: #fdb813;font-weight: 700;', 'name' => 'login-button']) ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-7">
-                        <?= $form->field($model, 'password',)->passwordInput(['id' => 'password']) ?>
-                    </div>
-                    <div class="col-md-5 d-flex justify-content-center " style="flex-direction: column;">
-                        <?=
-                        $form->field($model, 'rememberMe', [
-                            'options' => ['class' => 'checkbox checkbox-primary'],
 
-                        ])
-                            ->checkbox([
-                                'id' => 'rememberMe',
-                            ])
-                        ?>
+                <div class="row">
+                    <div class="col-md-7">
+                        <?= $form->field($model, 'cpf')->widget(MaskedInput::class, [
+                            'mask' => '999.999.999-99',
+                            'options' => [
+                                'autofocus' => true,
+                                'placeholder' => 'Digite seu CPF',
+                                'id' => 'cpf',
+                                'class' => 'form-control'
+                            ]
+                        ]) ?>
+                    </div>
+                    <div class="col-md-5 d-flex justify-content-center" style="flex-direction: column;">
+                        <?= Html::submitButton('Entrar', [
+                            'id' => 'btnlogin',
+                            'class' => 'btn',
+                            'style' => 'background: #1f1d44; color: #fdb813;font-weight: 700;',
+                            'name' => 'login-button'
+                        ]) ?>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-7">
+                        <?= $form->field($model, 'password')->passwordInput([
+                            'id' => 'password',
+                            'placeholder' => 'Senha'
+                        ]) ?>
+                    </div>
+                    <div class="col-md-5 d-flex justify-content-center" style="flex-direction: column;">
+                        <?= $form->field($model, 'rememberMe', [
+                            'options' => ['class' => 'checkbox checkbox-primary'],
+                        ])->checkbox(['id' => 'rememberMe']) ?>
+                    </div>
+                </div>
+
                 <?php ActiveForm::end(); ?>
             </div>
             <div class="row">
