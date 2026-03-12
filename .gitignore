@@ -33,3 +33,8 @@ tests/_support/_generated
 /.vagrant
 /web/img/*
 /web/imagens/*
+# uploads
+src/web/imagens/doacoes/*
+src/web/img/*
+src/web/pdf/*
+src/vendor
