@@ -8,7 +8,7 @@ use kartik\alert\Alert;
 /* @var $searchModel app\modules\common\models\TipoDoacaoSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tipos de Doação';
+$this->title = 'Tipo Doação';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'pjax' => true,
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-university"></i> Universidades',
+                            'heading' => '<i class="fa fa-book"></i> Lista',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
                         'export' => ['fontAwesome' => true],

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\alert\Alert;
 
-$this->title = 'Informativo';
+$this->title = 'Banner';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"> Banners</h1>
+        <h1 class="h3 mb-0 text-gray-800"> <?= Html::encode($this->title); ?></h1>
     </div>
     <div class="row">
         <div class="col-lg-12 mb-4">
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'pjax' => true,
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-university"></i> Universidades',
+                            'heading' => '<i class="fa fa-book"></i> Lista',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
                         'export' => ['fontAwesome' => true],

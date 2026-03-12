@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\common\models\Regulamento */
+/* @var $model app\modules\common\models\Doação */
 
-$this->title = 'Criar Regulamento';
+$this->title = 'Criar Doação';
 ?>
 
 <div class="container-fluid">

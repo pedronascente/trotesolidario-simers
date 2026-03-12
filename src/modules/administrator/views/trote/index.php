@@ -15,42 +15,23 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
-    .btn-group-actions {
-        display: flex;
-        gap: 6px;
-        justify-content: center;
-        align-items: center;
-    }
+    .btn-group-actions { display: flex; gap: 6px; justify-content: center; align-items: center; }
 </style>
 
 <div class="container-fluid">
 
     <!-- Alerts -->
     <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <?= Alert::widget([
-            'type' => Alert::TYPE_SUCCESS,
-            'title' => 'Trote',
-            'icon' => 'fas fa-check-circle',
-            'body' => Yii::$app->session->getFlash('success'),
-            'showSeparator' => true,
-            'delay' => 4000,
-        ]) ?>
+        <?= Alert::widget([ 'type' => Alert::TYPE_SUCCESS, 'title' => 'Trote', 'icon' => 'fas fa-check-circle','body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000,]) ?>
     <?php endif; ?>
 
     <?php if (Yii::$app->session->hasFlash('error')): ?>
-        <?= Alert::widget([
-            'type' => Alert::TYPE_DANGER,
-            'title' => 'Trote',
-            'icon' => 'fas fa-times-circle',
-            'body' => Yii::$app->session->getFlash('error'),
-            'showSeparator' => true,
-            'delay' => 4000,
-        ]) ?>
+        <?= Alert::widget([ 'type' => Alert::TYPE_DANGER, 'title' => 'Trote', 'icon' => 'fas fa-times-circle',  'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000, ]) ?>
     <?php endif; ?>
 
     <!-- Header -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Gerenciamento de Trotes</h1>
+        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title); ?></h1>
     </div>
 
     <div class="card shadow mb-4">
@@ -66,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'pjax' => true,
                 'hover' => true,
                 'panel' => [
-                    'heading' => '<i class="fa fa-university"></i> Universidades',
+                    'heading' => '<i class="fa fa-book"></i> Lista',
                     'before' => '<div style="padding-top: 7px;"><em></em></div>',
                 ],
                 'export' => ['fontAwesome' => true],
@@ -78,11 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ? ['class' => 'table-success']
                         : [];
                 },
-
-                'panel' => [
-                    'heading' => '<i class="fa fa-book"></i> Lista de Trotes',
-                ],
-
                 'columns' => [
 
                     ['class' => 'yii\grid\SerialColumn'],
@@ -184,7 +160,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
             ]); ?>
-
         </div>
     </div>
 </div>
