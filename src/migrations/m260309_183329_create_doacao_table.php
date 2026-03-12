@@ -7,42 +7,45 @@ class m260309_183329_create_doacao_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%doacao}}', [
-            'id'              => $this->primaryKey(),
+            'id' => $this->primaryKey(),
             'trote_id'        => $this->integer()->notNull(),
             'evento_id'       => $this->integer()->notNull(),
             'user_id'         => $this->integer()->notNull(),
             'universidade_id' => $this->integer()->notNull(),
             'tipo_doacao_id'  => $this->integer()->notNull(),
             'comprovante'     => $this->string(),
-            'status'          => "ENUM('pendente','aprovado','rejeitado') NOT NULL DEFAULT 'pendente'",
+            'status'          => $this->string(20)->notNull()->defaultValue('pendente'),
+            'arquivo'         => $this->string(255)->notNull(),
             'validado_por'    => $this->integer()->null(),
             'validado_em'     => $this->dateTime()->null(),
             'created_at'      => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
-            'observacao'      => $this->text()->null(),
+            'updated_at'      => $this->dateTime()->append('ON UPDATE CURRENT_TIMESTAMP'),
+            'aprovar'         => $this->boolean(),
+            'observacao' => $this->text(),
         ]);
 
-        // indexes
-        $this->createIndex('idx-doacao-trote_id', 'doacao', 'trote_id');
-        $this->createIndex('idx-doacao-evento_id', 'doacao', 'evento_id');
-        $this->createIndex('idx-doacao-user_id', 'doacao', 'user_id');
-        $this->createIndex('idx-doacao-universidade_id', 'doacao', 'universidade_id');
-        $this->createIndex('idx-doacao-tipo_doacao_id', 'doacao', 'tipo_doacao_id');
+        // INDEXES
 
-        // UNIQUE
+        $this->createIndex('idx-doacao-trote', '{{%doacao}}', 'trote_id');
+        $this->createIndex('idx-doacao-evento', '{{%doacao}}', 'evento_id');
+        $this->createIndex('idx-doacao-universidade', '{{%doacao}}', 'universidade_id');
+        $this->createIndex('idx-doacao-tipo', '{{%doacao}}', 'tipo_doacao_id');
+
+        // REGRA DE NEGÓCIO
         $this->createIndex(
             'uk-doacao-user-trote-tipo',
-            'doacao',
+            '{{%doacao}}',
             ['user_id', 'trote_id', 'tipo_doacao_id'],
             true
         );
 
-        // foreign keys
+        // FOREIGN KEYS
 
         $this->addForeignKey(
             'fk-doacao-trote',
-            'doacao',
+            '{{%doacao}}',
             'trote_id',
-            'trote',
+            '{{%trote}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -50,9 +53,9 @@ class m260309_183329_create_doacao_table extends Migration
 
         $this->addForeignKey(
             'fk-doacao-evento',
-            'doacao',
+            '{{%doacao}}',
             'evento_id',
-            'evento',
+            '{{%evento}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -60,9 +63,9 @@ class m260309_183329_create_doacao_table extends Migration
 
         $this->addForeignKey(
             'fk-doacao-user',
-            'doacao',
+            '{{%doacao}}',
             'user_id',
-            'user',
+            '{{%user}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -70,9 +73,9 @@ class m260309_183329_create_doacao_table extends Migration
 
         $this->addForeignKey(
             'fk-doacao-universidade',
-            'doacao',
+            '{{%doacao}}',
             'universidade_id',
-            'universidade',
+            '{{%universidade}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -80,19 +83,19 @@ class m260309_183329_create_doacao_table extends Migration
 
         $this->addForeignKey(
             'fk-doacao-tipo',
-            'doacao',
+            '{{%doacao}}',
             'tipo_doacao_id',
-            'tipo_doacao',
+            '{{%tipo_doacao}}',
             'id',
             'CASCADE',
             'CASCADE'
         );
 
         $this->addForeignKey(
-            'fk-doacao-validado_por',
-            'doacao',
+            'fk-doacao-validado',
+            '{{%doacao}}',
             'validado_por',
-            'user',
+            '{{%user}}',
             'id',
             'SET NULL',
             'CASCADE'
@@ -101,13 +104,6 @@ class m260309_183329_create_doacao_table extends Migration
 
     public function safeDown()
     {
-        $this->dropForeignKey('fk-doacao-validado_por', 'doacao');
-        $this->dropForeignKey('fk-doacao-tipo', 'doacao');
-        $this->dropForeignKey('fk-doacao-universidade', 'doacao');
-        $this->dropForeignKey('fk-doacao-user', 'doacao');
-        $this->dropForeignKey('fk-doacao-evento', 'doacao');
-        $this->dropForeignKey('fk-doacao-trote', 'doacao');
-
         $this->dropTable('{{%doacao}}');
     }
 }
