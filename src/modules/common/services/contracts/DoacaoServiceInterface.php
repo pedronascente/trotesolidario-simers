@@ -1,16 +1,15 @@
 <?php
 
 namespace app\modules\common\services\contracts;
-
-use app\modules\common\models\Doacao;
-
 interface DoacaoServiceInterface
 {
-    public function create(Doacao $doacao): bool;
+    public function create($model): bool;
+    public function update($model): bool;
 
-    public function update(Doacao $doacao): bool;
+    public function getFormData(): array;
+    public function getEventosByTrote(int $troteId): array;
+    public function getTiposDisponiveis(int $userId, int $troteId): array;
 
-    public function aprovar(Doacao $doacao, int $adminId): bool;
-
-    public function rejeitar(Doacao $doacao, int $adminId): bool;
+    public function aprovar(int $id): bool;
+    public function reprovar(int $id, string $observacao): bool;
 }

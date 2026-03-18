@@ -6,8 +6,9 @@ use app\modules\common\models\Evento;
 
 interface EventoServiceInterface
 {
-    public function create(Evento $evento): bool;
-    public function update(Evento $evento): bool;
-    public function delete(Evento $evento): bool;
+    public function create($model): bool;
+    public function update($model): bool;
+    public function delete($model): bool;
     public function findModel(int $id): ?Evento;
-}
+    public function findTrotes();
+} 

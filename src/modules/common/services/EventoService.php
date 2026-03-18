@@ -2,21 +2,23 @@
 
 namespace app\modules\common\services;
 
-use Yii;
 use app\modules\common\models\Evento;
+use app\modules\common\models\Trote;
 use app\modules\common\services\contracts\EventoServiceInterface;
+use Yii;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 
 class EventoService implements EventoServiceInterface
 {
-    public function create(Evento $evento): bool
+    public function create($model): bool
     {
-        return Yii::$app->db->transaction(function () use ($evento) {
-            if (!$evento->validate()) {
+        return Yii::$app->db->transaction(function () use ($model) {
+            if (!$model->validate()) {
                 return false;
             }
 
-            if (!$evento->save(false)) {
+            if (!$model->save(false)) {
                 throw new Exception('Erro ao salvar Evento.');
             }
 
@@ -24,18 +26,18 @@ class EventoService implements EventoServiceInterface
         });
     }
 
-    public function update(Evento $evento): bool
+    public function update($model): bool
     {
-        if ($evento->isNewRecord) {
+        if ($model->isNewRecord) {
             throw new Exception('Não é possível atualizar um evento não persistido.');
         }
 
-        return Yii::$app->db->transaction(function () use ($evento) {
-            if (!$evento->validate()) {
+        return Yii::$app->db->transaction(function () use ($model) {
+            if (!$model->validate()) {
                 return false;
             }
 
-            if (!$evento->save(false)) {
+            if (!$model->save(false)) {
                 throw new Exception('Erro ao atualizar Evento.');
             }
 
@@ -43,14 +45,14 @@ class EventoService implements EventoServiceInterface
         });
     }
 
-    public function delete(Evento $evento): bool
+    public function delete($model): bool
     {
-        if ($evento->isNewRecord) {
+        if ($model->isNewRecord) {
             throw new Exception('Não é possível excluir um evento não persistido.');
         }
 
-        return Yii::$app->db->transaction(function () use ($evento) {
-            if ($evento->delete() === false) {
+        return Yii::$app->db->transaction(function () use ($model) {
+            if ($model->delete() === false) {
                 throw new Exception('Erro ao excluir Evento.');
             }
 
@@ -61,5 +63,14 @@ class EventoService implements EventoServiceInterface
     public function findModel(int $id): ?Evento
     {
         return Evento::findOne($id);
+    }
+
+    public function findTrotes()
+    {
+        return  ArrayHelper::map(
+            Trote::find()->orderBy('titulo')->all(),
+            'id',
+            'titulo'
+        );
     }
 }
