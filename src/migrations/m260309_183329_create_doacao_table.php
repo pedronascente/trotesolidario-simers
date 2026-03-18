@@ -15,7 +15,7 @@ class m260309_183329_create_doacao_table extends Migration
             'tipo_doacao_id'  => $this->integer()->notNull(),
             'comprovante'     => $this->string(),
             'status'          => $this->string(20)->notNull()->defaultValue('pendente'),
-            'arquivo'         => $this->string(255)->notNull(),
+            'arquivo'         => $this->string(255),
             'validado_por'    => $this->integer()->null(),
             'validado_em'     => $this->dateTime()->null(),
             'created_at'      => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
