@@ -54,26 +54,18 @@ class EventoController extends Controller
 
     public function actionCreate()
     {
-        $evento = new Evento();
-
-        $trotes = ArrayHelper::map(
-            Trote::find()->where(['status' => 'ativo'])->orderBy('titulo')->all(),
-            'id',
-            'titulo'
-        );
+        $model = new Evento();
+        $trotes = $this->service->findTrotes();
 
         if (
-            $evento->load(Yii::$app->request->post()) &&
-            $this->service->create($evento)
+            $model->load(Yii::$app->request->post()) &&
+            $this->service->create($model)
         ) {
             Yii::$app->session->setFlash('success', 'Evento criado com sucesso.');
             return $this->redirect(['index']);
         }
 
-        return $this->render('create', [
-            'model'  => $evento,
-            'trotes' => $trotes,
-        ]);
+        return $this->render('create', compact('model', 'trotes'));
     }
 
     public function actionUpdate($id)
@@ -83,15 +75,7 @@ class EventoController extends Controller
         if (!$evento) {
             throw new NotFoundHttpException('Evento não encontrado.');
         }
-        $trotes = ArrayHelper::map(
-            Trote::find()
-                ->where(['ativo' => 1])
-                ->orWhere(['id' => $evento->trote_id])
-                ->orderBy('titulo') // coluna REAL
-                ->all(),
-            'id',
-            'titulo'
-        );
+        $trotes = $this->service->findTrotes();
 
         if (
             $evento->load(Yii::$app->request->post()) &&

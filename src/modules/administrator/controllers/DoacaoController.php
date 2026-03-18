@@ -5,20 +5,15 @@ namespace app\modules\administrator\controllers;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 use app\modules\common\models\Doacao;
 use app\modules\common\models\DoacaoSearchModel;
-use app\modules\common\models\Evento;
-use app\modules\common\models\TipoDoacao;
-use app\modules\common\models\Trote;
-use app\modules\common\models\Universidade;
-use app\modules\common\models\Users;
-
 use app\modules\common\services\contracts\DoacaoServiceInterface;
-
 class DoacaoController extends Controller
 {
     private DoacaoServiceInterface $service;
@@ -50,7 +45,7 @@ class DoacaoController extends Controller
         $this->layout = 'adminsemjquery';
         return parent::beforeAction($action);
     }
-
+ 
     public function actionIndex()
     {
         $searchModel = new DoacaoSearchModel();
@@ -62,68 +57,80 @@ class DoacaoController extends Controller
     public function actionCreate()
     {
         $model = new Doacao();
-        $trote = ArrayHelper::map(Trote::find()->where(['status' => 'ativo'])->orderBy('titulo')->all(),'id','titulo');
-        $evento = ArrayHelper::map(Evento::find()->orderBy('nome')->all(),'id','nome');
-        $usuario = ArrayHelper::map(Users::find()->orderBy('name')->all(),'id','name');
-        $universidade = ArrayHelper::map(Universidade::find()->orderBy('nome')->all(), 'id', 'nome');
-        $tipoDoacao = ArrayHelper::map(TipoDoacao::find()->orderBy('nome')->all(),'id', 'nome');
+        $data = $this->service->getFormData();
 
-        if ($model->load(Yii::$app->request->post())) 
-        {
-            if ($this->service->create($model)) 
-            {
+        if ($model->load(Yii::$app->request->post())) {
+            if ($this->service->create($model)) {
                 Yii::$app->session->setFlash('success', 'Doação criada com sucesso');
                 return $this->redirect(['index']);
             }
-            
+
             Yii::$app->session->setFlash('error', 'Erro ao criar Doação');
         }
 
-        return $this->render('create', compact(
-            'model',
-            'trote', 
-            'evento',
-            'usuario',
-            'universidade',
-            'tipoDoacao'
-        ));
-    }
-
-    public function actionAprovar($id)
-    {
-        $model = Doacao::findOne($id);
-
-        if ($model) {
-            $model->status = Doacao::STATUS_APROVADO;
-            $model->save(false);
-        }
-
-        return $this->redirect(['index']);
-    }
-
-    public function actionReprovar($id)
-    {
-        $model = Doacao::findOne($id);
-
-        if ($model) {
-            $model->status = Doacao::STATUS_REJEITADO;
-            $model->save(false);
-        }
-
-        return $this->redirect(['index']);
+        return $this->render('create', array_merge(['model' => $model], $data));
     }
 
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $data = $this->service->getFormData();
 
         if ($model->load(Yii::$app->request->post())) {
             if ($this->service->update($model)) {
+                Yii::$app->session->setFlash('success', 'Doação atualizada com sucesso');
                 return $this->redirect(['index']);
+            }
+
+            Yii::$app->session->setFlash('error', 'Erro ao atualizar Doação');
+        }
+
+        return $this->render('update', array_merge(['model' => $model], $data));
+    }
+    
+    public function actionEventosByTrote()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $out = [];
+
+        if ($parents = Yii::$app->request->post('depdrop_parents')) {
+            $eventos = $this->service->getEventosByTrote($parents[0]);
+
+            foreach ($eventos as $evento) {
+                $out[] = [
+                    'id' => $evento['id'],
+                    'name' => $evento['nome']
+                ];
             }
         }
 
-        return $this->render('update', compact('model'));
+        return ['output' => $out, 'selected' => ''];
+    }
+
+    public function actionTiposDisponiveis($user_id, $trote_id)
+    {
+        $tipos = $this->service->getTiposDisponiveis($user_id, $trote_id);
+
+        return Json::encode([
+            'output' => ArrayHelper::map($tipos, 'id', 'nome')
+        ]);
+    }
+
+    public function actionAprovar($id)
+    {
+        $this->service->aprovar($id);
+        return $this->redirect(['index']);
+    }
+
+    public function actionReprovar()
+    {
+        $this->service->reprovar(
+            Yii::$app->request->post('id'),
+            Yii::$app->request->post('observacao')
+        );
+
+        return true;
     }
 
     protected function findModel($id)
@@ -133,38 +140,5 @@ class DoacaoController extends Controller
         }
 
         throw new NotFoundHttpException();
-    }
-
-    public function actionEventosByTrote()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $out = [];
-
-        if (isset($_POST['depdrop_parents'])) {
-
-            $parents = $_POST['depdrop_parents'];
-
-            if ($parents != null) {
-
-                $trote_id = $parents[0];
-
-                $eventos = Evento::find()
-                    ->where(['trote_id' => $trote_id])
-                    ->orderBy('nome')
-                    ->all();
-
-                foreach ($eventos as $evento) {
-                    $out[] = [
-                        'id' => $evento->id,
-                        'name' => $evento->nome
-                    ];
-                }
-
-                return ['output' => $out, 'selected' => ''];
-            }
-        }
-
-        return ['output' => '', 'selected' => ''];
     }
 }
