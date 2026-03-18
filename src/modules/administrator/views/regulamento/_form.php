@@ -7,7 +7,15 @@ use kartik\file\FileInput;
 
 <div class="regulamento-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'enableClientValidation' => true,
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'options' => ['class' => 'form-group'],
+            'inputOptions' => ['class' => 'form-control'],
+            'errorOptions' => ['class' => 'invalid-feedback'],
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'nome') ?>
 
@@ -42,3 +50,24 @@ use kartik\file\FileInput;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+
+<?php
+
+$this->registerJs("
+
+    /* ===============================
+    VALIDACAO VISUAL DO FORMULARIO
+    =================================*/
+
+    $('form').on('afterValidate', function () {
+        $('.form-group').each(function()
+        {
+            if($(this).hasClass('has-error'))
+            {
+                $(this).find('.form-control').addClass('is-invalid');
+            }
+        });
+    });
+");
+?>

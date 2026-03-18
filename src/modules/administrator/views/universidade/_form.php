@@ -2,7 +2,7 @@
 
 use kartik\file\FileInput;
 use kartik\select2\Select2;
-use yii\helpers\Html; 
+use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -12,7 +12,15 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="universidade-form container-fluid">
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'], 'enableClientValidation' => true,]); ?>
+    <?php $form = ActiveForm::begin([
+        'enableClientValidation' => true,
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'options' => ['class' => 'form-group'],
+            'inputOptions' => ['class' => 'form-control'],
+            'errorOptions' => ['class' => 'invalid-feedback'],
+        ],
+    ]); ?>
     <div class="row">
         <div class="col-md-9">
             <?= $form->field($model,  'nome')->textInput(['maxlength' => true, 'class' => 'form-control']) ?>
@@ -65,7 +73,6 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col-md-12">
-            <!-- Upload de imagem -->
             <?= $form->field($model, 'file')->widget(FileInput::classname(), [
                 'options' => ['accept' => 'image/*'],
                 'pluginOptions' => [
@@ -93,3 +100,25 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+
+<?php
+
+$this->registerJs("
+
+/* ===============================
+VALIDACAO VISUAL DO FORMULARIO
+=================================*/
+
+$('form').on('afterValidate', function () {
+    $('.form-group').each(function()
+    {
+        if($(this).hasClass('has-error'))
+        {
+            $(this).find('.form-control').addClass('is-invalid');
+        }
+    });
+});
+
+");
+?>

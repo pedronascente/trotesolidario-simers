@@ -47,9 +47,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <!-- Cabeçalho -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
-    </div>
+    </div> -->
 
     <div class="row">
         <div class="col-lg-12 mb-4">
@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'pjax' => true,
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-book"></i> Lista',
+                            'heading' => '<i class="fa fa-hand-holding-heart"></i> Lista de Tipos Doeações',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
                         'export' => ['fontAwesome' => true],

@@ -30,9 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <!-- Header -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title); ?></h1>
-    </div>
+    </div> -->
 
     <div class="card shadow mb-4">
         <div class="p-3">
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'pjax' => true,
                 'hover' => true,
                 'panel' => [
-                    'heading' => '<i class="fa fa-book"></i> Lista',
+                    'heading' => '<i class="fa fa-hand-holding-heart"></i> Lista de Trotes',
                     'before' => '<div style="padding-top: 7px;"><em></em></div>',
                 ],
                 'export' => ['fontAwesome' => true],
@@ -60,16 +60,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         : [];
                 },
                 'columns' => [
-
                     ['class' => 'yii\grid\SerialColumn'],
-
-                    // Título
                     [
                         'attribute' => 'titulo',
                         'vAlign'    => 'middle',
                     ],
-
-                    // Descrição
                     [
                         'attribute' => 'descricao',
                         'format'    => 'raw',
@@ -77,16 +72,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         StringHelper::truncate(strip_tags($model->descricao), 80),
                         'headerOptions' => ['style' => 'width:250px'],
                     ],
-
-                    // Edição
                     [
                         'label'  => 'Edição',
                         'value'  => fn($model) => $model->getEdicaoFormatada(),
                         'filter' => false,
                         'headerOptions' => ['style' => 'width:120px'],
                     ],
-
-                    // Status
                     [
                         'attribute' => 'status',
                         'format'    => 'raw',
@@ -105,8 +96,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         'headerOptions' => ['style' => 'width:150px'],
                     ],
-
-                    // Período
                     [
                         'label' => 'Período',
                         'value' => function ($model) {
@@ -119,8 +108,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => false,
                     ],
-
-                    // Ações
                     [
                         'class' => '\kartik\grid\ActionColumn',
                         'template' => '<div class="btn-group-actions">{update} {delete}</div>',

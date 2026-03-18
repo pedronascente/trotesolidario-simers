@@ -1,6 +1,6 @@
 <?php
-
-use yii\helpers\Html;
+   
+use yii\helpers\Html; 
 use yii\widgets\ActiveForm;
 use app\modules\common\models\Trote;
 
@@ -10,8 +10,15 @@ use app\modules\common\models\Trote;
 ?>
 
 <div class="trote-form container-fluid">
-
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([       
+        'enableClientValidation' => true,
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'options' => ['class' => 'form-group'],
+            'inputOptions' => ['class' => 'form-control'],
+            'errorOptions' => ['class' => 'invalid-feedback'],
+        ],
+    ]); ?>
 
     <div class="row">
         <div class="col-md-8">
@@ -57,13 +64,6 @@ use app\modules\common\models\Trote;
         </div>
     </div>
 
-    <!-- <div class="row">
-        <div class="col-md-3">
-            <?= $form->field($model, 'ativo')
-                ->checkbox() ?>
-        </div>
-    </div> -->
-
     <div class="form-group mt-3">
         <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
         <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-secondary']) ?>
@@ -72,3 +72,24 @@ use app\modules\common\models\Trote;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+
+$this->registerJs("
+
+/* ===============================
+VALIDACAO VISUAL DO FORMULARIO
+=================================*/
+
+$('form').on('afterValidate', function () {
+    $('.form-group').each(function()
+    {
+        if($(this).hasClass('has-error'))
+        {
+            $(this).find('.form-control').addClass('is-invalid');
+        }
+    });
+});
+
+");
+?>

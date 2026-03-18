@@ -22,16 +22,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Universidade', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000,]) ?>
     <?php endif; ?>
 
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"> <?=Html::encode($this->title);?></h1>
     </div>
-      
+       -->
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card shadow mb-4">
                 <div class="p-3">
                     <p>
-                        <?= Html::a('Criar universidade', ['create'], ['class' => 'btn btn-success']) ?>
+                        <?= Html::a('Criar Universidade', ['create'], ['class' => 'btn btn-success']) ?>
                     </p>
 
                     <?= GridView::widget([
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'pjax' => true,
                         'hover' => true,
                         'panel' => [
-                            'heading' => '<i class="fa fa-book"></i> Lista',
+                            'heading' => '<i class="fa fa-hand-holding-heart"></i> Lista de Universidades',
                             'before' => '<div style="padding-top: 7px;"><em></em></div>',
                         ],
                         'export' => ['fontAwesome' => true],

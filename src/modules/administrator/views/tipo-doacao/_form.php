@@ -3,14 +3,30 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\common\models\TipoDoacao */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="tipo-doacao-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <!-- ALERTA -->
+    <?php if ($model->hasErrors('nome')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= $model->getFirstError('nome') ?>
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
+
+    <?php $form = ActiveForm::begin([
+        'enableClientValidation' => true,
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'options' => ['class' => 'form-group', 'novalidate' => true],
+            'inputOptions' => ['class' => 'form-control'],
+            'errorOptions' => ['class' => 'invalid-feedback'],
+        ],
+    ]); ?>
 
     <div class="row">
         <div class="col-md-12">
@@ -22,6 +38,7 @@ use yii\widgets\ActiveForm;
         <div class="col-md-4">
             <?= $form->field($model, 'carga_horaria')->textInput() ?>
         </div>
+
         <div class="col-md-4">
             <?= $form->field($model, 'pontuacao_ranking')->textInput() ?>
         </div>
@@ -48,3 +65,37 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+
+$this->registerJs("
+$(document).ready(function () {
+
+    let nomeField = $('#tipodoacao-nome');
+
+    // Se tem erro no nome
+    if ($('.field-tipodoacao-nome').hasClass('has-error')) {
+
+        // foco no campo
+        nomeField.focus();
+
+        // adiciona estilo bootstrap 4
+        nomeField.addClass('is-invalid');
+    }
+
+});
+
+$('form').on('afterValidate', function () {
+    $('.form-group').each(function()
+    {
+        if($(this).hasClass('has-error'))
+        {
+            $(this).find('.form-control').addClass('is-invalid');
+        }
+    });
+});
+
+
+
+");
+?>

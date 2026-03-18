@@ -8,7 +8,7 @@ Yii::$app->language = "pt-BR";
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Informativo */
 
-$this->title = 'Informativo';
+$this->title = 'Criar Informativo';
 $this->params['breadcrumbs'][] = ['label' => 'Informativo', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
