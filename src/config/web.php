@@ -15,7 +15,7 @@ $config = [
         '@npm' => '@vendor/npm-asset',
         '@pdf'   => '@app/web/pdf',
         '@img'   => '@app/web/img',
-        '@imgArquivosDoacao'   => '/imagens/doacoes',
+        '@imgArquivosDoacao' => '@app/web/imagens/doacoes',
     ],
     'components' => [
         'assetManager' => [
@@ -111,7 +111,6 @@ $config = [
     'container' => [
        'definitions' => require __DIR__ . '/container.php',
     ],
-
 ];
 
 if (YII_ENV_DEV) {

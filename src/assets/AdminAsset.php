@@ -16,17 +16,14 @@ class AdminAsset extends AssetBundle
     ];
 
     public $js = [
-        // NÃO carregue jQuery manualmente
-        // YiiAsset já faz isso
-        'layoutadmin/vendor/bootstrap/js/bootstrap.bundle.min.js',
         'layoutadmin/vendor/jquery-easing/jquery.easing.min.js',
         'layoutadmin/js/sb-admin-2.js',
     ];
 
     public $depends = [
-        'yii\web\YiiAsset',           // jQuery
-        'yii\grid\GridViewAsset',     //  yiiGridView()
-        'yii\bootstrap\BootstrapAsset',
-        'yii\bootstrap\BootstrapPluginAsset',
+        'yii\web\YiiAsset',
+        'yii\bootstrap4\BootstrapAsset',
+        'yii\bootstrap4\BootstrapPluginAsset',
+        'yii\grid\GridViewAsset',
     ];
 }
