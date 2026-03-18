@@ -16,11 +16,12 @@ class TipoDoacao extends ActiveRecord
     {
         return [
             [['nome', 'carga_horaria', 'pontuacao_ranking'], 'required'],
-
+            [['nome'], 'unique', 'message' => 'Este nome já se encontra registrado!'],
             [['nome'], 'string', 'max' => 150],
             [['descricao'], 'string', 'max' => 255],
 
             [['carga_horaria', 'pontuacao_ranking', 'ativo'], 'integer'],
+            [['carga_horaria'], 'integer', 'max' => 1000],
 
             // 🔒 REGRA DE NEGÓCIO: NÃO PERMITIR VALORES NEGATIVOS
             [
@@ -31,8 +32,16 @@ class TipoDoacao extends ActiveRecord
             ],
 
             [['ativo'], 'default', 'value' => 1],
-            [['nome'], 'unique'],
+           
         ];
+    }
+
+    public function beforeValidate()
+    {
+        if ($this->nome) {
+            $this->nome = trim($this->nome);
+        }
+        return parent::beforeValidate();
     }
 
     public function attributeLabels()

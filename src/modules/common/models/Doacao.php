@@ -11,16 +11,15 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
-
 class Doacao extends ActiveRecord
 {
     public $file;
-    
+
     const STATUS_PENDENTE = 'pendente';
     const STATUS_APROVADO = 'aprovado';
     const STATUS_REJEITADO = 'rejeitado';
 
-    public static function tableName() 
+    public static function tableName()
     {
         return 'doacao';
     }
@@ -29,7 +28,8 @@ class Doacao extends ActiveRecord
     {
         return [
             [['trote_id', 'evento_id', 'user_id', 'universidade_id', 'tipo_doacao_id'], 'required'],
-            ['tipo_doacao_id', 'validateDoacaoUnica'],
+            //['tipo_doacao_id', 'validateDoacaoUnica'],
+
             [['trote_id', 'evento_id', 'user_id', 'tipo_doacao_id', 'validado_por'], 'integer'],
             [['validado_em', 'created_at', 'updated_at'], 'safe'],
             [['status'], 'in', 'range' => [
@@ -54,25 +54,37 @@ class Doacao extends ActiveRecord
                 'targetAttribute' => ['user_id', 'trote_id', 'tipo_doacao_id'],
                 'message' => 'Este usuário já realizou este tipo de doação neste trote.'
             ],
+            [
+                ['observacao'],
+                'required',
+                'when' => function ($model) {
+                    return $model->status === self::STATUS_REJEITADO;
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#doacao-status').val() === 'rejeitado';
+                }"
+            ],
+            [['status'], 'default', 'value' => self::STATUS_PENDENTE],
+            [['observacao'], 'string', 'max' => 1000],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'trote_id'       => 'Trote',
-            'evento_id'      => 'Evento',
-            'user_id'        => 'Usuario',
-            'universidade_id'=> 'Universidade',
-            'tipo_doacao_id' => 'Tipo Doação',
-            'arquivo'        => 'Imagem',
-            'file'           => 'Imagem',
-            'trote.titulo'   => 'Trote',
-            'user.name'      => 'Usuario',
-            'tipoDoacao.nome'      => 'Tipo Doação',
+            'trote_id'        => 'Trote',
+            'evento_id'       => 'Evento',
+            'user_id'         => 'Usuario',
+            'universidade_id' => 'Universidade',
+            'tipo_doacao_id'  => 'Tipo Doação',
+            'arquivo'         => 'Imagem',
+            'file'            => 'Imagem',
+            'observacao'      => 'Motivo Reprovação',
+            'trote.titulo'    => 'Trote',
+            'user.name'       => 'Usuario',
+            'tipoDoacao.nome' => 'Tipo Doação',
         ];
     }
-
 
     public function validateDoacaoUnica($attribute)
     {
@@ -89,7 +101,6 @@ class Doacao extends ActiveRecord
             $this->addError($attribute, 'Este usuário já realizou este tipo de doação neste trote.');
         }
     }
-
 
     public function behaviors()
     {
@@ -137,5 +148,26 @@ class Doacao extends ActiveRecord
             self::STATUS_APROVADO => 'Aprovado',
             self::STATUS_REJEITADO => 'Rejeitado',
         ];
+    }
+
+
+    /*
+    Ele retorna os tipos de doação que ainda estão disponíveis para um determinado usuário ($userId) dentro de um trote ($troteId).
+    Ou seja: não lista tipos que o usuário já fez nesse trote, apenas os restantes ativos.
+    */
+    public static function getTiposDisponiveis($userId, $troteId)
+    {
+        $tiposJaFeitos = self::find()
+            ->select('tipo_doacao_id')
+            ->where([
+                'user_id' => $userId,
+                'trote_id' => $troteId
+            ]);
+
+        return TipoDoacao::find()
+            ->where(['ativo' => 1])
+            ->andWhere(['not in', 'id', $tiposJaFeitos])
+            ->orderBy('nome')
+            ->all();
     }
 }
