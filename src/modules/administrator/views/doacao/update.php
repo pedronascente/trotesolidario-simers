@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Doacao */
 
-$this->title = 'Atualizar Doação';
+$this->title = 'Atualizar Doacao';
 ?>
 
 <div class="container-fluid">
@@ -18,13 +18,9 @@ $this->title = 'Atualizar Doação';
                 <div class="p-3">
                     <?= $this->render('_form', [
                         'model' => $model,
-                        'trote' => $trote,
-                        'evento' => $evento,
-                        'usuario' => $usuario,
-                        'universidade' => $universidade,
+                        'participacoes' => $participacoes,
                         'tipoDoacao' => $tipoDoacao,
-                    ])
-                    ?>
+                    ]) ?>
                 </div>
             </div>
         </div>

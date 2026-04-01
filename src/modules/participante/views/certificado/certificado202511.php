@@ -1,93 +1,27 @@
 <?php
 
-use app\modules\common\models\Helper;
-use yii\helpers\Url;
+$logoPath = realpath(Yii::getAlias('@webroot') . '/img/logo-site-2025.png') ?: realpath(Yii::getAlias('@webroot') . '/img/logo-site.png');
+$bgPath = realpath(Yii::getAlias('@webroot') . '/img/bg-certificado-2025-2_resized.png');
+$iconsPath = realpath(Yii::getAlias('@webroot') . '/img/icons.png');
+
+$textoProjeto = "O Trote Solid\u{00E1}rio \u{00E9} um projeto realizado pelo N\u{00FA}cleo Acad\u{00EA}mico Simers desde 2008. Esta a\u{00E7}\u{00E3}o \u{00E9} a uni\u{00E3}o da campanha de doa\u{00E7}\u{00E3}o de sangue realizada pelos ingressantes das universidades de medicina e o convite \u{00E0} sociedade para doar alimentos \u{00E0}s comunidades carentes, que mant\u{00EA}m a tradi\u{00E7}\u{00E3}o do trote universit\u{00E1}rio, tornando realidade o objetivo de todos os m\u{00E9}dicos: SALVAR VIDAS. Como reconhecimento p\u{00FA}blico, o Trote Solid\u{00E1}rio foi vencedor do Pr\u{00EA}mio Top Cidadania 2013 da ABRH-RS e do Pr\u{00EA}mio Ser Humano Oswaldo Checchia 2014 da ABRH-Nacional, na modalidade Desenvolvimento Sustent\u{00E1}vel e Responsabilidade Social/ Organiza\u{00E7}\u{00E3}o Cidad\u{00E3}, Diploma de Honra ao M\u{00E9}rito da C\u{00E2}mara Municipal de Porto Alegre no ano de 2022 e pr\u{00EA}mio Top Cidadania da ABRH-RS, na categoria organiza\u{00E7}\u{00E3}o em 2022 e 2024. Atualmente o Trote Solid\u{00E1}rio promove as seguintes a\u{00E7}\u{00F5}es: cadastro de medula \u{00F3}ssea, doa\u{00E7}\u{00E3}o de alimentos, sangue e tampinhas pl\u{00E1}sticas.";
 ?>
-<style type="text/css">
-    .tg {}
+<div style="position:relative; width:297mm; height:210mm; overflow:hidden; font-family:Arial, sans-serif; color:#ffffff;">
+    <?php if ($bgPath): ?>
+        <img src="<?= $bgPath ?>" alt="Fundo do certificado" style="position:absolute; left:0; top:0; width:297mm; height:210mm;">
+    <?php endif; ?>
 
-    .tg td {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        overflow: hidden;
-        padding: 10px 15px;
-        word-break: normal;
-    }
+    <div style="position:absolute; left:15mm; top:8mm; width:267mm; height:191mm; text-align:center;">
+        <?php if ($logoPath): ?>
+            <img src="<?= $logoPath ?>" alt="Logo Trote Solid\u{00E1}rio Simers" style="display:block; width:56mm; margin:0 auto; margin-top:1mm;">
+        <?php endif; ?>
 
-    .tg th {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        font-weight: normal;
-        overflow: hidden;
-        padding: 10px 5px;
-        word-break: normal;
-    }
-
-    .tg .tg-baqh {
-        text-align: center;
-        vertical-align: top
-    }
-
-    .tg .tg-0lax {
-        text-align: left;
-        vertical-align: top
-    }
-</style>
-
-<body class="body">
-    <div
-        style="background-color: #520EBA; background-repeat: no-repeat; background-size: cover;background-image: url('<?= Url::to('@web/img/bg-certificado-2025-2_resized.png') ?>'); ">
-        <div class="well"  style="background-color: transparent; border: none; height: 530px;">
-            <div class="row" >
-                <table class="tg" style="table-layout: fixed; width: 100%">
-                    <thead>
-                        <tr>
-                            <th class="tg-0lax"></th>
-                            <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/logo-site-2025.png') ?>"
-                                    style="width:auto;height: 130px;" alt="logo" />
-                            </th>
-                            <th class="tg-0lax"></th>
-                        </tr>
-                    </thead>
-                    <tbody style="padding:40px 50px; width:100%; margin: 20px;">
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: justify;">
-                                <p style="color: #ffffff; font-size: 18px; padding:30px;">
-                                    O Trote Solidário é um projeto realizado pelo Núcleo Acadêmico Simers desde 2008.
-                                    Esta ação é a união da campanha de doação de sangue realizada pelos ingressantes das
-                                    universidades de medicina e o convite à sociedade para doar alimentos às comunidades
-                                    carentes, que mantém a tradição do trote universitário, tornando realidade o
-                                    objetivo de todos os médicos: SALVAR VIDAS. Como reconhecimento público, o Trote
-                                    Solidário foi vencedor do Prêmio Top Cidadania 2013 da ABRH-RS e do Prêmio Ser
-                                    Humano Oswaldo Checchia 2014 da ABRH-Nacional, na modalidade Desenvolvimento
-                                    Sustentável e Responsabilidade Social/ Organização Cidadã, Diploma de Honra ao
-                                    Mérito da Câmara Municipal de Porto Alegre no ano de 2022 e prêmio Top Cidadania da
-                                    ABRH-RS, na categoria organização em 2022 e 2024. Atualmente o Trote Solidário
-                                    promove as seguintes ações: cadastro de medula óssea, doação de alimentos, sangue e
-                                    tampinhas plásticas.
-                                </p>
-                            </td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="display:flex; justify-content: center; align-items: center;">
-                                <img src="<?= Url::to('@web/img/icons.png') ?>"
-                                    style="width:200px; margin: 0 auto;" alt="icons" />
-                            </td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <th class="tg-baqh" colspan="3">
-                            </th>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div style="margin:8mm auto 0; width:252mm; font-size:6.05mm; line-height:1.28; text-align:left; color:#ffffff;">
+            <?= $textoProjeto ?>
         </div>
+
+        <?php if ($iconsPath): ?>
+            <img src="<?= $iconsPath ?>" alt="\u{00CD}cones do projeto" style="display:block; width:44mm; margin:10.5mm auto 0;">
+        <?php endif; ?>
     </div>
-</body>
+</div>

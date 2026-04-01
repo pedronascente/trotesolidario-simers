@@ -10,7 +10,7 @@ class EventoSearchModel extends Evento
     public function rules()
     {
         return [
-            [['id', 'trote_id', 'ativo'], 'integer'],
+            [['id', 'trote_id'], 'integer'],
             [['nome', 'data_evento'], 'safe'],
         ];
     }
@@ -37,13 +37,15 @@ class EventoSearchModel extends Evento
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'trote_id' => $this->trote_id,
-            'ativo' => $this->ativo,
-            'data_evento' => $this->data_evento,
+            'evento.id' => $this->id,
+            'evento.trote_id' => $this->trote_id,
         ]);
 
-        $query->andFilterWhere(['like', 'nome', $this->nome]);
+        $query->andFilterWhere(['like', 'evento.nome', $this->nome]);
+
+        if (!empty($this->data_evento)) {
+            $query->andFilterWhere(['like', 'evento.data_evento', str_replace('T', ' ', $this->data_evento)]);
+        }
 
         return $dataProvider;
     }

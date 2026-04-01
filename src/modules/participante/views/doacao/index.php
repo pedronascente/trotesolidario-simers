@@ -1,179 +1,182 @@
 <?php
 
-use yii\helpers\Html;
+use app\modules\common\models\Doacao;
 use kartik\grid\GridView;
-use yii\helpers\ArrayHelper;
-use app\modules\common\models\Universidade;
-use app\modules\common\models\Trote;
+use yii\helpers\Html;
+
+$this->registerCssFile('@web/css/donation-styles.css');
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
 <style>
-.responsive-grid {
-    width: 100%;
-    max-width: 1800px;
-}
-
-.status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    display: inline-block;
-}
-
-.status-approved {
-    background-color: rgba(40, 167, 69, 0.1);
-    color: #28a745;
-}
-
-.status-rejected {
-    background-color: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-}
-
-.status-pending {
-    background-color: rgba(254, 209, 54, 0.1);
-    color: #fed136;
-}
-
-.motivo-box {
-    padding: 10px;
-    border-radius: 6px;
-    background-color: #f8f9fa;
-    border-left: 4px solid #dc3545;
-    margin-top: 5px;
-}
-
-@media (max-width: 768px) {
-    .responsive-grid {
-        width: 100%;
-        overflow-x: auto;
+    .doacao-thumb-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
     }
-}
-</style>
-<!-- Begin Page Content -->
-<div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Doações</h1>
-    </div>
-    <!-- Color System -->
+    .doacao-thumb-img {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dfe3e8;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: zoom-in;
+        background: #f8fafc;
+    }
+
+    .doacao-thumb-link:hover .doacao-thumb-img {
+        transform: scale(1.06);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+    }
+
+    .doacao-file-link {
+        white-space: nowrap;
+    }
+</style>
+
+<div class="container-fluid">
     <div class="row">
         <div class="col-lg-12 mb-4">
-            <!-- Illustrations -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Doação', ['create'], ['class' => 'btn btn-success']) ?>
-                    </h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Doacao', ['create'], ['class' => 'btn btn-success']) ?></h6>
                 </div>
                 <div class="p-3" style="overflow-x: auto; width: 100%;">
-                    <?=
-                    GridView::widget([
-                        'options' => ['class' => 'responsive-grid'],
+                    <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
+                        'pjax' => true,
+                        'hover' => true,
                         'columns' => [
-                            [   
+                            'id',
+                            [
                                 'attribute' => 'arquivo',
+                                'label' => 'Arquivo',
                                 'format' => 'raw',
+                                'filter' => false,
                                 'hAlign' => 'center',
                                 'vAlign' => 'center',
-                                'filter' => false,
                                 'value' => function ($model) {
-                                    return Html::img("/imagens/doacoes/$model->arquivo", ["style" => "height: 80px;width: auto;"]);
-                                }
-                            ],
-                            [
-                                'attribute' => 'instituicao',
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
-                                'filterInputOptions' => ['placeholder' => '- Instituição -'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                                'value' => function ($model) {
-                                    $return = Universidade::find()->where(['id' => $model->instituicao])->one();
-
-
-                                    return $return->nome;
-                                }
-                            ],
-                            [
-                                'attribute' => 'validado',
-                                'label' => 'Status',
-                                'format' => 'raw',
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => [
-                                    1 => 'Aprovado',
-                                    0 => 'Reprovado',
-                                    2 => 'Pendente'
-                                ],
-                                'filterInputOptions' => ['placeholder' => '- Status -'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                                'value' => function ($model) {
-                                    if ($model->validado === null) {
-                                        return '<span class="status-badge status-pending">Pendente</span>';
+                                    if (!$model->arquivo) {
+                                        return Html::tag('span', 'Sem arquivo');
                                     }
-                                    return $model->validado == 1 ? 
-                                        '<span class="status-badge status-approved">Aprovado</span>' : 
-                                        '<span class="status-badge status-rejected">Reprovado</span>';
-                                }
-                            ],
-                            [
-                                'attribute' => 'validado_motivo',
-                                'label' => 'Observações',
-                                'format' => 'raw',
-                                'value' => function ($model) {
-                                    if (empty($model->validado_motivo)) {
-                                        return '-';
+
+                                    $filePath = Yii::getAlias('@webroot') . '/imagens/doacoes/' . $model->arquivo;
+                                    $webPath = Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo;
+                                    $fullUrl = Yii::$app->request->hostInfo . $webPath;
+
+                                    if (file_exists($filePath) && @getimagesize($filePath)) {
+                                        return Html::a(
+                                            Html::img($fullUrl, [
+                                                'class' => 'doacao-thumb-img',
+                                                'alt' => 'Doacao ' . $model->id,
+                                            ]),
+                                            $fullUrl,
+                                            [
+                                                'class' => 'doacao-thumb-link',
+                                                'data-fancybox' => 'doacoes-gallery',
+                                                'data-src' => $fullUrl,
+                                                'data-caption' => 'Doacao #' . $model->id . ' - ' . ($model->tipoDoacao->nome ?? $model->arquivo),
+                                                'data-pjax' => '0',
+                                            ]
+                                        );
                                     }
-                                    $class = $model->validado == 0 ? 'danger' : 'success';
-                                    return '<div class="motivo-box" style="border-left-color: ' . 
-                                           ($model->validado == 0 ? '#dc3545' : '#28a745') . '">' . 
-                                           Html::encode($model->validado_motivo) . 
-                                           '</div>';
-                                }
-                            ],
-                            [
-                                'attribute' => 'tipo_doacao',
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => [
-                                    'Alimentos' => 'Alimentos',
-                                    'Comissão' => 'Comissão',
-                                    'Participação Presencial' => 'Participação Presencial',
-                                    'Sangue' => 'Sangue',
-                                   
-                                ],
-                                'filterInputOptions' => ['placeholder' => '- Tipo de Doação -'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                            ],
-                            [
-                                'attribute' => 'trote_id',
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
-                                'filterInputOptions' => ['placeholder' => '- Trote -'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
-                                'value' => 'trote.nome',
-                            ],
-                            [
-                                'attribute' => 'ativo',
-                                'value' => function ($model) {
-                                    return ($model->ativo == "1") ? "Ativo" : "Inativo";
+
+                                    return Html::a('Abrir arquivo', $webPath, [
+                                        'class' => 'doacao-file-link',
+                                        'target' => '_blank',
+                                        'data-pjax' => '0',
+                                    ]);
                                 },
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => [
-                                    '1' => 'Ativo',
-                                    '0' => 'Inativo',
-                                ],
-                                'filterInputOptions' => ['placeholder' => '- Status -'],
-                                'filterWidgetOptions' => ['pluginOptions' => ['allowClear' => true]],
                             ],
                             [
-                                'class' => '\kartik\grid\ActionColumn',
-                                'template' => '{update} {delete}',
+                                'label' => 'Participacao',
+                                'value' => fn($model) => $model->getParticipacaoDisplay(),
+                            ],
+                            [
+                                'label' => 'Tipo de doacao',
+                                'value' => fn($model) => $model->tipoDoacao->nome ?? '-',
+                            ],
+                            [
+                                'label' => 'Evento',
+                                'value' => fn($model) => $model->evento->nome ?? '-',
+                            ],
+                            'cpf_snapshot',
+                            'edicao_snapshot',
+                            [
+                                'attribute' => 'status',
+                                'filter' => Doacao::getStatusList(),
+                            ],
+                            [
+                                'attribute' => 'motivo_reprovado',
+                                'label' => 'Motivo da reprovacao',
+                                'value' => fn($model) => $model->motivo_reprovado ?: '-',
+                            ],
+                            [
+                                'class' => '\\kartik\\grid\\ActionColumn',
+                                'template' => '{view} {update} {delete}',
+                                'buttons' => [
+                                    'update' => function ($url, $model) {
+                                        return in_array($model->status, [Doacao::STATUS_PENDENTE, Doacao::STATUS_REJEITADA], true)
+                                            ? Html::a('<span class="fas fa-pencil-alt"></span>', ['update', 'id' => $model->id])
+                                            : '';
+                                    },
+                                    'delete' => function ($url, $model) {
+                                        if (!in_array($model->status, [Doacao::STATUS_PENDENTE, Doacao::STATUS_REJEITADA], true)) {
+                                            return '';
+                                        }
+
+                                        return Html::beginForm(['delete', 'id' => $model->id], 'post', [
+                                                'style' => 'display:inline-block;margin:0;',
+                                                'onsubmit' => "return confirm('Deseja excluir esta doacao?');",
+                                                'data-pjax' => '0',
+                                            ])
+                                            . Html::submitButton('<span class="fas fa-trash"></span>', [
+                                                'class' => 'btn btn-link btn-sm p-0 align-baseline',
+                                                'title' => 'Excluir',
+                                                'aria-label' => 'Excluir',
+                                            ])
+                                            . Html::endForm();
+                                    },
+                                ],
                             ],
                         ],
-                    ]);
-                    ?>
+                    ]) ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php
+$this->registerJs(<<<JS
+function initParticipantDonationGallery() {
+    if (typeof Fancybox !== 'undefined') {
+        Fancybox.bind('[data-fancybox="doacoes-gallery"]', {
+            groupAll: true,
+            Thumbs: {
+                autoStart: true,
+            },
+            Toolbar: {
+                display: {
+                    left: ['infobar'],
+                    middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW'],
+                    right: ['slideshow', 'thumbs', 'close'],
+                },
+            },
+        });
+    }
+}
+
+initParticipantDonationGallery();
+$(document).on('pjax:end', function () {
+    initParticipantDonationGallery();
+});
+JS);
+?>

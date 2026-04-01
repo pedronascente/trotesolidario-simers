@@ -1,34 +1,23 @@
 <?php
 
-use yii\widgets\ActiveForm;
-use yii\helpers\Html;
-use kartik\file\FileInput;
+use kartik\alert\Alert;
 use kartik\depdrop\DepDrop;
+use kartik\file\FileInput;
+use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\helpers\ArrayHelper;
-use app\modules\common\models\Evento;
-use yii\helpers\Json;
+use yii\widgets\ActiveForm;
 
-$eventosDoTrote = [];
-
-if ($model->trote_id) {
-    $eventosDoTrote = ArrayHelper::map(
-        Evento::find()
-            ->where(['trote_id' => $model->trote_id])
-            ->orderBy('nome')
-            ->all(),
-        'id',
-        'nome'
-    );
-}
+/* @var $model app\modules\common\models\Doacao */
 
 ?>
 
 <div class="container-fluid">
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Doacao', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000]) ?>
+    <?php endif; ?>
+
     <?php $form = ActiveForm::begin([
-        'options' => [
-            'enctype' => 'multipart/form-data'
-        ],
+        'options' => ['enctype' => 'multipart/form-data'],
         'enableClientValidation' => true,
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
@@ -38,77 +27,79 @@ if ($model->trote_id) {
         ],
     ]); ?>
 
+    <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
+
     <div class="row">
         <div class="col-md-12">
-            <?= $form->field($model, 'trote_id')->dropDownList($trote, ['id' => 'trote-id', 'prompt' => 'Selecione']); ?>
+            <?= $form->field($model, 'participacao_id')->dropDownList($participacoes, [
+                'id' => 'doacao-participacao-id',
+                'prompt' => 'Selecione a participacao',
+            ]) ?>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <?= $form->field($model, 'evento_id')->widget(DepDrop::class, [
-                'data' => $eventosDoTrote,
-                'options' => [
-                    'id' => 'evento-id',
-                    'value' => $model->evento_id
-                ],
+                'options' => ['id' => 'doacao-evento-id'],
                 'pluginOptions' => [
-                    'depends' => ['trote-id'],
-                    'placeholder' => 'Selecione...',
-                    'url' => Url::to(['/administrator/doacao/eventos-by-trote']),
-                    'initialize' => true
-                ]
-            ]); ?>
+                    'depends' => ['doacao-participacao-id'],
+                    'placeholder' => 'Selecione um evento',
+                    'url' => Url::to(['/administrator/doacao/eventos-by-participacao']),
+                    'initialize' => true,
+                    'allowClear' => true,
+                ],
+            ]) ?>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($model, 'user_id')->dropDownList($usuario, ['prompt' => 'Selecione']); ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($model, 'tipo_doacao_id')->dropDownList([], ['id' => 'tipo-doacao-id', 'prompt' => 'Selecione']); ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($model, 'universidade_id')->dropDownList($universidade, ['prompt' => 'Selecione']); ?>
+        <div class="col-md-6">
+            <?= $form->field($model, 'tipo_doacao_id')->dropDownList($tipoDoacao, [
+                'prompt' => 'Selecione o tipo de doacao',
+            ]) ?>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
             <?= $form->field($model, 'file')->widget(FileInput::class, [
-                'options' => ['accept' => 'image/*'],
+                'options' => ['accept' => '.jpg,.jpeg,.png,.gif,.pdf'],
                 'pluginOptions' => [
                     'showCaption' => false,
                     'showRemove' => false,
                     'showUpload' => false,
                     'browseClass' => 'btn btn-primary btn-block',
-                    'browseIcon' => '<i class="fas fa-camera"></i> ',
-                    'browseLabel' => 'Anexar imagem',
-                    'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif'],
-                    'maxFileSize' => 2048,
+                    'browseIcon' => '<i class="fas fa-paperclip"></i> ',
+                    'browseLabel' => 'Anexar arquivo',
+                    'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
+                    'maxFileSize' => 5120,
                     'overwriteInitial' => true,
-                    'initialPreview' => $model->arquivo
-                        ? ["/imagens/doacoes/{$model->arquivo}"]
-                        : [],
+                    'initialPreview' => $model->arquivo ? [Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo] : [],
                     'initialPreviewAsData' => true,
                     'initialPreviewConfig' => $model->arquivo ? [[
-                        'caption' => $model->arquivo
+                        'caption' => $model->arquivo,
                     ]] : [],
                 ],
-            ])->label('Imagem'); ?>
+            ]) ?>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($model, 'status')->dropDownList(\app\modules\common\models\Doacao::getStatusList()); ?>
+        <div class="col-md-6">
+            <?= $form->field($model, 'status')->dropDownList(\app\modules\common\models\Doacao::getStatusList()) ?>
+        </div>
+
+        <div class="col-md-6">
+            <?= $form->field($model, 'motivo_reprovado')->textarea(['rows' => 3]) ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($model, 'cpf_snapshot')->textInput(['readonly' => true]) ?>
+        </div>
+
+        <div class="col-md-6">
+            <?= $form->field($model, 'edicao_snapshot')->textInput(['readonly' => true]) ?>
         </div>
     </div>
 
@@ -118,72 +109,16 @@ if ($model->trote_id) {
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>
 
 <?php
-
-$tipoSelecionado = Json::encode($model->tipo_doacao_id);
-
-$this->registerJs("
-
-/* ===============================
-   VALIDACAO VISUAL DO FORMULARIO
-=================================*/
+$this->registerJs(<<<JS
 $('form').on('afterValidate', function () {
-    $('.form-group').each(function(){
-        if($(this).hasClass('has-error')){
+    $('.form-group').each(function () {
+        if ($(this).hasClass('has-error')) {
             $(this).find('.form-control').addClass('is-invalid');
         }
     });
 });
-
-
-/* ===============================
-   VARIAVEIS
-=================================*/
-let tipoSelecionado = $tipoSelecionado;
-
-
-/* ===============================
-   CARREGAR TIPOS DE DOAÇÃO
-=================================*/
-function carregarTiposDoacao(){
-
-    let user  = $('#doacao-user_id').val();
-    let trote = $('#trote-id').val();
-
-    if(user && trote){
-        $.get('/administrator/doacao/tipos-disponiveis', {
-            user_id: user,
-            trote_id: trote
-        }, function(data){
-            let result = (typeof data === 'object') ? data : JSON.parse(data);
-            let select = $('#tipo-doacao-id');
-            select.empty();
-            select.append('<option value=\"\">Selecione</option>');
-            $.each(result.output, function(id, nome){
-                let selected = (tipoSelecionado == id) ? 'selected' : '';
-                select.append(
-                    '<option value=\"'+id+'\" '+selected+'>'+nome+'</option>'
-                );
-            });
-        });
-    }
-}
-
-/* ===============================
-   EVENTOS
-=================================*/
-$('#doacao-user_id').on('change', carregarTiposDoacao);
-$('#trote-id').on('change', carregarTiposDoacao);
-
-/* ===============================
-   EXECUTA AO ABRIR UPDATE
-=================================*/
-$(document).ready(function(){
-    carregarTiposDoacao();
-});
-
-");
+JS);
 ?>

@@ -8,7 +8,6 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="evento-form">
-
     <?php $form = ActiveForm::begin([
         'enableClientValidation' => true,
         'fieldConfig' => [
@@ -19,46 +18,21 @@ use yii\widgets\ActiveForm;
         ],
     ]); ?>
 
+    <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
+
     <?php if ($model->isNewRecord): ?>
-        <?= $form->field($model, 'trote_id')->dropDownList(
-            $trotes,
-            ['prompt' => 'Selecione um Trote']
-        ) ?>
-
+        <?= $form->field($model, 'trote_id')->dropDownList($trotes, ['prompt' => 'Selecione um trote']) ?>
     <?php else: ?>
-
-        <!-- UPDATE: trote fixo (desabilitado) -->
-        <?= $form->field($model, 'trote_id')->dropDownList(
-            $trotes,
-            [
-                'disabled' => true,
-            ]
-        ) ?>
-
-        <!-- garante envio do valor (disabled não envia) -->
+        <?= $form->field($model, 'trote_id')->dropDownList($trotes, ['disabled' => true]) ?>
         <?= Html::activeHiddenInput($model, 'trote_id') ?>
-
     <?php endif; ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <?= $form->field($model, 'nome')->textInput(['maxlength' => true]) ?>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, 'data_evento')->input('date') ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'ativo')->dropDownList([
-                1 => 'Sim',
-                0 => 'Não',
-            ]) ?>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($model, 'descricao')->textarea(['rows' => 4]) ?>
+            <?= $form->field($model, 'data_evento')->input('datetime-local') ?>
         </div>
     </div>
 
@@ -68,27 +42,8 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>
 
-
 <?php
-
-$this->registerJs("
-
-/* ===============================
-VALIDACAO VISUAL DO FORMULARIO
-=================================*/
-
-$('form').on('afterValidate', function () {
-    $('.form-group').each(function()
-    {
-        if($(this).hasClass('has-error'))
-        {
-            $(this).find('.form-control').addClass('is-invalid');
-        }
-    });
-});
-
-");
+$this->registerJs("$('form').on('afterValidate', function () { $('.form-group').each(function () { if ($(this).hasClass('has-error')) { $(this).find('.form-control').addClass('is-invalid'); } }); });");
 ?>

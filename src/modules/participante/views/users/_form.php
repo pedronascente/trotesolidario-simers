@@ -2,224 +2,93 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use kartik\select2\Select2;
-use yii\helpers\ArrayHelper;
-use kartik\alert\Alert;
-use app\modules\common\models\Trote;
-use app\modules\common\models\Universidade;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\common\models\Users */
-/* @var $form yii\widgets\ActiveForm */
 ?>
-<style>
-    .field-users-outrainstituicao {
-        display: none;
-    }
 
-    .div-estudante {
-        display: none;
-    }
-</style>
-<div class="users-form">
+<div class="participant-profile-form">
+    <?php $form = ActiveForm::begin([
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'options' => ['class' => 'form-group'],
+            'inputOptions' => ['class' => 'form-control'],
+            'errorOptions' => ['class' => 'invalid-feedback d-block'],
+        ],
+    ]); ?>
 
-    <div class="container">
+    <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
+
+    <div class="mb-4">
+        <h3 class="h6 text-success font-weight-bold text-uppercase">Dados pessoais</h3>
         <div class="row">
-            <div class="col-lg-6">
-                <div class="p-3">
-                    <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">Perfil</h1>
-                    </div>
-                    <?php $form = ActiveForm::begin(); ?>
-                    <?= $form->field($model, 'passwordHash', ['labelOptions' => ['style' => 'color:grey']])->label('Senha')->passwordInput() ?>
-                    <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                    <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-
-                    <?=
-                    $form
-                        ->field($model, 'trote_id')
-                        ->label('Trote')
-                        ->widget(Select2::classname(), [
-                            'options' => [
-                                'placeholder' => '-  Selecione o Trote -',
-                            ],
-                            'data' => ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome')
-                        ]);
-                    ?>
-                    <?=
-                    $form
-                        ->field($model, 'estudante')
-                        ->label('Você é um estudante?')
-                        ->widget(Select2::classname(), [
-                            'options' => [
-                                'placeholder' => '- Você é um estudante? -',
-                                'onchange' => 'verificaEstudante()'
-                            ],
-                            'data' => [
-                                'Sim' => 'Sim',
-                                'Não' => 'Não'
-                            ],
-                        ]);
-                    ?>
-                    <small>
-                        O Simers utiliza cookies e tecnologias semelhantes, como explicado em nossa <a style="font-weight: bold;text-decoration: underline;" href="https://simers.org.br/politica-privacidade" target="_blank">Política de Privacidade</a>, para melhorar a experiência de usuário. Ao navegar por nosso conteúdo, o usuário aceita tais condições.
-                    </small>
-                    <?=
-                    $form->field($model, 'politicaPrivacidade', [
-                        'options' => ['class' => 'checkbox checkbox-primary'],
-                        'labelOptions' => ['style' => 'color:grey']
-                    ])
-                        ->checkbox([
-                            'id' => 'politicaPrivacidade',
-                            'onchange' => 'habilitaBotao()'
-                        ])
-                    ?>
-                    <small>
-                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL – SIMERS, em razão da ação “TROTE SOLIDÁRIO 2022/1”, disponha dos meus dados pessoais, de acordo com os artigos 7º e 11 da Lei nº 13.709/2018, e autorizo a utilização de minha imagem e/ou voz.
-                    </small>
-                    <?=
-                    $form->field($model, 'politicaImagem', [
-                        'options' => ['class' => 'checkbox checkbox-primary'],
-                        'labelOptions' => ['style' => 'color:grey']
-                    ])
-                        ->checkbox([
-                            'id' => 'politicaImagem',
-                            'onchange' => 'habilitaBotao()'
-                        ])
-                    ?>
-
-
-
-                </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'nome')->textInput(['maxlength' => true, 'placeholder' => 'Digite seu nome completo']) ?>
             </div>
-            <div class="col-lg-6 div-estudante">
-                <div class="p-3">
-                    <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">Estudante</h1>
-                    </div>
-                    <?=
-                    $form
-                        ->field($model, 'instituicao')
-                        ->label('Selecione uma Instituição')
-                        ->widget(Select2::classname(), [
-                            'options' => [
-                                'placeholder' => '- Selecione uma Instituição -',
-                                'onchange' => 'outraInstituicao()'
-                            ],
-                            'data' => ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
-                        ]);
-                    ?>
-
-                    <?= $form->field($model, 'outraInstituicao', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
-                    <?=
-                    $form
-                        ->field($model, 'estudanteMedicina')
-                        ->label('Você é um Estudante de Medicina?')
-                        ->dropDownList(
-                            [
-                                '' => '',
-                                'Sim' => 'Sim',
-                                'Não' => 'Não'
-                            ],
-                            [
-                                'prompt' => 'Você é um estudante?',
-                                'onchange' => 'verificaEstudanteMedicina()'
-                            ]
-                        );
-                    ?>
-                    <?= $form->field($model, 'estudanteOutros', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
-
-                    <?=
-                    $form->field($model, 'telefone', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
-                    ?>
-                    <?=
-                    $form->field($model, 'previsaoFormatura', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
-                    ?>
-                </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'email')->input('email', ['maxlength' => true, 'placeholder' => 'voce@exemplo.com']) ?>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-lg-12">
-                <div class="p-3">
-                    <small><b>*Alteração de nome deve ser feita através de solicitação por e-mail: nucleoacademico@simers.org.br</b></small>
-                    <br><?= Html::submitButton('Salvar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
-                    <?php ActiveForm::end(); ?>
-                </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'placeholder' => "Nome de usu\u{00E1}rio"]) ?>
+            </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'cpf')->textInput(['readonly' => true]) ?>
             </div>
         </div>
     </div>
 
+    <div class="mb-4">
+        <h3 class="h6 text-success font-weight-bold text-uppercase">Acesso</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'password', ['enableClientValidation' => false])->passwordInput(['placeholder' => 'Preencha apenas para alterar']) ?>
+            </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'password_confirmation', ['enableClientValidation' => false])->passwordInput(['placeholder' => 'Repita a nova senha']) ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h3 class="h6 text-success font-weight-bold text-uppercase"><?= "Informa\u{00E7}\u{00F5}es acad\u{00EA}micas" ?></h3>
+        <div class="row">
+            <div class="col-md-4">
+                <?= $form->field($model, 'estudante')->dropDownList([1 => 'Sim', 0 => "N\u{00E3}o"]) ?>
+            </div>
+            <div class="col-md-4" id="medicine-field">
+                <?= $form->field($model, 'estudante_medicina')->dropDownList([1 => 'Sim', 0 => "N\u{00E3}o"]) ?>
+            </div>
+            <div class="col-md-4" id="graduation-field">
+                <?= $form->field($model, 'previsao_formatura')->input('datetime-local') ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3 mb-0 d-flex gap-2">
+        <?= Html::submitButton('Salvar perfil', ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Cancelar', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
-<script>
-    $(document).ready(function() {
+<?php
+$this->registerJs(<<<JS
+function toggleAcademicFields() {
+    const estudante = $('#participantprofileform-estudante').val();
+    const isStudent = estudante === '1';
 
-        if (document.getElementById("politicaPrivacidade").checked == true && document.getElementById("politicaImagem").checked == true) {
-            $("#btnsalvar").attr('disabled', false);
-        } else {
-            $("#btnsalvar").attr('disabled', true);
-        }
-        if ($("#users-estudante option:selected").val() == 'Sim') {
-            $(".div-estudante").show();
-        } else {
-            $(".div-estudante").hide();
-        }
-        if ($("#users-instituicao option:selected").val() == 'Outra') {
-            $(".field-users-outrainstituicao").show();
-        } else {
-            $(".field-users-outrainstituicao").hide();
-        }
+    $('#graduation-field').toggle(isStudent);
+    $('#medicine-field').toggle(isStudent);
 
-        if ($("#users-estudantemedicina option:selected").val() == 'Não') {
-            $(".field-users-estudanteoutros").show();
-        } else {
-            $(".field-users-estudanteoutros").hide();
-        }
-    });
-    $("#users-telefone").inputmask({
-        "mask": "(99) 99999-9999"
-    });
-    $("#users-cpf").inputmask({
-        "mask": "999.999.999-99"
-    });
-    $("#users-previsaoformatura").inputmask({
-        "mask": "9999/99"
-    });
-
-    function habilitaBotao() {
-        if (document.getElementById("politicaPrivacidade").checked == true && document.getElementById("politicaImagem").checked == true) {
-            $("#btnsalvar").attr('disabled', false);
-        } else {
-            $("#btnsalvar").attr('disabled', true);
-        }
-
+    if (!isStudent) {
+        $('#participantprofileform-previsao_formatura').val('');
+        $('#participantprofileform-estudante_medicina').val('0');
     }
+}
 
-    function verificaEstudante() {
-        if ($("#users-estudante option:selected").val() == 'Sim') {
-            $(".div-estudante").show();
-        } else {
-            $(".div-estudante").hide();
-        }
-    }
-
-    function verificaEstudanteMedicina() {
-        if ($("#users-estudantemedicina option:selected").val() == 'Não') {
-            $(".field-users-estudanteoutros").show();
-        } else {
-            $(".field-users-estudanteoutros").hide();
-        }
-    }
-
-
-    function outraInstituicao() {
-        if ($("#users-instituicao option:selected").text() == 'Outra') {
-            $(".field-users-outrainstituicao").show();
-        } else {
-            $(".field-users-outrainstituicao").hide();
-        }
-    }
-</script>
+$(document).on('change', '#participantprofileform-estudante', toggleAcademicFields);
+toggleAcademicFields();
+JS);
+?>

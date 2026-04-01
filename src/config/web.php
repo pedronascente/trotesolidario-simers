@@ -3,6 +3,13 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
+$mailerHost = getenv('MAILER_HOST') ?: ($params['mailerHost'] ?? 'smtp.gmail.com');
+$mailerPort = (int) (getenv('MAILER_PORT') ?: ($params['mailerPort'] ?? 587));
+$mailerEncryption = getenv('MAILER_ENCRYPTION') ?: ($params['mailerEncryption'] ?? 'tls');
+$mailerUsername = getenv('MAILER_USERNAME') ?: ($params['senderEmail'] ?? null);
+$mailerPassword = getenv('MAILER_PASSWORD') ?: ($params['mailerPassword'] ?? null);
+$mailerUseFileTransport = getenv('MAILER_USE_FILE_TRANSPORT');
+
 $config = [
     'id' => 'basic',
     'name' => 'Trote Solidario',
@@ -28,6 +35,14 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'mDjJbJm3XXWDYy1ln2QyxP75uuVkPCjd',
+            'csrfParam' => '_csrf',
+
+            'enableCsrfCookie' => true,
+
+            'csrfCookie' => [
+                'httpOnly' => true,
+                'path' => '/',
+            ],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -35,27 +50,32 @@ $config = [
         'user' => [
             /**
              * Chama o model que ira implementar a interface IdentityInterface 
-             * e os métodos de autenticação.
+             * e os mÃ©todos de autenticaÃ§Ã£o.
              */
-            'identityClass' => 'app\modules\common\models\Users',
-            /**
-             * É responsável por definir a rota (URL) padrão de login
-             */
-            'loginUrl' => ['participante/default/index'],
+            'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            /**
+             * Ã‰ responsÃ¡vel por definir a rota (URL) padrÃ£o de login
+             */
+            'loginUrl' => ['auth/login'],
+            //'loginUrl' => ['participante/default/index'],
+          
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => $mailerUseFileTransport === false
+                ? YII_ENV_DEV
+                : filter_var($mailerUseFileTransport, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? YII_ENV_DEV,
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.gmail.com',
-                'username' => 'naoresponda@simers.org.br',
-                'password' => 'tvvmqzemmaiajgtg',
-                'port' => '587',
-                'encryption' => 'tls',
+                'host' => $mailerHost,
+                'username' => $mailerUsername,
+                'password' => $mailerPassword,
+                'port' => $mailerPort,
+                'encryption' => $mailerEncryption,
             ],
         ],
         'log' => [
@@ -71,7 +91,11 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [],
+            'rules' => [
+                'auth/login' => 'auth/login',
+                'auth/request-password-reset' => 'auth/request-password-reset',
+                'auth/reset-password/<token:[^/]+>' => 'auth/reset-password',
+            ],
         ],
         'formatter' => [
             'dateFormat' => 'php:d/m/Y', //'short',
@@ -110,6 +134,7 @@ $config = [
     'params' => $params,
     'container' => [
        'definitions' => require __DIR__ . '/container.php',
+        
     ],
 ];
 
@@ -130,3 +155,5 @@ if (YII_ENV_DEV) {
 }
 
 return $config;
+
+

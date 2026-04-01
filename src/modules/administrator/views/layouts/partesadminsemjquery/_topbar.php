@@ -20,7 +20,7 @@ use yii\helpers\Url;
 
                 <div class="dropdown-menu dropdown-menu-right shadow">
                     <a class="dropdown-item" data-method="post"
-                        href="<?= Url::to(['/administrator/default/logout']) ?>">
+                        href="<?= Url::to(['/auth/logout']) ?>">
                         <i class="fas fa-sign-out-alt mr-2 text-gray-400"></i>
                         Sair
                     </a>

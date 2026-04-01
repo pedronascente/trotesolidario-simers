@@ -3,43 +3,45 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\common\models\Doacao */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Doacaos', 'url' => ['index']];
+$this->title = 'Doacao #' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Doacoes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
 ?>
-<div class="doacao-view">
-
+<div class="doacao-view container-fluid">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?php if ($model->status === \app\modules\common\models\Doacao::STATUS_PENDENTE): ?>
+            <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'arquivo:ntext',
-            'instituicao:ntext',
-            'validado:ntext',
-            'usuario_validacao',
-            'tipo_doacao:ntext',
-            'user_create',
-            'data_create',
-            'user_update',
-            'data_update',
+            [
+                'label' => 'Participacao',
+                'value' => $model->getParticipacaoDisplay(),
+            ],
+            [
+                'label' => 'Tipo de doacao',
+                'value' => $model->tipoDoacao->nome ?? '-',
+            ],
+            [
+                'label' => 'Evento',
+                'value' => $model->evento->nome ?? '-',
+            ],
+            'cpf_snapshot',
+            'edicao_snapshot',
+            'arquivo',
+            [
+                'attribute' => 'status',
+                'value' => \app\modules\common\models\Doacao::getStatusList()[$model->status] ?? $model->status,
+            ],
+            'motivo_reprovado:ntext',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
-
 </div>

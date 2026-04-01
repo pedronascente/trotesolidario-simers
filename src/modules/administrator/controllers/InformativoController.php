@@ -3,9 +3,11 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+
 use app\modules\common\models\Documento;
 use app\modules\common\models\DocumentoSearchModel;
 use app\modules\common\services\contracts\DocumentoServiceInterface;
@@ -24,10 +26,32 @@ class InformativoController extends Controller
         parent::__construct($id, $module, $config);
         $this->service = $service;
     }
-
+    
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'], // precisa estar logado
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->isAdmin();
+                        },
+                    ],
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    // não logado → login
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['/auth/login']);
+                    }
+
+                    // logado mas não admin → 403
+                    throw new \yii\web\ForbiddenHttpException('Acesso negado');
+                }
+            ],
+
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [

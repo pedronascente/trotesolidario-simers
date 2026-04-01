@@ -19,8 +19,7 @@ $this->title = 'Criar Evento';
                     <?= $this->render('_form', [
                         'model' => $model,
                         'trotes' => $trotes,
-                    ])
-                    ?>
+                    ]) ?>
                 </div>
             </div>
         </div>

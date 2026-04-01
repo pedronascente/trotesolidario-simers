@@ -1,129 +1,93 @@
 <?php
 
-use app\modules\common\models\Helper;
-use yii\helpers\Url;
+use yii\helpers\Html;
 
-$tipo = '';
-$horasAtual = 0;
+$normalize = static function (?string $value): string {
+    $value = trim((string) $value);
+    if ($value === '') {
+        return '';
+    }
 
-if ($model['tipo_doacao'] == 'Comissão' || $model['tipo_doacao'] == 'Comissão organizadora') {
-    $horasAtual = 40;
-    $tipo = ' na qualidade de MEMBRO DA COMISSÃO ORGANIZADORA';
-} else if ($model['tipo_doacao'] == 'Sangue' || $model['tipo_doacao'] == 'Medula Óssea') {
-    $horasAtual = 8;
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else if ($model['tipo_doacao'] == 'Alimentos') {
-    $horasAtual = 4;
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else if ($model['tipo_doacao'] == 'Participação Presencial') {
-    $horasAtual = 6;
-    $tipo = ' na qualidade de PARTICIPANTE';
-} else {
-    $horasAtual = 0;
-    $tipo = ' ';
+    if (!mb_check_encoding($value, 'UTF-8')) {
+        $converted = @mb_convert_encoding($value, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
+        if (is_string($converted) && $converted !== '') {
+            $value = $converted;
+        }
+    }
+
+    return $value;
+};
+
+$logoPath = realpath(Yii::getAlias('@webroot') . '/img/logo-site-2025.png') ?: realpath(Yii::getAlias('@webroot') . '/img/logo-site.png');
+$bgPath = realpath(Yii::getAlias('@webroot') . '/img/bg-certificado-2025_resized.png');
+$elementLeftPath = realpath(Yii::getAlias('@webroot') . '/img/element-left.png');
+$elementRightPath = realpath(Yii::getAlias('@webroot') . '/img/element-right.png');
+$assinaturaMarcia = realpath(Yii::getAlias('@webroot') . '/img/assinatura-marcia.png');
+$assinaturaMarcelo = realpath(Yii::getAlias('@webroot') . '/img/assinatura-marcelo.png');
+
+$nome = $normalize($model['name'] ?? '-');
+$trote = $normalize($model['trote'] ?? '-');
+$qualidade = mb_strtoupper($normalize($model['qualidade'] ?? 'PARTICIPANTE'), 'UTF-8');
+$totalHoras = (int) ($model['total_horas'] ?? 0);
+$fraseBase = $normalize($model['frase_certificado'] ?? '');
+$fraseCertificado = trim($fraseBase . ' ' . $totalHoras . ' horas.');
+
+$doacoes = [];
+foreach (($model['all_donations'] ?? []) as $doacao) {
+    $doacao = $normalize($doacao);
+    if ($doacao !== '') {
+        $doacoes[] = $doacao;
+    }
 }
 
-$totalHoras = isset($model['total_horas']) ? $model['total_horas'] : $horasAtual;
-
-$doacoesTexto = '';
-if (isset($model['all_donations']) && !empty($model['all_donations'])) {
-    $doacoesTexto = implode(', ', $model['all_donations']);
-    $doacoesTexto = " realizando doações do tipo: {$doacoesTexto},";
-}
-
-$model['frase_certificado'] .= " {$totalHoras} horas.";
+$tiposDoacao = implode(', ', $doacoes);
+$textoPrincipal = "Certificamos que <b>" . Html::encode($nome) . "</b>, participou do Trote Solid\u{00E1}rio " . Html::encode($trote)
+    . ", na qualidade de " . Html::encode($qualidade)
+    . ", como volunt\u{00E1}rio(a), realizando doa\u{00E7}\u{00F5}es do tipo: " . Html::encode($tiposDoacao)
+    . ", promovido pelo N\u{00FA}cleo Acad\u{00EA}mico Simers, " . Html::encode($fraseCertificado);
 ?>
-<style type="text/css">
-    .tg {}
+<div style="position:relative; width:297mm; height:210mm; overflow:hidden; font-family:Arial, sans-serif; color:#2a1974;">
+    <?php if ($bgPath): ?>
+        <img src="<?= $bgPath ?>" alt="Fundo do certificado" style="position:absolute; left:0; top:0; width:297mm; height:210mm;">
+    <?php endif; ?>
 
-    .tg td {
-        font-family: AvenirLTStd-Roman;
-        font-size: 14px;
-        overflow: hidden;
-        padding: 10px 5px;
-        word-break: normal;
-    }
+    <div style="position:absolute; left:13.5mm; top:8.2mm; width:271.5mm; height:193mm; background:#ffffff; border-radius:4mm;"></div>
 
-    .tg th {
-        font-family: AvenirLTStd-Roman;
-        font-size: 14px;
-        font-weight: normal;
-        overflow: hidden;
-        padding: 10px 5px;
-        word-break: normal;
-    }
+    <?php if ($elementRightPath): ?>
+        <img src="<?= $elementRightPath ?>" alt="Elemento decorativo" style="position:absolute; right:7.5mm; top:46.5mm; width:20mm;">
+    <?php endif; ?>
 
-    .tg .tg-baqh {
-        text-align: center;
-        vertical-align: top
-    }
+    <?php if ($elementLeftPath): ?>
+        <img src="<?= $elementLeftPath ?>" alt="Elemento decorativo" style="position:absolute; left:8mm; bottom:18mm; width:17mm;">
+    <?php endif; ?>
 
-    .tg .tg-0lax {
-        text-align: left;
-        vertical-align: top
-    }
-</style>
+    <div style="position:absolute; left:22mm; top:11mm; width:253mm; height:184mm; text-align:center;">
+        <?php if ($logoPath): ?>
+            <img src="<?= $logoPath ?>" alt="Logo Trote Solid\u{00E1}rio Simers" style="display:block; width:57mm; margin:0 auto; margin-top:4mm;">
+        <?php endif; ?>
 
-<body class="body">
-    <div style="background-color:#520EBA; background-repeat: no-repeat; background-size: cover;background-image: url('<?= Yii::getAlias('@webroot') ?>/img/bg-certificado-2025_resized.png');">
-        <div class="well"
-            style="background-color: transparent; border:none;height: 530px;">
-            <div class="row" style="padding:20px">
-                <table class="tg" style="table-layout: fixed; width: 100%">
-                    <thead>
-                        <tr>
-                            <th class="tg-0lax"></th>
-                            <th class="tg-baqh" colspan="3">
-                                <img src="<?= realpath(Yii::getAlias('@webroot') . '/img/logo-site.png') ?>" style="width:auto;height: 130px;"
-                                    alt="logo" />
-                            </th>
-                            <th class="tg-0lax"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="padding-top:20px;">
-                            <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: center;">
-                                <h1 style="color:#2e056b; ">CERTIFICADO</h1>
-                            </td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                                <p style="color: #2e056b; font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>,
-                                    participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, como voluntário(a),<?= $doacoesTexto ?>
-                                    promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
-                            </td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr style="padding-top:20px;">
-                            <td class="tg-0lax"></td>
-                            <td class="tg-0lax"></td>
-                            <th class="tg-baqh"
-                                style="  flex-direction: row; justify-content: start; text-align: left;">
-                                <img src="<?= realpath(Yii::getAlias('@webroot') . '/img/assinatura-marcia.png') ?>"
-                                    style="width:auto;height: 80px;" alt="logo" />
-                            </th>
-                            <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
-                                <img src="<?= realpath(Yii::getAlias('@webroot') . '/img/assinatura-marcelo.png') ?>"
-                                    style="width:auto;height: 80px;" alt="logo" />
+        <div style="margin-top:5mm; font-size:15.5mm; line-height:1; font-weight:500; letter-spacing:0; color:#2f1f86;">CERTIFICADO</div>
 
-                            </th>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <th class="tg-baqh" colspan="3">
-                            </th>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div style="margin:11mm auto 0; width:236mm; font-size:7.05mm; line-height:1.28; color:#2f1f86; text-align:center;">
+            <?= $textoPrincipal ?>
+        </div>
+
+        <div style="position:absolute; left:18mm; right:18mm; bottom:22mm; height:32mm; color:#23155e;">
+            <div style="position:absolute; left:25mm; width:75mm; text-align:center;">
+                <?php if ($assinaturaMarcia): ?>
+                    <img src="<?= $assinaturaMarcia ?>" alt="Assinatura Dra. Marcia Pires Barbosa" style="display:block; width:44mm; margin:0 auto 1mm;">
+                <?php endif; ?>
+                <div style="font-size:4.05mm; font-weight:700;">Dra. Marcia Pires Barbosa</div>
+                <div style="font-size:3.45mm; margin-top:2.2mm;">Diretora de Pol\u{00ED}ticas Estrat\u{00E9}gicas</div>
+            </div>
+
+            <div style="position:absolute; right:21mm; width:75mm; text-align:center;">
+                <?php if ($assinaturaMarcelo): ?>
+                    <img src="<?= $assinaturaMarcelo ?>" alt="Assinatura Dr. Marcelo Marsillac Matias" style="display:block; width:42mm; margin:0 auto 1mm;">
+                <?php endif; ?>
+                <div style="font-size:4.05mm; font-weight:700;">DR. Marcelo Marsillac Matias</div>
+                <div style="font-size:3.45mm; margin-top:2.2mm;">Presidente do Simers</div>
             </div>
         </div>
     </div>
-</body>
+</div>

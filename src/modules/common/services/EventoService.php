@@ -19,7 +19,7 @@ class EventoService implements EventoServiceInterface
             }
 
             if (!$model->save(false)) {
-                throw new Exception('Erro ao salvar Evento.');
+                throw new Exception('Erro ao salvar evento.');
             }
 
             return true;
@@ -29,7 +29,7 @@ class EventoService implements EventoServiceInterface
     public function update($model): bool
     {
         if ($model->isNewRecord) {
-            throw new Exception('Não é possível atualizar um evento não persistido.');
+            throw new Exception('Nao e possivel atualizar um evento nao persistido.');
         }
 
         return Yii::$app->db->transaction(function () use ($model) {
@@ -38,7 +38,7 @@ class EventoService implements EventoServiceInterface
             }
 
             if (!$model->save(false)) {
-                throw new Exception('Erro ao atualizar Evento.');
+                throw new Exception('Erro ao atualizar evento.');
             }
 
             return true;
@@ -48,12 +48,12 @@ class EventoService implements EventoServiceInterface
     public function delete($model): bool
     {
         if ($model->isNewRecord) {
-            throw new Exception('Não é possível excluir um evento não persistido.');
+            throw new Exception('Nao e possivel excluir um evento nao persistido.');
         }
 
         return Yii::$app->db->transaction(function () use ($model) {
             if ($model->delete() === false) {
-                throw new Exception('Erro ao excluir Evento.');
+                throw new Exception('Erro ao excluir evento.');
             }
 
             return true;
@@ -65,12 +65,14 @@ class EventoService implements EventoServiceInterface
         return Evento::findOne($id);
     }
 
-    public function findTrotes()
+    public function findTrotes(): array
     {
-        return  ArrayHelper::map(
-            Trote::find()->orderBy('titulo')->all(),
-            'id',
-            'titulo'
-        );
+        $trotes = Trote::find()->orderBy(['titulo' => SORT_ASC, 'edicao' => SORT_DESC])->all();
+
+        return ArrayHelper::map($trotes, 'id', function (Trote $trote) {
+            $titulo = $trote->titulo ?: 'Sem titulo';
+            $edicao = $trote->edicao ?: 'Sem edicao';
+            return $titulo . ' | ' . $edicao;
+        });
     }
 }

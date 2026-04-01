@@ -6,34 +6,45 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Trote */
 
-$this->title = $model->id;
+$this->title = $model->titulo ?: $model->edicao;
 $this->params['breadcrumbs'][] = ['label' => 'Trotes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="trote-view">
-
+<div class="trote-view container-fluid">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php if ($model->status !== \app\modules\common\models\Trote::STATUS_ATIVO): ?>
+            <?= Html::a('Excluir', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Deseja realmente excluir este item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'nome:ntext',
-            'frase_certificado:ntext',
-            'ativo',
+            'titulo',
+            'edicao',
+            [
+                'attribute' => 'descricao',
+                'format' => 'ntext',
+            ],
+            [
+                'attribute' => 'status',
+                'value' => $model->getStatusLabel(),
+            ],
+            'data_inicio:date',
+            'data_fim:date',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
-
 </div>

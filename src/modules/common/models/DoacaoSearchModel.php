@@ -6,25 +6,19 @@ use yii\data\ActiveDataProvider;
 
 class DoacaoSearchModel extends Doacao
 {
-    // Campos virtuais para filtro
-    public $universidade_nome;
-    public $trote_titulo;
-    public $evento_nome;
-
     public function rules()
     {
         return [
-            [['id', 'evento_id', 'user_id', 'tipo_doacao_id', 'universidade_id'], 'integer'],
-            [['status', 'universidade_nome', 'trote_titulo', 'evento_nome', 'user_nome'], 'safe'],
+            [['id', 'participacao_id', 'tipo_doacao_id', 'evento_id'], 'integer'],
+            [['status', 'participacao_label', 'evento_nome', 'tipo_doacao_nome', 'cpf_snapshot', 'edicao_snapshot'], 'safe'],
         ];
     }
 
     public function search($params)
     {
-        // Faz join com as relações para poder filtrar pelo nome/titulo
         $query = Doacao::find()
-            ->joinWith(['universidade', 'trote', 'evento','user'])
-            ->with(['user',  'tipoDoacao']);
+            ->joinWith(['participacao.user', 'participacao.trote', 'participacao.universidade', 'evento', 'tipoDoacao'])
+            ->with(['participacao.user', 'participacao.trote', 'participacao.universidade', 'evento', 'tipoDoacao', 'validador']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -33,16 +27,15 @@ class DoacaoSearchModel extends Doacao
                 'attributes' => [
                     'id',
                     'status',
-                    'user_id',
-                    'tipo_doacao_id',
-                    // sort pelos campos virtuais
-                    'universidade_nome' => [
-                        'asc' => ['universidade.nome' => SORT_ASC],
-                        'desc' => ['universidade.nome' => SORT_DESC],
+                    'cpf_snapshot',
+                    'edicao_snapshot',
+                    'participacao_label' => [
+                        'asc' => ['user.nome' => SORT_ASC],
+                        'desc' => ['user.nome' => SORT_DESC],
                     ],
-                    'trote_titulo' => [
-                        'asc' => ['trote.titulo' => SORT_ASC],
-                        'desc' => ['trote.titulo' => SORT_DESC],
+                    'tipo_doacao_nome' => [
+                        'asc' => ['tipo_doacao.nome' => SORT_ASC],
+                        'desc' => ['tipo_doacao.nome' => SORT_DESC],
                     ],
                     'evento_nome' => [
                         'asc' => ['evento.nome' => SORT_ASC],
@@ -59,19 +52,19 @@ class DoacaoSearchModel extends Doacao
             return $dataProvider;
         }
 
-        // Filtros padrão
         $query->andFilterWhere([
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'tipo_doacao_id' => $this->tipo_doacao_id,
+            'doacao.id' => $this->id,
+            'doacao.participacao_id' => $this->participacao_id,
+            'doacao.tipo_doacao_id' => $this->tipo_doacao_id,
+            'doacao.evento_id' => $this->evento_id,
         ]);
 
-        $query->andFilterWhere(['like', 'status', $this->status]);
-
-        // Filtros pelos campos virtuais
-        $query->andFilterWhere(['like', 'universidade.nome', $this->universidade_nome])
-            ->andFilterWhere(['like', 'trote.titulo', $this->trote_titulo])
-            ->andFilterWhere(['like', 'evento.nome', $this->evento_nome]);
+        $query->andFilterWhere(['like', 'doacao.status', $this->status])
+            ->andFilterWhere(['like', 'doacao.cpf_snapshot', $this->cpf_snapshot])
+            ->andFilterWhere(['like', 'doacao.edicao_snapshot', $this->edicao_snapshot])
+            ->andFilterWhere(['like', 'user.nome', $this->participacao_label])
+            ->andFilterWhere(['like', 'evento.nome', $this->evento_nome])
+            ->andFilterWhere(['like', 'tipo_doacao.nome', $this->tipo_doacao_nome]);
 
         return $dataProvider;
     }

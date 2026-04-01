@@ -2,11 +2,14 @@
 
 namespace app\modules\administrator\controllers;
 
+use DomainException;
+use Throwable;
 use Yii;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-
+use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use app\modules\common\models\Trote;
 use app\modules\common\models\TroteSearchModel;
 use app\modules\common\services\contracts\TroteServiceInterface;
@@ -15,18 +18,34 @@ class TroteController extends Controller
 {
     private TroteServiceInterface $service;
 
-    public function __construct(
-        $id,
-        $module,
-        TroteServiceInterface $service,
-        $config = []
-    ) {
+    public function __construct($id, $module, TroteServiceInterface $service, $config = [])
+    {
         parent::__construct($id, $module, $config);
         $this->service = $service;
     }
 
-    public function behaviors(){
+    public function behaviors()
+    {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function () {
+                            return Yii::$app->user->identity->isAdmin();
+                        },
+                    ],
+                ],
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['/auth/login']);
+                    }
+
+                    throw new ForbiddenHttpException('Acesso negado');
+                },
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -39,15 +58,17 @@ class TroteController extends Controller
     public function beforeAction($action)
     {
         $this->layout = 'adminsemjquery';
+
         return parent::beforeAction($action);
     }
 
     public function actionIndex()
     {
-        $searchModel  = new TroteSearchModel();
+        $searchModel = new TroteSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('index', [
-            'searchModel'  => $searchModel,
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -62,15 +83,15 @@ class TroteController extends Controller
     public function actionCreate()
     {
         $trote = new Trote();
-        $trote->ativo = 1;
-        if ($trote->load(Yii::$app->request->post())) 
-        {
-            if ($this->service->create($trote)) 
-            {
+
+        if ($trote->load(Yii::$app->request->post())) {
+            if ($this->service->create($trote)) {
                 Yii::$app->session->setFlash('success', 'Trote criado com sucesso');
+
                 return $this->redirect(['index']);
             }
-            Yii::$app->session->setFlash('error', 'Erro ao criar Trote');
+
+            Yii::$app->session->setFlash('error', 'Erro ao criar trote');
         }
 
         return $this->render('create', [
@@ -82,15 +103,14 @@ class TroteController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) 
-        {
-            if ($this->service->update($model)) 
-            {
+        if ($model->load(Yii::$app->request->post())) {
+            if ($this->service->update($model)) {
                 Yii::$app->session->setFlash('success', 'Trote atualizado com sucesso');
+
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', 'Erro ao atualizar Trote');
+            Yii::$app->session->setFlash('error', 'Erro ao atualizar trote');
         }
 
         return $this->render('update', [
@@ -100,12 +120,13 @@ class TroteController extends Controller
 
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        if ($this->service->delete($model)) 
-        {
-            Yii::$app->session->setFlash('success', 'Status alterado com sucesso');
-        } else {
-            Yii::$app->session->setFlash('error', 'Erro ao alterar status');
+        try {
+            $this->service->delete($this->findModel($id));
+            Yii::$app->session->setFlash('success', 'Trote excluido com sucesso');
+        } catch (DomainException $e) {
+            Yii::$app->session->setFlash('error', $e->getMessage());
+        } catch (Throwable $e) {
+            Yii::$app->session->setFlash('error', 'Erro ao excluir trote');
         }
 
         return $this->redirect(['index']);
@@ -113,10 +134,10 @@ class TroteController extends Controller
 
     protected function findModel($id): Trote
     {
-        if (($model = Trote::findOne($id)) !== null) 
-        {
+        if (($model = Trote::findOne($id)) !== null) {
             return $model;
         }
-        throw new NotFoundHttpException('Trote não encontrado.');
+
+        throw new NotFoundHttpException('Trote nao encontrado.');
     }
 }

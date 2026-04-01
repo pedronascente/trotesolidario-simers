@@ -2,20 +2,17 @@
 
 namespace app\modules\common\models;
 
-use app\modules\common\models\Doacao;
-use app\modules\common\models\Evento;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\db\Query;
 
 class Trote extends ActiveRecord
 {
     const STATUS_RASCUNHO = 'rascunho';
     const STATUS_ATIVO = 'ativo';
     const STATUS_ENCERRADO = 'encerrado';
-    const ATIVO_SIM = 1;
-    const ATIVO_NAO = 0;
 
     public static function tableName()
     {
@@ -37,39 +34,15 @@ class Trote extends ActiveRecord
     public function rules()
     {
         return [
-
-            // Obrigatórios
-            [['titulo', 'numero_edicao', 'ano', 'status', 'data_inicio', 'data_fim', 'descricao'], 'required'],
-
-            // Inteiros
-            [['numero_edicao', 'ano', 'ativo'], 'integer'],
-
-            // Texto
+            [['edicao'], 'required'],
             [['descricao'], 'string'],
-
-            // Datas (apenas data)
             [['data_inicio', 'data_fim'], 'date', 'format' => 'php:Y-m-d'],
-
-            // Strings
             [['titulo'], 'string', 'max' => 255],
+            [['edicao'], 'string', 'max' => 10],
             [['status'], 'string', 'max' => 20],
-
-            // Status permitido
-            ['status', 'in', 'range' => array_keys(self::getStatusList())],
-
-            // Default
             ['status', 'default', 'value' => self::STATUS_RASCUNHO],
-            ['ativo', 'default', 'value' => self::ATIVO_SIM],
-
-            // Unique composta
-            [
-                ['numero_edicao', 'ano'],
-                'unique',
-                'targetAttribute' => ['numero_edicao', 'ano'],
-                'message' => 'Já existe um trote cadastrado para essa edição e ano.'
-            ],
-
-            // Validação personalizada de datas
+            ['status', 'in', 'range' => array_keys(self::getStatusList())],
+            ['edicao', 'unique', 'message' => 'Ja existe um trote cadastrado para esta edicao.'],
             ['data_fim', 'validateDatas'],
         ];
     }
@@ -78,14 +51,12 @@ class Trote extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'titulo' => 'Título',
-            'numero_edicao' => 'Nº Edição',
-            'ano' => 'Ano',
-            'descricao' => 'Descrição',
+            'titulo' => 'Titulo',
+            'edicao' => 'Edicao',
+            'descricao' => 'Descricao',
             'status' => 'Status',
-            'data_inicio' => 'Data Início',
+            'data_inicio' => 'Data Inicio',
             'data_fim' => 'Data Fim',
-            'ativo' => 'Ativo',
             'created_at' => 'Criado em',
             'updated_at' => 'Atualizado em',
         ];
@@ -94,18 +65,15 @@ class Trote extends ActiveRecord
     public static function getStatusList()
     {
         return [
-            self::STATUS_RASCUNHO  => 'Rascunho',
+            self::STATUS_RASCUNHO => 'Rascunho',
             self::STATUS_ATIVO => 'Ativo',
             self::STATUS_ENCERRADO => 'Encerrado',
         ];
     }
 
-    /**
-     * Retorna edição formatada (02/2026)
-     */
     public function getEdicaoFormatada()
     {
-        return str_pad($this->numero_edicao, 2, '0', STR_PAD_LEFT) . '/' . $this->ano;
+        return $this->edicao ?: '-';
     }
 
     public function getStatusLabel()
@@ -115,55 +83,56 @@ class Trote extends ActiveRecord
 
     public function isAtivo()
     {
-        return $this->ativo == self::ATIVO_SIM;
+        return $this->status === self::STATUS_ATIVO;
     }
 
-    /**
-     * Validação: data fim não pode ser menor que início
-     */
     public function validateDatas($attribute)
     {
-        if ($this->data_inicio && $this->data_fim) {
-            if (strtotime($this->data_fim) < strtotime($this->data_inicio)) {
-                $this->addError($attribute, 'A data fim não pode ser menor que a data início.');
-            }
+        if ($this->data_inicio && $this->data_fim && strtotime($this->data_fim) < strtotime($this->data_inicio)) {
+            $this->addError($attribute, 'A data fim nao pode ser menor que a data inicio.');
         }
-    }
-
-    public function getRankingCaches()
-    {
-        return $this->hasMany(RankingCache::class, ['trote_id' => 'id']);
-    }
-
-    public function getCertificados()
-    {
-        return $this->hasMany(Certificado::class, ['trote_id' => 'id']);
-    }
-
-    public function getEventos()
-    {
-        return $this->hasMany(Evento::class, ['trote_id' => 'id']);
-    }
-
-    public function getDoacoes()
-    {
-        return $this->hasMany(Doacao::class, ['trote_id' => 'id']);
     }
 
     public static function getAtivos()
     {
         return self::find()
-            ->where(['ativo' => 1])
-            ->orderBy('titulo')
+            ->where(['status' => self::STATUS_ATIVO])
+            ->orderBy(['titulo' => SORT_ASC, 'edicao' => SORT_DESC])
             ->all();
     }
 
     public function possuiVinculos(): bool
     {
-        return
-            $this->getRankingCaches()->exists()
-            || $this->getCertificados()->exists()
-            || $this->getEventos()->exists()
-            || $this->getDoacoes()->exists();
+        $db = Yii::$app->db;
+
+        $temParticipacao = (new Query())
+            ->from('{{%participacao}}')
+            ->where(['trote_id' => $this->id])
+            ->exists($db);
+
+        if ($temParticipacao) {
+            return true;
+        }
+
+        $temEvento = (new Query())
+            ->from('{{%evento}}')
+            ->where(['trote_id' => $this->id])
+            ->exists($db);
+
+        if ($temEvento) {
+            return true;
+        }
+
+        $temRanking = (new Query())
+            ->from('{{%ranking_cache}}')
+            ->where(['trote_id' => $this->id])
+            ->exists($db);
+
+        return $temRanking;
+    }
+
+    public function getEventos()
+    {
+        return $this->hasMany(Evento::class, ['trote_id' => 'id'])->orderBy(['data_evento' => SORT_ASC, 'id' => SORT_ASC]);
     }
 }

@@ -8,7 +8,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
-
 use app\modules\common\models\Universidade;
 use app\modules\common\models\UniversidadeSearchModel;
 use app\modules\common\services\contracts\UniversidadeServiceInterface;
@@ -27,8 +26,6 @@ class UniversidadeController extends Controller{
         $this->service = $service;
     }
 
- 
-
     public function behaviors()
     {
         return [
@@ -37,10 +34,23 @@ class UniversidadeController extends Controller{
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'], // somente usuários logados
+                        'roles' => ['@'], // precisa estar logado
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->isAdmin();
+                        },
                     ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                    // não logado → login
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['/auth/login']);
+                    }
+
+                    // logado mas não admin → 403
+                    throw new \yii\web\ForbiddenHttpException('Acesso negado');
+                }
             ],
+
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -49,7 +59,6 @@ class UniversidadeController extends Controller{
             ],
         ];
     }
-
 
     public function actionIndex(){
         $this->layout = 'adminsemjquery';

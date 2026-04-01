@@ -4,14 +4,14 @@ namespace app\modules\common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\common\models\Trote;
 
-class TroteSearchModel extends Trote{
-   
-    public function rules(){
+class TroteSearchModel extends Trote
+{
+    public function rules()
+    {
         return [
-            [['id', 'numero_edicao', 'ano', 'ativo'], 'integer'],
-            [['titulo', 'status', 'data_inicio', 'data_fim'], 'safe'],
+            [['id'], 'integer'],
+            [['titulo', 'edicao', 'status', 'data_inicio', 'data_fim'], 'safe'],
         ];
     }
 
@@ -20,9 +20,6 @@ class TroteSearchModel extends Trote{
         return Model::scenarios();
     }
 
-    /**
-     * Método principal de busca
-     */
     public function search($params)
     {
         $query = Trote::find();
@@ -34,8 +31,8 @@ class TroteSearchModel extends Trote{
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'ano' => SORT_DESC,
-                    'numero_edicao' => SORT_DESC,
+                    'edicao' => SORT_DESC,
+                    'id' => SORT_DESC,
                 ],
             ],
         ]);
@@ -46,19 +43,14 @@ class TroteSearchModel extends Trote{
             return $dataProvider;
         }
 
-        // Filtros exatos
         $query->andFilterWhere([
             'id' => $this->id,
-            'numero_edicao' => $this->numero_edicao,
-            'ano' => $this->ano,
-            'ativo' => $this->ativo,
             'status' => $this->status,
         ]);
 
-        // Filtro parcial
         $query->andFilterWhere(['like', 'titulo', $this->titulo]);
+        $query->andFilterWhere(['like', 'edicao', $this->edicao]);
 
-        // Filtro por período
         if ($this->data_inicio) {
             $query->andFilterWhere(['>=', 'data_inicio', $this->data_inicio]);
         }

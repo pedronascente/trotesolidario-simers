@@ -5,7 +5,13 @@ return [
     'bsDependencyEnabled'=>false,
     'adminEmail' => 'admin@example.com',
     'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+    'senderName' => 'Trote Solidario',
+    'recoveryBccEmail' => null,
+    'mailerHost' => 'smtp.gmail.com',
+    'mailerPort' => 587,
+    'mailerEncryption' => 'tls',
+    'mailerPassword' => null,
     'user.passwordResetTokenExpire' => 3600,
     
 ];
+

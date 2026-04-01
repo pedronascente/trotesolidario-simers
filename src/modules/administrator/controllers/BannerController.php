@@ -16,13 +16,17 @@ class BannerController extends Controller{
 
     private BannerServiceInterface $service;
 
-    public function __construct($id,$module,BannerServiceInterface $service,$config = []) 
+    public function __construct(
+        $id,
+        $module,
+        BannerServiceInterface $service,$config = []
+    ) 
     {
         parent::__construct($id, $module, $config);
         $this->service = $service;
     }
 
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -30,10 +34,23 @@ class BannerController extends Controller{
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], // precisa estar logado
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->isAdmin();
+                        },
                     ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                    // não logado → login
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['/auth/login']);
+                    }
+
+                    // logado mas não admin → 403
+                    throw new \yii\web\ForbiddenHttpException('Acesso negado');
+                }
             ],
+
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [

@@ -4,7 +4,6 @@
 
 use app\assets\AdminAsset;
 use yii\helpers\Url;
-use app\module\common\models\Helper;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
@@ -86,8 +85,8 @@ $menu_active = Yii::$app->controller->id;
                     <i class="fa fa-certificate" aria-hidden="true"></i>
                     <span>Doações</span></a>
             </li>
-            <li class="nav-item <?= $menu_active == 'users' ? 'active' : '' ?>">
-                <a class="nav-link" href="/administrator/users">
+            <li class="nav-item <?= $menu_active == 'user' ? 'active' : '' ?>">
+                <a class="nav-link" href="/administrator/user">
                     <i class="fas fa-users"></i>
                     <span>Inscritos</span></a>
             </li>
@@ -168,7 +167,7 @@ $menu_active = Yii::$app->controller->id;
                 <div class="modal-body">Selecione sair, para finalizar a sessão.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" data-method="POST" href="/administrator/default/logout">Sair</a>
+                    <a class="btn btn-primary" data-method="POST" href="/auth/logout">Sair</a>
                 </div>
             </div>
         </div>

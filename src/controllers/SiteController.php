@@ -10,9 +10,16 @@ class SiteController extends Controller
 
     public $enableCsrfValidation = false;
 
-    /**
-     * @inheritdoc
-     */
+
+    public function beforeAction($action)
+    {
+        if ($action->id === 'error') {
+            $this->layout = 'error';
+        }
+
+        return parent::beforeAction($action);
+    }
+
     public function actions()
     {
         return [
@@ -22,18 +29,19 @@ class SiteController extends Controller
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                
             ],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->render('index');
+        }
 
-        return $this->redirect(['/participante']);
+        return Yii::$app->user->identity->isAdmin()
+            ? $this->redirect(['/administrator/default/index'])
+            : $this->redirect(['/participante//default/index']);
     }
 }

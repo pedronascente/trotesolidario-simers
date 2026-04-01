@@ -19,42 +19,45 @@ use \app\modules\common\models\DoacaoUsersAdministratorSearchModel;
 class DoacaoUsersController extends Controller
 {
 
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['index'],
+                'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], // precisa estar logado
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->isAdmin();
+                        },
                     ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                    // não logado → login
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['/auth/login']);
+                    }
+
+                    // logado mas não admin → 403
+                    throw new \yii\web\ForbiddenHttpException('Acesso negado');
+                }
             ],
+
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
-                    //                    'logout' => ['post'],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
-    /**
-     * Lists all Doacao models.
-     * @return mixed
-     */
     public function actionIndex()
     {
         $this->layout = 'adminsemjquery';
         $searchModel = new DoacaoUsersAdministratorSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

@@ -2,22 +2,22 @@
 
 namespace app\modules\common\models;
 
-use app\modules\common\models\Evento;
-use app\modules\common\models\TipoDoacao;
-use app\modules\common\models\Trote;
-use app\modules\common\models\Universidade;
-use app\modules\common\models\Users;
+use app\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 class Doacao extends ActiveRecord
 {
     public $file;
+    public $participacao_label;
+    public $evento_nome;
+    public $tipo_doacao_nome;
 
     const STATUS_PENDENTE = 'pendente';
-    const STATUS_APROVADO = 'aprovado';
-    const STATUS_REJEITADO = 'rejeitado';
+    const STATUS_APROVADA = 'aprovada';
+    const STATUS_REJEITADA = 'rejeitada';
 
     public static function tableName()
     {
@@ -27,79 +27,91 @@ class Doacao extends ActiveRecord
     public function rules()
     {
         return [
-            [['trote_id', 'evento_id', 'user_id', 'universidade_id', 'tipo_doacao_id'], 'required'],
-            //['tipo_doacao_id', 'validateDoacaoUnica'],
-
-            [['trote_id', 'evento_id', 'user_id', 'tipo_doacao_id', 'validado_por'], 'integer'],
+            [['participacao_id', 'tipo_doacao_id'], 'required'],
+            [['participacao_id', 'tipo_doacao_id', 'evento_id', 'validado_por'], 'integer'],
+            [['motivo_reprovado'], 'string'],
             [['validado_em', 'created_at', 'updated_at'], 'safe'],
-            [['status'], 'in', 'range' => [
-                self::STATUS_PENDENTE,
-                self::STATUS_APROVADO,
-                self::STATUS_REJEITADO
-            ]],
-            [['comprovante'], 'string', 'max' => 255],
+            [['cpf_snapshot'], 'string', 'max' => 14],
+            [['edicao_snapshot'], 'string', 'max' => 10],
             [['arquivo'], 'string', 'max' => 255],
+            [['status'], 'string', 'max' => 20],
+            ['status', 'default', 'value' => self::STATUS_PENDENTE],
+            ['status', 'in', 'range' => array_keys(self::getStatusList())],
             [
                 ['file'],
                 'file',
                 'skipOnEmpty' => true,
-                'extensions' => ['jpg', 'jpeg', 'png', 'gif'],
-                'maxSize' => 1024 * 1024 * 2,
-                'mimeTypes' => 'image/*',
-            ],
-            // REGRA DE NEGÓCIO
-            [
-                ['user_id'],
-                'unique',
-                'targetAttribute' => ['user_id', 'trote_id', 'tipo_doacao_id'],
-                'message' => 'Este usuário já realizou este tipo de doação neste trote.'
+                'extensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
+                'maxSize' => 1024 * 1024 * 5,
             ],
             [
-                ['observacao'],
+                ['arquivo'],
                 'required',
                 'when' => function ($model) {
-                    return $model->status === self::STATUS_REJEITADO;
+                    return $model->isNewRecord && empty($model->arquivo) && $model->file === null;
                 },
-                'whenClient' => "function (attribute, value) {
-                    return $('#doacao-status').val() === 'rejeitado';
-                }"
+                'message' => 'Envie um arquivo para a doacao.',
             ],
-            [['status'], 'default', 'value' => self::STATUS_PENDENTE],
-            [['observacao'], 'string', 'max' => 1000],
+            [
+                ['participacao_id'],
+                'exist',
+                'targetClass' => Participacao::class,
+                'targetAttribute' => ['participacao_id' => 'id'],
+            ],
+            [
+                ['tipo_doacao_id'],
+                'exist',
+                'targetClass' => TipoDoacao::class,
+                'targetAttribute' => ['tipo_doacao_id' => 'id'],
+            ],
+            [
+                ['evento_id'],
+                'exist',
+                'skipOnEmpty' => true,
+                'targetClass' => Evento::class,
+                'targetAttribute' => ['evento_id' => 'id'],
+            ],
+            [
+                ['validado_por'],
+                'exist',
+                'skipOnEmpty' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['validado_por' => 'id'],
+            ],
+            [
+                ['motivo_reprovado'],
+                'required',
+                'when' => function ($model) {
+                    return $model->status === self::STATUS_REJEITADA;
+                },
+                'whenClient' => "function () { return $('#doacao-status').val() === 'rejeitada'; }",
+            ],
+            [
+                ['cpf_snapshot', 'edicao_snapshot', 'tipo_doacao_id'],
+                'unique',
+                'targetAttribute' => ['cpf_snapshot', 'edicao_snapshot', 'tipo_doacao_id'],
+                'message' => 'Ja existe uma doacao deste tipo para este CPF na edicao informada.',
+            ],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'trote_id'        => 'Trote',
-            'evento_id'       => 'Evento',
-            'user_id'         => 'Usuario',
-            'universidade_id' => 'Universidade',
-            'tipo_doacao_id'  => 'Tipo Doação',
-            'arquivo'         => 'Imagem',
-            'file'            => 'Imagem',
-            'observacao'      => 'Motivo Reprovação',
-            'trote.titulo'    => 'Trote',
-            'user.name'       => 'Usuario',
-            'tipoDoacao.nome' => 'Tipo Doação',
+            'participacao_id' => 'Participacao',
+            'tipo_doacao_id' => 'Tipo de Doacao',
+            'evento_id' => 'Evento',
+            'cpf_snapshot' => 'CPF registrado',
+            'edicao_snapshot' => 'Edicao registrada',
+            'arquivo' => 'Arquivo',
+            'file' => 'Arquivo',
+            'status' => 'Status',
+            'motivo_reprovado' => 'Motivo da reprovacao',
+            'validado_por' => 'Validado por',
+            'validado_em' => 'Validado em',
+            'created_at' => 'Criado em',
+            'updated_at' => 'Atualizado em',
         ];
-    }
-
-    public function validateDoacaoUnica($attribute)
-    {
-        $existe = self::find()
-            ->where([
-                'user_id' => $this->user_id,
-                'trote_id' => $this->trote_id,
-                'tipo_doacao_id' => $this->tipo_doacao_id
-            ])
-            ->andWhere(['!=', 'id', $this->id])
-            ->exists();
-
-        if ($existe) {
-            $this->addError($attribute, 'Este usuário já realizou este tipo de doação neste trote.');
-        }
     }
 
     public function behaviors()
@@ -109,21 +121,14 @@ class Doacao extends ActiveRecord
                 'class' => TimestampBehavior::class,
                 'createdAtAttribute' => 'created_at',
                 'updatedAtAttribute' => 'updated_at',
-                'value' => new \yii\db\Expression('NOW()'),
+                'value' => new Expression('NOW()'),
             ],
         ];
     }
 
-    // ================= RELAÇÕES =================
-
-    public function getUser()
+    public function getParticipacao()
     {
-        return $this->hasOne(Users::class, ['id' => 'user_id']);
-    }
-
-    public function getTrote()
-    {
-        return $this->hasOne(Trote::class, ['id' => 'trote_id']);
+        return $this->hasOne(Participacao::class, ['id' => 'participacao_id']);
     }
 
     public function getEvento()
@@ -136,38 +141,22 @@ class Doacao extends ActiveRecord
         return $this->hasOne(TipoDoacao::class, ['id' => 'tipo_doacao_id']);
     }
 
-    public function getUniversidade()
+    public function getValidador()
     {
-        return $this->hasOne(Universidade::class, ['id' => 'universidade_id']);
+        return $this->hasOne(User::class, ['id' => 'validado_por']);
+    }
+
+    public function getParticipacaoDisplay(): string
+    {
+        return $this->participacao ? $this->participacao->getDisplayLabel() : '-';
     }
 
     public static function getStatusList()
     {
         return [
             self::STATUS_PENDENTE => 'Pendente',
-            self::STATUS_APROVADO => 'Aprovado',
-            self::STATUS_REJEITADO => 'Rejeitado',
+            self::STATUS_APROVADA => 'Aprovada',
+            self::STATUS_REJEITADA => 'Rejeitada',
         ];
-    }
-
-
-    /*
-    Ele retorna os tipos de doação que ainda estão disponíveis para um determinado usuário ($userId) dentro de um trote ($troteId).
-    Ou seja: não lista tipos que o usuário já fez nesse trote, apenas os restantes ativos.
-    */
-    public static function getTiposDisponiveis($userId, $troteId)
-    {
-        $tiposJaFeitos = self::find()
-            ->select('tipo_doacao_id')
-            ->where([
-                'user_id' => $userId,
-                'trote_id' => $troteId
-            ]);
-
-        return TipoDoacao::find()
-            ->where(['ativo' => 1])
-            ->andWhere(['not in', 'id', $tiposJaFeitos])
-            ->orderBy('nome')
-            ->all();
     }
 }

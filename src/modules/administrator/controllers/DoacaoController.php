@@ -3,27 +3,22 @@
 namespace app\modules\administrator\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
-
-use yii\helpers\Json;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-
 use app\modules\common\models\Doacao;
 use app\modules\common\models\DoacaoSearchModel;
 use app\modules\common\services\contracts\DoacaoServiceInterface;
+
 class DoacaoController extends Controller
 {
     private DoacaoServiceInterface $service;
 
-    public function __construct(
-        $id,
-        $module,
-        DoacaoServiceInterface $service,
-        $config = []
-    ) {
+    public function __construct($id, $module, DoacaoServiceInterface $service, $config = [])
+    {
         $this->service = $service;
         parent::__construct($id, $module, $config);
     }
@@ -31,10 +26,31 @@ class DoacaoController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function () {
+                            return Yii::$app->user->identity->isAdmin();
+                        },
+                    ],
+                ],
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['/auth/login']);
+                    }
+
+                    throw new ForbiddenHttpException('Acesso negado');
+                },
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'aprovar' => ['POST'],
+                    'reprovar' => ['POST'],
                 ],
             ],
         ];
@@ -43,15 +59,16 @@ class DoacaoController extends Controller
     public function beforeAction($action)
     {
         $this->layout = 'adminsemjquery';
+
         return parent::beforeAction($action);
     }
- 
+
     public function actionIndex()
     {
         $searchModel = new DoacaoSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('index', compact('searchModel', 'dataProvider'));
-        
     }
 
     public function actionCreate()
@@ -61,11 +78,11 @@ class DoacaoController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($this->service->create($model)) {
-                Yii::$app->session->setFlash('success', 'Doação criada com sucesso');
+                Yii::$app->session->setFlash('success', 'Doacao criada com sucesso');
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', 'Erro ao criar Doação');
+            Yii::$app->session->setFlash('error', $this->getModelErrorMessage($model, 'Erro ao criar doacao.'));
         }
 
         return $this->render('create', array_merge(['model' => $model], $data));
@@ -78,29 +95,28 @@ class DoacaoController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($this->service->update($model)) {
-                Yii::$app->session->setFlash('success', 'Doação atualizada com sucesso');
+                Yii::$app->session->setFlash('success', 'Doacao atualizada com sucesso');
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', 'Erro ao atualizar Doação');
+            Yii::$app->session->setFlash('error', $this->getModelErrorMessage($model, 'Erro ao atualizar doacao.'));
         }
 
         return $this->render('update', array_merge(['model' => $model], $data));
     }
-    
-    public function actionEventosByTrote()
+
+    public function actionEventosByParticipacao()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-
         $out = [];
 
         if ($parents = Yii::$app->request->post('depdrop_parents')) {
-            $eventos = $this->service->getEventosByTrote($parents[0]);
+            $eventos = $this->service->getEventosByParticipacao((int) $parents[0]);
 
             foreach ($eventos as $evento) {
                 $out[] = [
                     'id' => $evento['id'],
-                    'name' => $evento['nome']
+                    'name' => $evento['nome'],
                 ];
             }
         }
@@ -108,37 +124,41 @@ class DoacaoController extends Controller
         return ['output' => $out, 'selected' => ''];
     }
 
-    public function actionTiposDisponiveis($user_id, $trote_id)
-    {
-        $tipos = $this->service->getTiposDisponiveis($user_id, $trote_id);
-
-        return Json::encode([
-            'output' => ArrayHelper::map($tipos, 'id', 'nome')
-        ]);
-    }
-
     public function actionAprovar($id)
     {
-        $this->service->aprovar($id);
+        if ($this->service->aprovar((int) $id)) {
+            Yii::$app->session->setFlash('success', 'Doacao aprovada e certificado atualizado em PDF.');
+        } else {
+            Yii::$app->session->setFlash('error', 'Nao foi possivel aprovar a doacao e gerar o certificado.');
+        }
+
         return $this->redirect(['index']);
     }
 
     public function actionReprovar()
     {
-        $this->service->reprovar(
-            Yii::$app->request->post('id'),
-            Yii::$app->request->post('observacao')
-        );
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        return true;
+        return [
+            'success' => $this->service->reprovar(
+                (int) Yii::$app->request->post('id'),
+                (string) Yii::$app->request->post('motivo_reprovado')
+            ),
+        ];
     }
 
-    protected function findModel($id)
+    protected function findModel($id): Doacao
     {
         if (($model = Doacao::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException();
+    }
+
+    private function getModelErrorMessage(Doacao $model, string $fallback): string
+    {
+        $errors = $model->getFirstErrors();
+        return !empty($errors) ? implode(' ', $errors) : $fallback;
     }
 }

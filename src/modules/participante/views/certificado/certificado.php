@@ -1,7 +1,8 @@
 <?php
 
-use app\modules\common\models\Helper;
-use yii\helpers\Url;
+$logoPath = realpath(Yii::getAlias('@webroot') . '/img/logocertificado.jpg');
+$assinaturasPath = realpath(Yii::getAlias('@webroot') . '/img/assinaturascertificado.jpg');
+$participacaoPath = realpath(Yii::getAlias('@webroot') . '/img/participacaocertificado.jpg');
 ?>
 <style type="text/css">
     .tg {}
@@ -25,24 +26,26 @@ use yii\helpers\Url;
 
     .tg .tg-baqh {
         text-align: center;
-        vertical-align: top
+        vertical-align: top;
     }
 
     .tg .tg-0lax {
         text-align: left;
-        vertical-align: top
+        vertical-align: top;
     }
 </style>
 
 <body class="body">
-    <div class="well" style="background-color: #2b9879">
+    <div class="well" style="background-color: #2b9879;">
         <div class="row">
-            <table class="tg" style="table-layout: fixed; width: 100%">
+            <table class="tg" style="table-layout: fixed; width: 100%;">
                 <thead>
                     <tr>
                         <th class="tg-0lax"></th>
                         <th class="tg-baqh" colspan="3">
-                            <img src="<?= Url::to('@web/img/logocertificado.jpg') ?>" style="width:auto;height: 180px;" alt="logo" />
+                            <?php if ($logoPath): ?>
+                                <img src="<?= $logoPath ?>" style="width:auto; height:180px;" alt="logo" />
+                            <?php endif; ?>
                         </th>
                         <th class="tg-0lax"></th>
                     </tr>
@@ -50,15 +53,15 @@ use yii\helpers\Url;
                 <tbody>
                     <tr>
                         <td class="tg-0lax"></td>
-                        <td class="tg-baqh" colspan="3" style="text-align: center;">
+                        <td class="tg-baqh" colspan="3" style="text-align:center;">
                             <h1 style="color:#fff;">CERTIFICADO</h1>
                         </td>
                         <td class="tg-0lax"></td>
                     </tr>
                     <tr>
                         <td class="tg-0lax"></td>
-                        <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                            <p style="color:#fff;font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>, participou do Trote Solidário <?= $model['trote'] ?>, promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
+                        <td class="tg-baqh" colspan="3" style="text-align:center;" rowspan="2">
+                            <p style="color:#fff; font-size:22px;">Certificamos que <b><?= $model['name'] ?></b>, participou do Trote Solid?rio <?= $model['trote'] ?>, promovido pelo N?cleo Acad?mico Simers, <?= $model['frase_certificado'] ?></p>
                         </td>
                         <td class="tg-0lax"></td>
                     </tr>
@@ -69,14 +72,18 @@ use yii\helpers\Url;
                     <tr>
                         <td class="tg-0lax"></td>
                         <th class="tg-baqh" colspan="3">
-                            <img src="<?= Url::to('@web/img/assinaturascertificado.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
+                            <?php if ($assinaturasPath): ?>
+                                <img src="<?= $assinaturasPath ?>" style="width:auto; height:80px;" alt="assinaturas" />
+                            <?php endif; ?>
                         </th>
                         <td class="tg-0lax"></td>
                     </tr>
                     <tr>
                         <td class="tg-0lax"></td>
                         <th class="tg-baqh" colspan="3">
-                            <img src="<?= Url::to('@web/img/participacaocertificado.jpg') ?>" style="width:auto;height: 80px;" alt="logo" />
+                            <?php if ($participacaoPath): ?>
+                                <img src="<?= $participacaoPath ?>" style="width:auto; height:80px;" alt="participacao" />
+                            <?php endif; ?>
                         </th>
                         <td class="tg-0lax"></td>
                     </tr>
