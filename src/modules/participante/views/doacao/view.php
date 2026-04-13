@@ -1,20 +1,18 @@
 <?php
 
+use app\modules\common\models\Doacao;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-$this->title = 'Doacao #' . $model->id;
+$this->title = 'Visualizar doação';
 $this->params['breadcrumbs'][] = ['label' => 'Doacoes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="doacao-view container-fluid">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?php if ($model->status === \app\modules\common\models\Doacao::STATUS_PENDENTE): ?>
-            <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?php endif; ?>
-    </p>
+    </div>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -37,11 +35,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'arquivo',
             [
                 'attribute' => 'status',
-                'value' => \app\modules\common\models\Doacao::getStatusList()[$model->status] ?? $model->status,
+                'value' => Doacao::getStatusList()[$model->status] ?? $model->status,
             ],
             'motivo_reprovado:ntext',
             'created_at:datetime',
             'updated_at:datetime',
         ],
     ]) ?>
+    <div class="d-flex align-items-center">
+        <?= Html::a('Voltar', ['index'], ['class' => 'btn btn-outline-secondary mr-2']) ?>
+        <?php if (in_array($model->status, [Doacao::STATUS_PENDENTE, Doacao::STATUS_REJEITADA], true)): ?>
+            <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
+        <?php endif; ?>
+    </div>
 </div>

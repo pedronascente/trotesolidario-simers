@@ -1,354 +1,150 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use kartik\alert\Alert;
+use app\modules\common\models\Trote;
 use app\modules\common\models\Universidade;
 use yii\helpers\ArrayHelper;
-use app\modules\common\models\Trote;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
-                                    // Array de demo
-    $tretesDemo = [
-        ['id' => 1, 'nome' => 'Trote Demo 1'],
-        ['id' => 2, 'nome' => 'Trote Demo 2'],
-        ['id' => 3, 'nome' => 'Trote Demo 3'],
-        ['id' => 4, 'nome' => 'Trote Demo 4'],
-        ['id' => 5, 'nome' => 'Trote Demo 5'],
-    ];
+$this->title = 'Cadastro de participante';
+$trotes = ArrayHelper::map(Trote::getAtivos(), 'id', fn(Trote $trote) => trim(($trote->titulo ?: 'Trote') . ' | ' . ($trote->edicao ?: '-')));
+$universidades = ArrayHelper::map(
+    Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all(),
+    'id',
+    'nome'
+);
 ?>
+
 <style>
-    .field-registerform-outrainstituicao {
+    .register-card {
+        max-width: 960px;
+        margin: 40px auto;
+    }
+
+    .student-fields {
         display: none;
     }
 
-    .div-estudante {
+    .other-course-field {
         display: none;
-    }
-
-    .bg-gradient-success {
-        background: #fdfdfd
     }
 </style>
 
-<div class="container">
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
+<div class="container register-card">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-4 p-lg-5">
+            <div class="text-center mb-4">
+                <h2 class="h4 mb-2">Cadastro de participante</h2>
+                <p class="text-muted mb-0">Preencha seus dados para criar o acesso ao modulo do participante.</p>
+            </div>
 
-        <div class="col-xl-10 col-lg-12 col-md-9">
+            <?php $form = ActiveForm::begin([
+                'enableClientValidation' => true,
+                'fieldConfig' => [
+                    'template' => "{label}\n{input}\n{error}",
+                    'options' => ['class' => 'form-group mb-3'],
+                    'inputOptions' => ['class' => 'form-control'],
+                    'errorOptions' => ['class' => 'invalid-feedback d-block'],
+                ],
+            ]); ?>
 
-            <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                    <!-- Nested Row within Card Body -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="p-1">
-                                <?php
-                                if ($error) {
-                                    echo Alert::widget([
-                                        'type' => Alert::TYPE_DANGER,
-                                        'title' => 'Usuário',
-                                        'icon' => 'fas fa-ok-circle',
-                                        'body' => $msg,
-                                        'showSeparator' => true,
-                                        'delay' => 5000
-                                    ]);
-                                }
-                                ?>
-                            </div>
-                        </div>
+            <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'cpf')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'estudante')->dropDownList([
+                        '' => 'Selecione',
+                        'Sim' => 'Sim',
+                        'Nao' => 'Nao',
+                    ]) ?>
+                </div>
+            </div>
+
+            <div class="student-fields border rounded p-3 mb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'trote_id')->dropDownList($trotes, ['prompt' => 'Selecione']) ?>
                     </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="p-3">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Registre-se</h1>
-                                    </div>
-                                    <?php $form = ActiveForm::begin(); ?>
-                                    <?= $form->field($model, 'name', ['labelOptions' => ['style' => 'color:grey']])->textInput() ?>
-                                    <?= $form->field($model, 'password', ['labelOptions' => ['style' => 'color:grey']])->passwordInput() ?>
-                                    <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                                    <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                                    <?php
-                                    // $form
-                                    //     ->field($model, 'trote_id')
-                                    //     ->dropDownList(
-                                    //         ArrayHelper::map(Trote::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
-                                    //         [
-                                    //             'prompt' => '- Selecione o Trote -',
-                                    //             'onchange' => 'outraInstituicao()'
-                                    //         ] // $data should be the same as the items provided to a regular yii2 dropdownlist
-                                    //     );
-
-
-
-                                 echo    $form
-                                        ->field($model, 'trote_id')
-                                        ->dropDownList(
-                                            ArrayHelper::map($tretesDemo, 'id', 'nome'), // converte array para formato id=>nome
-                                            [
-                                                'prompt' => '- Selecione o Trote -',
-                                                'onchange' => 'outraInstituicao()' // JS que você já tinha
-                                            ]
-                                        );
-
-                                    ?>
-
-
-                                    <?=
-                                    $form
-                                        ->field($model, 'estudante')
-                                        ->label('Você é um Estudante?')
-                                        ->dropDownList(
-                                            [
-                                                '' => '',
-                                                'Sim' => 'Sim',
-                                                'Não' => 'Não'
-                                            ],
-                                            [
-                                                //                                            'prompt' => 'Você é um estudante?',
-                                                'onchange' => 'verificaEstudante()'
-                                            ]
-                                        );
-                                    ?>
-                                    <small>
-                                        O Simers utiliza cookies e tecnologias semelhantes, como explicado em nossa <a style="font-weight: bold;text-decoration: underline;" href="https://simers.org.br/politica-privacidade" target="_blank">Política de Privacidade</a>, para melhorar a experiência de usuário. Ao navegar por nosso conteúdo, o usuário aceita tais condições.
-                                    </small>
-                                    <?=
-                                    $form->field($model, 'politicaPrivacidade', [
-                                        'options' => ['class' => 'checkbox checkbox-primary'],
-                                        'labelOptions' => ['style' => 'color:grey']
-                                    ])
-                                        ->checkbox([
-                                            'id' => 'politicaPrivacidade',
-                                            'onchange' => 'habilitaBotao()'
-                                        ])
-                                    ?>
-                                    <small>
-                                        Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL- SIMERS, em razão do TROTE SOLIDÁRIO 2023/1, disponha de meus dados pessoais, de acordo com os artigos 7º e 11, da Lei 13.709/2018, bem como autorizo a utilização da minha imagem e/ou voz para a finalidade de divulgação do Trote Solidário em postagens em redes sociais do NAS/SIMERS.
-                                    </small>
-                                    <?=
-                                    $form->field($model, 'politicaImagem', [
-                                        'options' => ['class' => 'checkbox checkbox-primary'],
-                                        'labelOptions' => ['style' => 'color:grey']
-                                    ])
-                                        ->checkbox([
-                                            'id' => 'politicaImagem',
-                                            'onchange' => 'habilitaBotao()'
-                                        ])
-                                    ?>
-
-
-
-                                </div>
-                            </div>
-                            <div class="col-lg-6 div-estudante">
-                                <div class="p-3">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Estudante</h1>
-                                    </div>
-                                    <?=
-                                    $form
-                                        ->field($model, 'instituicao')
-                                        ->dropDownList(
-                                            ArrayHelper::map(Universidade::find()->where(['ativo' => '1'])->all(), 'id', 'nome'),
-                                            [
-                                                'prompt' => '- Selecione uma Instituição -',
-                                                'onchange' => 'outraInstituicao()'
-                                            ] // $data should be the same as the items provided to a regular yii2 dropdownlist
-                                        );
-                                    ?>
-
-                                    <?= $form->field($model, 'outraInstituicao', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
-                                    <?=
-                                    $form
-                                        ->field($model, 'estudanteMedicina')
-                                        ->label('Você é um Estudante de Medicina?')
-                                        ->dropDownList(
-                                            [
-                                                '' => '',
-                                                'Sim' => 'Sim',
-                                                'Não' => 'Não'
-                                            ],
-                                            [
-                                                'prompt' => 'Você é um estudante?',
-                                                'onchange' => 'verificaEstudanteMedicina()'
-                                            ]
-                                        );
-                                    ?>
-                                    <?= $form->field($model, 'estudanteOutros', ['labelOptions' => ['style' => 'color:grey;']])->textInput(); ?>
-
-                                    <?=
-                                    $form->field($model, 'telefone', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
-                                    ?>
-                                    <?=
-                                    $form->field($model, 'previsaoFormatura', ['labelOptions' => ['style' => 'color:grey;']])->textInput();
-                                    ?>
-                                    <?=
-                                    $form
-                                        ->field($model, 'conheceONas')
-                                        ->label('Você conhece o NAS (Núcleo Acadêmico Simers) e os benefícios do associado?')
-                                        ->dropDownList(
-                                            [
-                                                '' => '',
-                                                'Sim' => 'Sim',
-                                                'Não' => 'Não',
-                                                'Não tenho interesse' => 'Não tenho interesse'
-                                            ],
-                                            [
-                                                'onchange' => 'mostraNas()'
-                                            ]
-                                        );
-                                    ?>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="p-3">
-                                    <?= Html::submitButton('Salvar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
-                                    <br>
-                                    <br>
-                                    <?= 'Ja possui um usuário? Clique ' . Html::a('aqui', ['/common']) ?>
-                                    <br>
-                                    <br>
-                                    <?= 'Esqueceu sua senha? Clique ' . Html::a('aqui', ['/revoery-password']) ?>
-                                    <?php ActiveForm::end(); ?>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'instituicao')->dropDownList($universidades, ['prompt' => 'Selecione']) ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'estudanteMedicina')->dropDownList([
+                            '' => 'Selecione',
+                            'Sim' => 'Sim',
+                            'Nao' => 'Nao',
+                        ]) ?>
+                    </div>
+                    <div class="col-md-6 other-course-field">
+                        <?= $form->field($model, 'estudanteOutros')->textInput(['maxlength' => true]) ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'previsaoFormatura')->textInput(['placeholder' => 'AAAA/MM']) ?>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-    </div>
-
-</div>
-
-<div class="modal fade" id="modalNas" tabindex="-1" role="dialog" aria-labelledby="modalNas" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="telefoneModalLabel">NAS</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+            <div class="mb-3">
+                <small class="text-muted d-block mb-2">
+                    O Simers utiliza cookies e tecnologias semelhantes, como explicado em nossa politica de privacidade.
+                </small>
+                <?= $form->field($model, 'politicaPrivacidade')->checkbox(['uncheck' => 0]) ?>
             </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p>O Núcleo Acadêmico atua como um braço estudantil do Sindicato Médico do Rio Grande do Sul, com intuito de fortalecer a ligação entre o SIMERS, faculdades de Medicina do Sul do país e os futuros médicos.
-                            </p>
-                            <p>
-                                Conheça os serviços mais procurados pelos associados do Núcleo Acadêmico Simers:
-                            </p>
-                            <ul>
-                                <li>Assessoria jurídica;</li>
-                                <li>Seguro automotivo, de vida e previdência privada;</li>
-                                <li>Descontos gráficos;</li>
-                                <li>Descontos UNIMED (30% a 40%);</li>
-                                <li>Desconto 10% na Empresa de uniformes - Fil a Fil;</li>
-                                <li>Panvel (até 40% de desconto);</li>
-                                <li>Medicina Net: acesso gratuito ao maior portal de educação médica;</li>
-                                <li>Cinema GNC: desconto na compra de ingressos;</li>
-                                <li>Cursos oferecidos pelo NAS a partir de R$ 10,00 com certificação para horas complementares;</li>
-                                <li>Elaboração gratuita de currículo;</li>
-                                <li>Desconto especial no curso Extensivo OResidente + APP QUESTÕES;</li>
-                                <li>CTSEM - Desconto de 10% em todos os cursos oferecidos pela instituição;</li>
-                                <li>Assinatura gratuita do GaúchaZH Light e APP Clube do assinante, com até 50% de desconto em mais de 500 parceiros no RS e SC;</li>
-                            </ul>
-                            <p>....E muito +!</p>
 
-                            <p>►Investimento de apenas R$70,00/ano.</p>
-
-                            <p>Saiba mais em: <a href="http://nucleoacademico.org.br/servicos" target="_blank">nucleoacademico.org.br/servicos</a></p>
-                        </div>
-
-                    </div>
-
-                </div>
+            <div class="mb-4">
+                <small class="text-muted d-block mb-2">
+                    Autorizo o uso da minha imagem, video e voz para divulgacao do Trote Solidario.
+                </small>
+                <?= $form->field($model, 'politicaImagem')->checkbox(['uncheck' => 0]) ?>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a href="http://nucleoacademico.org.br/associe-se" target="_blank" class="btn btn-success" data-method="POST" onclick="">Associa-se</a>
+
+            <div class="d-grid gap-2">
+                <?= Html::submitButton('Cadastrar', ['class' => 'btn btn-success btn-block']) ?>
             </div>
+
+            <div class="text-center mt-4">
+                <?= Html::a('Ja possuo acesso', ['/auth/login'], ['class' => 'd-block']) ?>
+                <?= Html::a('Esqueci minha senha', ['/participante/recovery-password/index'], ['class' => 'd-block mt-2']) ?>
+            </div>
+
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <script>
-    $(document).ready(function() {
-        $("#btnsalvar").attr('disabled', true);
-        if ($("#registerform-estudante option:selected").val() == 'Sim') {
-            $(".div-estudante").show();
-        } else {
-            $(".div-estudante").hide();
-        }
-        if ($("#registerform-instituicao option:selected").val() == 'Outra') {
-            $(".field-registerform-outrainstituicao").show();
-        } else {
-            $(".field-registerform-outrainstituicao").hide();
-        }
-        if ($("#registerform-estudantemedicina option:selected").val() == 'Não') {
-            $(".field-registerform-estudanteoutros").show();
-        } else {
-            $(".field-registerform-estudanteoutros").hide();
-        }
+    function toggleStudentFields() {
+        var isStudent = $('#participantregistrationform-estudante').val() === 'Sim';
+        $('.student-fields').toggle(isStudent);
+    }
+
+    function toggleOtherCourseField() {
+        var needsOtherCourse = $('#participantregistrationform-estudantemedicina').val() === 'Nao';
+        $('.other-course-field').toggle(needsOtherCourse);
+    }
+
+    $(function () {
+        $('#participantregistrationform-cpf').inputmask({ mask: '999.999.999-99' });
+        $('#participantregistrationform-previsaoformatura').inputmask({ mask: '9999/99' });
+
+        toggleStudentFields();
+        toggleOtherCourseField();
+
+        $('#participantregistrationform-estudante').on('change', toggleStudentFields);
+        $('#participantregistrationform-estudantemedicina').on('change', toggleOtherCourseField);
     });
-    $("#registerform-telefone").inputmask({
-        "mask": "(99) 99999-9999"
-    });
-    $("#registerform-cpf").inputmask({
-        "mask": "999.999.999-99"
-    });
-    $("#registerform-previsaoformatura").inputmask({
-        "mask": "9999/99"
-    });
-
-    function habilitaBotao() {
-        if (document.getElementById("politicaPrivacidade").checked == true && document.getElementById("politicaImagem").checked == true) {
-            $("#btnsalvar").attr('disabled', false);
-        } else {
-            $("#btnsalvar").attr('disabled', true);
-        }
-
-    }
-
-    function verificaEstudante() {
-        if ($("#registerform-estudante option:selected").val() == 'Sim') {
-            $(".div-estudante").show();
-        } else {
-            $(".div-estudante").hide();
-        }
-    }
-
-    function verificaEstudanteMedicina() {
-        if ($("#registerform-estudantemedicina option:selected").val() == 'Não') {
-            $(".field-registerform-estudanteoutros").show();
-        } else {
-            $(".field-registerform-estudanteoutros").hide();
-        }
-    }
-
-    function outraInstituicao() {
-        if ($("#registerform-instituicao option:selected").text() == 'Outra') {
-            $(".field-registerform-outrainstituicao").show();
-        } else {
-            $(".field-registerform-outrainstituicao").hide();
-        }
-    }
-
-    function mostraNas() {
-
-        if ($("#registerform-conheceonas option:selected").val() == 'Não') {
-            $('#modalNas').modal('toggle');
-        }
-
-    }
 </script>

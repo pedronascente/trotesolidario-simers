@@ -2,82 +2,39 @@
 
 namespace app\modules\participante\controllers;
 
+use app\models\ResetPasswordForm;
 use Yii;
+use yii\base\InvalidArgumentException;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use app\modules\common\models\RecoveryForm;
-use app\modules\common\models\Helper;
-use app\modules\common\models\Users;
 
-/**
- * Default controller for the `common` module
- */
 class NewPasswordController extends Controller
 {
-
-    public $enableCsrfValidation = false;
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['index'],
-                'rules' => [
-                    [
-                        'actions' => ['index'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [],
-            ],
-        ];
-    }
-
-    /**
-     * Renders the index view for the module
-     * @return string
-     */
     public function actionIndex($token)
     {
         $this->layout = 'register';
-        $model = Users::findByPasswordResetToken($token);
-        if ($model) {
-            $model->passwordHash = '';
-        }
-        if (!$model) {
-            Yii::$app->session->setFlash('error', 'Link inválido');
-            return $this->goHome();
+
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['default/home']);
         }
 
-        if (Yii::$app->request->post()) {
-            $model->load(Yii::$app->request->post());
-            if ($model->passwordHash != "") {
-                $model->setPassword($model->passwordHash);
-            }
-            //Salva a data de atualização
-            $model->setUpdated();
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Senha atualizada com sucesso.');
-                return $this->goHome();
-            } else {
-                return $this->render('index', [
-                    'model' => $model,
-                    'msg' => 'Houve um erro ao salvar sua nova senha',
-                    'error' => true
-                ]);
-            }
+        try {
+            $model = new ResetPasswordForm($token);
+        } catch (InvalidArgumentException $e) {
+            Yii::$app->session->setFlash('error', $e->getMessage());
+            return $this->redirect(['/auth/login']);
+        } catch (\Throwable $e) {
+            Yii::error('Falha ao abrir redefinicao de senha do participante: ' . $e->getMessage(), __METHOD__);
+            throw new BadRequestHttpException('Nao foi possivel validar o link de redefinicao agora.');
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->resetPassword()) {
+            Yii::$app->session->setFlash('success', 'Senha atualizada com sucesso.');
+            return $this->redirect(['/auth/login']);
         }
 
         return $this->render('index', [
             'model' => $model,
-            'msg' => '',
-            'error' => false
         ]);
     }
 }

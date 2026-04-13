@@ -2,77 +2,49 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use kartik\alert\Alert;
+
+$this->title = 'Recuperar senha';
 ?>
-<div class="container">
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
 
-        <div class="col-lg-6">
-
-            <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                    <!-- Nested Row within Card Body -->
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="p-1">
-                                <?php
-                                if ($error) {
-                                    echo Alert::widget([
-                                        'type' => Alert::TYPE_DANGER,
-                                        'title' => 'Usuário',
-                                        'icon' => 'fas fa-ok-circle',
-                                        'body' => $msg,
-                                        'showSeparator' => true,
-                                        'delay' => 5000
-                                    ]);
-                                }
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="p-3">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Recuperar senha</h1>
-                                    </div>
-                                    <?php $form = ActiveForm::begin(); ?>
-                                    <?= $form->field($model, 'email', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-                                    <?= $form->field($model, 'cpf', ['labelOptions' => ['style' => 'color:grey']])->textInput(); ?>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="p-3">
-                                    <?= Html::submitButton('Enviar', ['id' => 'btnsalvar', 'class' => 'btn btn-success', 'name' => 'login-button']) ?>
-                                    <br>
-                                    <br>
-                                    <?= 'Ja possui um usuario clique ' . Html::a('aqui', ['/participante']) ?>
-                                    <br>
-                                    <?= 'Não possui clique ' . Html::a('aqui', ['/register']) ?>
-                                    <?php ActiveForm::end(); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="container" style="max-width: 520px; margin-top: 48px;">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-4 p-lg-5">
+            <div class="text-center mb-4">
+                <h2 class="h4 mb-2">Recuperar senha</h2>
+                <p class="text-muted mb-0">Informe o e-mail e o CPF para receber o link de redefinicao.</p>
             </div>
 
+            <?php $form = ActiveForm::begin([
+                'fieldConfig' => [
+                    'template' => "{label}\n{input}\n{error}",
+                    'options' => ['class' => 'form-group mb-3'],
+                    'inputOptions' => ['class' => 'form-control'],
+                    'errorOptions' => ['class' => 'invalid-feedback d-block'],
+                ],
+            ]); ?>
+
+            <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
+            <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+            <?= $form->field($model, 'cpf')->textInput() ?>
+
+            <div class="d-grid gap-2 mt-4">
+                <?= Html::submitButton('Enviar link', ['class' => 'btn btn-success btn-block']) ?>
+            </div>
+
+            <div class="text-center mt-4">
+                <?= Html::a('Voltar ao login', ['/auth/login'], ['class' => 'd-block']) ?>
+                <?= Html::a('Criar cadastro', ['/participante/register/index'], ['class' => 'd-block mt-2']) ?>
+            </div>
+
+            <?php ActiveForm::end(); ?>
         </div>
-
     </div>
-
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <script>
-    $("#recoveryform-cpf").inputmask({
-        "mask": "999.999.999-99"
+    $(function () {
+        $('#participantrequestpasswordresetform-cpf').inputmask({ mask: '999.999.999-99' });
     });
 </script>

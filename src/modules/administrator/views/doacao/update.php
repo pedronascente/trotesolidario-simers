@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Doacao */
 
-$this->title = 'Atualizar Doacao';
+$this->title = 'Atualizar Doação';
 ?>
 
 <div class="container-fluid">

@@ -106,7 +106,7 @@ class CertificadoService implements CertificadoServiceInterface
         return $total;
     }
 
-    private function generatePdf(Certificado $certificado): void
+    protected function generatePdf(Certificado $certificado): void
     {
         $certificado = Certificado::find()
             ->with(['participacao.user', 'participacao.trote', 'participacao.universidade', 'participacao.doacoes.tipoDoacao', 'emissor'])
@@ -114,52 +114,60 @@ class CertificadoService implements CertificadoServiceInterface
             ->one() ?? $certificado;
 
         $directory = Yii::getAlias('@pdf') . DIRECTORY_SEPARATOR . 'certificados';
-        if (!is_dir($directory)) {
-            mkdir($directory, 0777, true);
-        }
+        $this->ensureDirectoryExists($directory);
 
         $relativePath = $this->buildRelativePdfPath($certificado);
         $fileName = basename($relativePath);
         $fullPath = $directory . DIRECTORY_SEPARATOR . $fileName;
+        $tempDir = Yii::getAlias('@runtime') . DIRECTORY_SEPARATOR . 'mpdf';
+        $this->ensureDirectoryExists($tempDir);
 
         $previousMemoryLimit = ini_get('memory_limit');
         $previousMaxExecutionTime = ini_get('max_execution_time');
         @ini_set('memory_limit', '256M');
         @set_time_limit(120);
 
-        $pages = $this->renderCertificatePages($certificado, 'pdf');
+        try {
+            $pages = $this->renderCertificatePages($certificado, 'pdf');
 
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4-L',
-            'tempDir' => Yii::getAlias('@runtime/mpdf'),
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'default_font' => 'Arial',
-        ]);
-        $mpdf->autoScriptToLang = false;
-        $mpdf->autoLangToFont = false;
-        $mpdf->SetTitle('Certificado Trote Solidario');
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'tempDir' => $tempDir,
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+                'default_font' => 'Arial',
+            ]);
+            $mpdf->autoScriptToLang = false;
+            $mpdf->autoLangToFont = false;
+            $mpdf->SetTitle('Certificado Trote Solidario');
 
-        foreach ($pages as $index => $pageHtml) {
-            $pageHtml = $this->sanitizeHtmlForPdf($pageHtml);
-            $mpdf->WriteHTML($pageHtml);
+            foreach ($pages as $index => $pageHtml) {
+                $pageHtml = $this->sanitizeHtmlForPdf($pageHtml);
+                $mpdf->WriteHTML($pageHtml);
 
-            if ($index < count($pages) - 1) {
-                $mpdf->AddPage();
+                if ($index < count($pages) - 1) {
+                    $mpdf->AddPage();
+                }
             }
-        }
 
-        $mpdf->Output($fullPath, Destination::FILE);
+            $mpdf->Output($fullPath, Destination::FILE);
+        } catch (\Throwable $e) {
+            if (is_file($fullPath)) {
+                @unlink($fullPath);
+            }
 
-        if ($previousMemoryLimit !== false) {
-            @ini_set('memory_limit', (string) $previousMemoryLimit);
-        }
+            throw $e;
+        } finally {
+            if ($previousMemoryLimit !== false) {
+                @ini_set('memory_limit', (string) $previousMemoryLimit);
+            }
 
-        if ($previousMaxExecutionTime !== false) {
-            @ini_set('max_execution_time', (string) $previousMaxExecutionTime);
+            if ($previousMaxExecutionTime !== false) {
+                @ini_set('max_execution_time', (string) $previousMaxExecutionTime);
+            }
         }
     }
 
@@ -179,7 +187,7 @@ class CertificadoService implements CertificadoServiceInterface
         return $pages;
     }
 
-    private function buildLegacyCertificateModel(Certificado $certificado): array
+    protected function buildLegacyCertificateModel(Certificado $certificado): array
     {
         $participacao = $certificado->participacao;
         $trote = $participacao->trote ?? null;
@@ -214,7 +222,7 @@ class CertificadoService implements CertificadoServiceInterface
             $meses = [
                 1 => 'janeiro',
                 2 => 'fevereiro',
-                3 => 'mar?o',
+                3 => 'março',
                 4 => 'abril',
                 5 => 'maio',
                 6 => 'junho',
@@ -289,8 +297,8 @@ class CertificadoService implements CertificadoServiceInterface
             'tipo_doacao' => $tipoPrincipal,
             'all_donations' => $tipos,
             'total_horas' => $totalHoras,
-            'frase_certificado' => 'nos dias ' . $dataInicioExtenso . ' ? ' . $dataFimExtenso . ', com carga hor?ria total de',
-            'qualidade' => $temComissao ? 'MEMBRO DA COMISS?O ORGANIZADORA' : 'PARTICIPANTE',
+            'frase_certificado' => 'nos dias ' . $dataInicioExtenso . ' à ' . $dataFimExtenso . ', com carga horária total de',
+            'qualidade' => $temComissao ? 'MEMBRO DA COMISSÃO ORGANIZADORA' : 'PARTICIPANTE',
             'codigo_validador' => $normalize($certificado->codigo_validador ?? ''),
             'data_inicio_extenso' => $dataInicioExtenso,
             'data_fim_extenso' => $dataFimExtenso,
@@ -298,7 +306,7 @@ class CertificadoService implements CertificadoServiceInterface
         ];
     }
 
-    private function resolveCertificateTemplatePaths(string $troteEdicao): array
+    protected function resolveCertificateTemplatePaths(string $troteEdicao): array
     {
         $edicaoBase = preg_replace('/[^0-9]/', '', $troteEdicao);
         $basePath = Yii::getAlias('@app/modules/participante/views/certificado');
@@ -333,13 +341,13 @@ class CertificadoService implements CertificadoServiceInterface
         $pageTwo = $findFirstExisting($secondPageCandidates);
 
         if ($pageOne === null) {
-            throw new RuntimeException('Template de certificado n?o encontrado.');
+            throw new RuntimeException('Template de certificado não encontrado.');
         }
 
         return [$pageOne, $pageTwo];
     }
 
-    private function sanitizeHtmlForPdf(string $html): string
+    protected function sanitizeHtmlForPdf(string $html): string
     {
         if ($html === '') {
             return $html;
@@ -360,6 +368,17 @@ class CertificadoService implements CertificadoServiceInterface
         }
 
         return $html;
+    }
+
+    private function ensureDirectoryExists(string $directory): void
+    {
+        if (is_dir($directory)) {
+            return;
+        }
+
+        if (!@mkdir($directory, 0777, true) && !is_dir($directory)) {
+            throw new RuntimeException(html_entity_decode('N&atilde;o foi poss&iacute;vel preparar o diret&oacute;rio de certificados: ', ENT_QUOTES | ENT_HTML5, 'UTF-8') . $directory);
+        }
     }
 
     private function buildRelativePdfPath(Certificado $certificado): string
@@ -405,4 +424,5 @@ class CertificadoService implements CertificadoServiceInterface
         ]));
     }
 }
+
 

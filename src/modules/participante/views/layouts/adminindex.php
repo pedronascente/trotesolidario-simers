@@ -3,6 +3,7 @@
 /* @var $content string */
 
 use app\assets\AdminAsset;
+use yii\helpers\Html;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
@@ -61,6 +62,12 @@ $displayName = $identity ? $identity->name : 'Participante';
                 <span>Meu perfil</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </li>
 
         <hr class="sidebar-divider d-none d-md-block">
     </ul>
@@ -77,6 +84,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $displayName ?></span>
+                            <i class="fas fa-chevron-down fa-sm fa-fw ml-2 text-gray-400"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="/participante/users/perfil">
@@ -103,7 +111,7 @@ $displayName = $identity ? $identity->name : 'Participante';
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright © Trote Solidario</span>
+                    <span>Copyright Trote Solidario</span>
                 </div>
             </div>
         </footer>
@@ -121,22 +129,22 @@ $displayName = $identity ? $identity->name : 'Participante';
             <div class="modal-header">
                 <h5 class="modal-title">Pronto para sair?</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                    <span aria-hidden="true">x</span>
                 </button>
             </div>
             <div class="modal-body">Selecione sair para finalizar a sessao.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                <a class="btn btn-primary" data-method="POST" href="/participante/default/logout">Sair</a>
+                <?= Html::beginForm(['/participante/default/logout'], 'post', ['class' => 'd-inline']) ?>
+                    <?= Html::submitButton('Sair', ['class' => 'btn btn-primary']) ?>
+                <?= Html::endForm() ?>
             </div>
         </div>
     </div>
 </div>
 <?php endif; ?>
 
-<script src="/layoutadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/layoutadmin/vendor/jquery-easing/jquery.easing.min.js"></script>
-<script src="/layoutadmin/js/sb-admin-2.js"></script>
+
 </body>
 </html>
-<?php $this->endPage() ?>
+<?php $this->endPage() ?> 

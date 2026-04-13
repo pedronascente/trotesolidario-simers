@@ -8,8 +8,8 @@ use app\modules\common\models\Evento;
 use app\modules\common\models\Participacao;
 use app\modules\common\models\Participante;
 use app\modules\common\models\Trote;
+use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use Yii;
-use yii\db\Query;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -124,43 +124,8 @@ class DefaultController extends Controller
                 'total_participantes' => $totalParticipacoesAtivas,
             ];
 
-            $rankingSchema = Yii::$app->db->schema->getTableSchema('ranking_cache', true);
-
-            if ($rankingSchema !== null) {
-                $rankingUniversidades = (new Query())
-                    ->select([
-                        'u.nome',
-                        'rc.pontuacao_total AS pontos',
-                        'COUNT(DISTINCT p.id) AS participantes',
-                    ])
-                    ->from(['rc' => 'ranking_cache'])
-                    ->innerJoin(['p' => 'participacao'], 'p.id = rc.participacao_id')
-                    ->innerJoin(['u' => 'universidade'], 'u.id = p.universidade_id')
-                    ->where(['rc.trote_id' => $troteAtivo->id])
-                    ->groupBy(['u.id', 'u.nome', 'rc.pontuacao_total', 'rc.posicao'])
-                    ->orderBy(['rc.posicao' => SORT_ASC, 'rc.pontuacao_total' => SORT_DESC, 'u.nome' => SORT_ASC])
-                    ->limit(5)
-                    ->all();
-            }
-
-            if (empty($rankingUniversidades)) {
-                $rankingUniversidades = (new Query())
-                    ->select([
-                        'u.nome',
-                        'COUNT(p.id) AS pontos',
-                        'COUNT(p.id) AS participantes',
-                    ])
-                    ->from(['p' => 'participacao'])
-                    ->innerJoin(['u' => 'universidade'], 'u.id = p.universidade_id')
-                    ->where([
-                        'p.trote_id' => $troteAtivo->id,
-                        'p.status' => Participacao::STATUS_ATIVO,
-                    ])
-                    ->groupBy(['u.id', 'u.nome'])
-                    ->orderBy(['pontos' => SORT_DESC, 'u.nome' => SORT_ASC])
-                    ->limit(5)
-                    ->all();
-            }
+            $rankingService = Yii::$container->get(RankingCacheServiceInterface::class);
+            $rankingUniversidades = array_slice($rankingService->getUniversityRanking((int) $troteAtivo->id), 0, 5);
         }
 
         return $this->render('home', [
@@ -178,3 +143,4 @@ class DefaultController extends Controller
         ]);
     }
 }
+

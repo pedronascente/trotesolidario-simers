@@ -37,7 +37,7 @@ $formatarDataExtenso = static function (?string $data): string {
     $meses = [
         1 => 'janeiro',
         2 => 'fevereiro',
-        3 => 'março',
+        3 => html_entity_decode('mar&ccedil;o', ENT_QUOTES | ENT_HTML5, 'UTF-8'),
         4 => 'abril',
         5 => 'maio',
         6 => 'junho',
@@ -112,8 +112,8 @@ $legacyModel = [
     'tipo_doacao' => $tipoPrincipal,
     'all_donations' => $tipos,
     'total_horas' => $totalHoras,
-    'frase_certificado' => 'nos dias ' . $dataInicioExtenso . ' à ' . $dataFimExtenso . ', com carga horária total de',
-    'qualidade' => $temComissao ? 'MEMBRO DA COMISSÃO ORGANIZADORA' : 'PARTICIPANTE',
+    'frase_certificado' => 'nos dias ' . $dataInicioExtenso . ' ' . html_entity_decode('&agrave;', ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' ' . $dataFimExtenso . ', com carga hor?ria total de',
+    'qualidade' => $temComissao ? html_entity_decode('MEMBRO DA COMISS&Atilde;O ORGANIZADORA', ENT_QUOTES | ENT_HTML5, 'UTF-8') : 'PARTICIPANTE',
     'codigo_validador' => $normalize($model->codigo_validador ?? ''),
     'data_inicio_extenso' => $dataInicioExtenso,
     'data_fim_extenso' => $dataFimExtenso,
@@ -131,13 +131,13 @@ if ($edicaoBase !== '') {
     $secondPageCandidates[] = $basePath . '/certificado' . $edicaoBase . '2.php';
 }
 
-if ($legacyModel['trote'] === '2025/2') {
-    $firstPageCandidates = array_merge([$basePath . '/certificado202521.php'], $firstPageCandidates);
-    $secondPageCandidates = array_merge([$basePath . '/certificado202511.php'], $secondPageCandidates);
-}
+// if ($legacyModel['trote'] === '2025/2') {
+//     $firstPageCandidates = array_merge([$basePath . '/certificado202521.php'], $firstPageCandidates);
+//     $secondPageCandidates = array_merge([$basePath . '/certificado202511.php'], $secondPageCandidates);
+// }
 
-$firstPageCandidates[] = $basePath . '/certificado.php';
-$secondPageCandidates[] = $basePath . '/certificado2.php';
+// $firstPageCandidates[] = $basePath . '/certificado.php';
+// $secondPageCandidates[] = $basePath . '/certificado2.php';
 
 $findFirstExisting = static function (array $paths): ?string {
     foreach ($paths as $path) {
@@ -152,8 +152,13 @@ $findFirstExisting = static function (array $paths): ?string {
 $pageOne = $findFirstExisting($firstPageCandidates);
 $pageTwo = $findFirstExisting($secondPageCandidates);
 
+// echo $pageOne .'<br>  ';
+// echo $pageTwo .'<br>  ';
+
+
+
 if ($pageOne === null) {
-    throw new \RuntimeException('Template de certificado não encontrado.');
+    throw new \RuntimeException(html_entity_decode('Template de certificado n&atilde;o encontrado.', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
 }
 
 echo $this->renderFile($pageOne, ['model' => $legacyModel, 'renderMode' => $renderMode]);

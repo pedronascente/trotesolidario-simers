@@ -4,6 +4,8 @@ namespace app\modules\administrator\controllers;
 
 use app\modules\common\models\Participacao;
 use app\modules\common\models\ParticipacaoSearchModel;
+use app\modules\common\models\ParticipacaoUniversidadeChangeRequest;
+use app\modules\common\models\UniversityCorrectionReviewForm;
 use app\modules\common\services\contracts\ParticipacaoServiceInterface;
 use Throwable;
 use Yii;
@@ -85,7 +87,7 @@ class ParticipacaoController extends Controller
 
     public function actionUpdate($id)
     {
-        $model = $this->service->findModel($id);
+        $model = $this->service->findModel((int) $id);
         if (!$model) {
             throw new NotFoundHttpException('Participacao nao encontrada.');
         }
@@ -104,7 +106,7 @@ class ParticipacaoController extends Controller
 
     public function actionDelete($id)
     {
-        $model = $this->service->findModel($id);
+        $model = $this->service->findModel((int) $id);
         if (!$model) {
             throw new NotFoundHttpException('Participacao nao encontrada.');
         }
@@ -117,5 +119,55 @@ class ParticipacaoController extends Controller
         }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionSolicitacoesCorrecaoUniversidade()
+    {
+        $pendentes = $this->service->findUniversityCorrectionRequests(ParticipacaoUniversidadeChangeRequest::STATUS_PENDENTE);
+        $historico = array_values(array_filter(
+            $this->service->findUniversityCorrectionRequests(null, 200),
+            static fn($request) => $request->status !== ParticipacaoUniversidadeChangeRequest::STATUS_PENDENTE
+        ));
+
+        return $this->render('solicitacoes-correcao-universidade', [
+            'pendentes' => $pendentes,
+            'historico' => $historico,
+        ]);
+    }
+
+    public function actionAnalisarCorrecaoUniversidade($id)
+    {
+        $request = $this->service->findUniversityCorrectionRequest((int) $id);
+        if ($request === null) {
+            throw new NotFoundHttpException('Solicitacao nao encontrada.');
+        }
+
+        if ($request->status !== ParticipacaoUniversidadeChangeRequest::STATUS_PENDENTE) {
+            Yii::$app->session->setFlash('error', 'Esta solicitacao ja foi analisada.');
+            return $this->redirect(['solicitacoes-correcao-universidade']);
+        }
+
+        $model = new UniversityCorrectionReviewForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            try {
+                if ($model->decision === UniversityCorrectionReviewForm::DECISION_APPROVE) {
+                    $this->service->approveUniversityCorrectionRequest((int) $request->id, (int) Yii::$app->user->id, $model->review_notes);
+                    Yii::$app->session->setFlash('success', 'Solicitacao aprovada e participacao atualizada com sucesso.');
+                } else {
+                    $this->service->rejectUniversityCorrectionRequest((int) $request->id, (int) Yii::$app->user->id, $model->review_notes);
+                    Yii::$app->session->setFlash('success', 'Solicitacao rejeitada com sucesso.');
+                }
+
+                return $this->redirect(['solicitacoes-correcao-universidade']);
+            } catch (Throwable $e) {
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('analisar-correcao-universidade', [
+            'requestModel' => $request,
+            'model' => $model,
+        ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace app\modules\common\services\contracts;
 
 use app\models\User;
+use app\modules\common\models\ParticipantProfileForm;
 use app\modules\common\models\UserCreateForm;
 
 interface UserServiceInterface
@@ -16,4 +17,6 @@ interface UserServiceInterface
     public function changePassword($id, $newPassword): bool;
     public function getAll($filters = [], $page = 1, $pageSize = 20): array;
     public function validateLogin($cpf, $password): ?User;
+    public function getParticipantProfileData(int $userId): array;
+    public function updateParticipantProfile(int $userId, ParticipantProfileForm $form): void;
 }

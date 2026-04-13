@@ -58,12 +58,14 @@ class Doacao extends ActiveRecord
                 'targetClass' => Participacao::class,
                 'targetAttribute' => ['participacao_id' => 'id'],
             ],
+            [['participacao_id'], 'validateParticipacaoAtiva'],
             [
                 ['tipo_doacao_id'],
                 'exist',
                 'targetClass' => TipoDoacao::class,
                 'targetAttribute' => ['tipo_doacao_id' => 'id'],
             ],
+            [['tipo_doacao_id'], 'validateTipoDoacaoAtivo'],
             [
                 ['evento_id'],
                 'exist',
@@ -71,6 +73,7 @@ class Doacao extends ActiveRecord
                 'targetClass' => Evento::class,
                 'targetAttribute' => ['evento_id' => 'id'],
             ],
+            [['evento_id'], 'validateEventoPertenceParticipacao'],
             [
                 ['validado_por'],
                 'exist',
@@ -158,5 +161,62 @@ class Doacao extends ActiveRecord
             self::STATUS_APROVADA => 'Aprovada',
             self::STATUS_REJEITADA => 'Rejeitada',
         ];
+    }
+
+    public function validateParticipacaoAtiva(string $attribute): void
+    {
+        if ($this->hasErrors($attribute) || empty($this->participacao_id)) {
+            return;
+        }
+
+        $participacao = $this->participacao;
+        if ($participacao === null) {
+            $participacao = Participacao::findOne((int) $this->participacao_id);
+        }
+
+        if ($participacao !== null && $participacao->status !== Participacao::STATUS_ATIVO) {
+            $this->addError($attribute, 'A participacao selecionada nao esta ativa para registrar doacoes.');
+        }
+    }
+
+    public function validateTipoDoacaoAtivo(string $attribute): void
+    {
+        if ($this->hasErrors($attribute) || empty($this->tipo_doacao_id)) {
+            return;
+        }
+
+        $tipoDoacao = $this->tipoDoacao;
+        if ($tipoDoacao === null) {
+            $tipoDoacao = TipoDoacao::findOne((int) $this->tipo_doacao_id);
+        }
+
+        if ($tipoDoacao !== null && (int) $tipoDoacao->ativo !== 1) {
+            $this->addError($attribute, 'O tipo de doacao selecionado nao esta mais disponivel.');
+        }
+    }
+
+    public function validateEventoPertenceParticipacao(string $attribute): void
+    {
+        if ($this->hasErrors($attribute) || empty($this->evento_id) || empty($this->participacao_id)) {
+            return;
+        }
+
+        $participacao = $this->participacao;
+        if ($participacao === null && $this->participacao_id) {
+            $participacao = Participacao::findOne((int) $this->participacao_id);
+        }
+
+        if ($participacao === null || empty($participacao->trote_id)) {
+            return;
+        }
+
+        $evento = $this->evento;
+        if ($evento === null && $this->evento_id) {
+            $evento = Evento::findOne((int) $this->evento_id);
+        }
+
+        if ($evento !== null && (int) $evento->trote_id !== (int) $participacao->trote_id) {
+            $this->addError($attribute, 'O evento selecionado nao pertence a participacao informada.');
+        }
     }
 }

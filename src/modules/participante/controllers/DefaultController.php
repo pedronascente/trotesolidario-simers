@@ -7,11 +7,10 @@ use app\modules\common\models\Certificado;
 use app\modules\common\models\Doacao;
 use app\modules\common\models\Documento;
 use app\modules\common\models\Participacao;
-use app\modules\common\models\Regulamento;
 use app\modules\common\models\Trote;
-use app\modules\common\services\RankingCacheService;
+use app\modules\common\models\Universidade;
+use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use Yii;
-use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -19,8 +18,6 @@ use yii\web\ForbiddenHttpException;
 
 class DefaultController extends Controller
 {
-    public $enableCsrfValidation = false;
-
     public function behaviors()
     {
         return [
@@ -42,7 +39,9 @@ class DefaultController extends Controller
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
-                'actions' => [],
+                'actions' => [
+                    'logout' => ['post'],
+                ],
             ],
         ];
     }
@@ -51,7 +50,8 @@ class DefaultController extends Controller
     {
         if (in_array($action->id, ['home', 'ranking', 'logout'], true)) {
             if (Yii::$app->user->isGuest) {
-                return $this->redirect(['/auth/login']);
+                Yii::$app->response->redirect(['/auth/login']);
+                return false;
             }
 
             if (!Yii::$app->user->identity->isParticipante()) {
@@ -70,7 +70,7 @@ class DefaultController extends Controller
 
         $this->layout = 'login';
         $capa = Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_LOGIN])->one();
-        $universidades = \app\modules\common\models\Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all();
+        $universidades = Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all();
 
         return $this->render('index', [
             'model' => new \app\models\LoginForm(),
@@ -95,55 +95,79 @@ class DefaultController extends Controller
             return $participacao->status === Participacao::STATUS_ATIVO;
         }));
 
-        $troteAtivo = null;
+        $trotesDisponiveis = [];
         foreach ($participacoesAtivas as $participacao) {
-            if ($participacao->trote && $participacao->trote->status === Trote::STATUS_ATIVO) {
-                $troteAtivo = $participacao->trote;
-                break;
+            if ($participacao->trote === null || $participacao->trote->status !== Trote::STATUS_ATIVO) {
+                continue;
             }
+
+            $trotesDisponiveis[(int) $participacao->trote_id] = $participacao->trote;
         }
 
-        $doacoes = Doacao::find()
+        $selectedTroteId = Yii::$app->request->get('trote_id');
+        $selectedTroteId = $selectedTroteId !== null && $selectedTroteId !== '' ? (int) $selectedTroteId : null;
+        $troteAtivo = $this->resolveSelectedHomeTrote($trotesDisponiveis, $selectedTroteId);
+        $selectedTroteId = $troteAtivo ? (int) $troteAtivo->id : null;
+
+        $doacaoQuery = Doacao::find()
             ->with(['tipoDoacao', 'participacao.trote', 'participacao.universidade'])
             ->joinWith('participacao')
             ->where(['participacao.user_id' => $userId])
-            ->orderBy(['doacao.created_at' => SORT_DESC, 'doacao.id' => SORT_DESC])
-            ->all();
+            ->orderBy(['doacao.created_at' => SORT_DESC, 'doacao.id' => SORT_DESC]);
 
-        $certificados = Certificado::find()
+        if ($selectedTroteId !== null) {
+            $doacaoQuery->andWhere(['participacao.trote_id' => $selectedTroteId]);
+        }
+        $doacoes = $doacaoQuery->all();
+
+        $certificadoQuery = Certificado::find()
             ->joinWith('participacao')
             ->where(['participacao.user_id' => $userId])
-            ->orderBy(['data_emissao' => SORT_DESC, 'id' => SORT_DESC])
-            ->all();
+            ->orderBy(['data_emissao' => SORT_DESC, 'id' => SORT_DESC]);
+
+        if ($selectedTroteId !== null) {
+            $certificadoQuery->andWhere(['participacao.trote_id' => $selectedTroteId]);
+        }
+        $certificados = $certificadoQuery->all();
 
         $ranking = [];
         if ($troteAtivo !== null) {
-            $ranking = (new Query())
-                ->select([
-                    'u.nome',
-                    'SUM(rc.pontuacao_total) AS pontos',
-                    'COUNT(DISTINCT rc.participacao_id) AS participantes',
-                ])
-                ->from(['rc' => 'ranking_cache'])
-                ->innerJoin(['p' => 'participacao'], 'p.id = rc.participacao_id')
-                ->innerJoin(['u' => 'universidade'], 'u.id = p.universidade_id')
-                ->where(['rc.trote_id' => $troteAtivo->id])
-                ->groupBy(['u.id', 'u.nome'])
-                ->orderBy(['pontos' => SORT_DESC, 'u.nome' => SORT_ASC])
-                ->limit(5)
-                ->all();
+            $rankingService = Yii::$container->get(RankingCacheServiceInterface::class);
+            $ranking = array_slice($rankingService->getUniversityRanking((int) $troteAtivo->id), 0, 5);
         }
+
+        $universidadesDoacao = Universidade::find()
+            ->where(['ativo' => 1])
+            ->andWhere(['not', ['link_doacao_alimento' => null]])
+            ->andWhere(['<>', 'link_doacao_alimento', ''])
+            ->orderBy(['nome' => SORT_ASC])
+            ->all();
 
         return $this->render('home', [
             'banner' => Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_HOME])->one(),
-            'informativos' => Documento::find()->orderBy(['id' => SORT_DESC])->all(),
-            'regulamentos' => Documento::find()->where(['tipo' => Documento::TIPO_REGULAMENTO])->orderBy(['id' => SORT_DESC])->all(),
+            'informativos' => Documento::find()
+                ->where(['tipo' => Documento::TIPO_INFORMATIVO])
+                ->andWhere(['not', ['arquivo' => null]])
+                ->andWhere(['<>', 'arquivo', ''])
+                ->orderBy(['id' => SORT_DESC])
+                ->limit(6)
+                ->all(),
+            'regulamentos' => Documento::find()
+                ->where(['tipo' => Documento::TIPO_REGULAMENTO])
+                ->andWhere(['not', ['arquivo' => null]])
+                ->andWhere(['<>', 'arquivo', ''])
+                ->orderBy(['id' => SORT_DESC])
+                ->limit(6)
+                ->all(),
             'participacoes' => $participacoes,
             'participacoesAtivas' => $participacoesAtivas,
             'troteAtivo' => $troteAtivo,
+            'selectedTroteId' => $selectedTroteId,
+            'trotesDisponiveis' => $trotesDisponiveis,
             'doacoes' => $doacoes,
             'certificados' => $certificados,
             'ranking' => $ranking,
+            'universidadesDoacao' => $universidadesDoacao,
         ]);
     }
 
@@ -151,7 +175,7 @@ class DefaultController extends Controller
     {
         $this->layout = 'adminindex';
 
-        $service = new RankingCacheService();
+        $service = Yii::$container->get(RankingCacheServiceInterface::class);
         $trotes = $service->findTrotes();
 
         $participacoesAtivas = Participacao::find()
@@ -174,7 +198,7 @@ class DefaultController extends Controller
         $selectedTroteId = Yii::$app->request->get('trote_id');
         $selectedTroteId = $selectedTroteId !== null && $selectedTroteId !== '' ? (int) $selectedTroteId : ($troteAtivo->id ?? null);
 
-        $ranking = $service->getUniversityRanking($selectedTroteId);
+        $ranking = $selectedTroteId !== null ? $service->getUniversityRanking($selectedTroteId) : [];
 
         $userUniversityIds = [];
         foreach ($participacoesAtivas as $participacao) {
@@ -205,5 +229,17 @@ class DefaultController extends Controller
         Yii::$app->user->logout();
         return $this->redirect(['/auth/login']);
     }
-}
 
+    private function resolveSelectedHomeTrote(array $trotesDisponiveis, ?int $selectedTroteId): ?Trote
+    {
+        if ($selectedTroteId !== null && isset($trotesDisponiveis[$selectedTroteId])) {
+            return $trotesDisponiveis[$selectedTroteId];
+        }
+
+        if (count($trotesDisponiveis) === 1) {
+            return array_values($trotesDisponiveis)[0];
+        }
+
+        return null;
+    }
+}

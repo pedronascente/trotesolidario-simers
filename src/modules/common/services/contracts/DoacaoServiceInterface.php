@@ -2,10 +2,13 @@
 
 namespace app\modules\common\services\contracts;
 
+use app\modules\common\models\Doacao;
+
 interface DoacaoServiceInterface
 {
     public function create($model): bool;
     public function update($model): bool;
+    public function delete(Doacao $model): bool;
     public function getFormData(): array;
     public function getEventosByParticipacao(int $participacaoId): array;
     public function aprovar(int $id): bool;

@@ -2,17 +2,24 @@
 
 namespace app\modules\participante\controllers;
 
-use app\models\User;
-use app\modules\common\models\ParticipantProfileForm;
-use app\modules\common\models\Participacao;
-use app\modules\common\models\Participante;
+use app\modules\common\services\contracts\ParticipacaoServiceInterface;
+use app\modules\common\services\contracts\UserServiceInterface;
 use Yii;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 
 class UsersController extends Controller
 {
+    private $userService;
+    private $participacaoService;
+
+    public function __construct($id, $module, UserServiceInterface $userService, ParticipacaoServiceInterface $participacaoService, $config = [])
+    {
+        $this->userService = $userService;
+        $this->participacaoService = $participacaoService;
+        parent::__construct($id, $module, $config);
+    }
+
     public function behaviors()
     {
         return [];
@@ -20,16 +27,13 @@ class UsersController extends Controller
 
     public function beforeAction($action)
     {
-        if ($action->id !== 'perfil') {
+        if (!in_array($action->id, ['perfil', 'corrigir-universidade', 'solicitar-correcao-universidade'], true)) {
             return parent::beforeAction($action);
         }
 
         if (Yii::$app->user->isGuest) {
-            if (YII_ENV_DEV) {
-                return parent::beforeAction($action);
-            }
-
-            return $this->redirect(['/auth/login']);
+            Yii::$app->response->redirect(['/auth/login']);
+            return false;
         }
 
         if (!Yii::$app->user->identity->isParticipante()) {
@@ -43,130 +47,110 @@ class UsersController extends Controller
     {
         $this->layout = 'adminindex';
 
-        $user = $this->findCurrentUser();
-        $participante = $this->findOrCreateParticipante($user);
-        $form = $this->buildForm($user, $participante);
+        $userId = (int) Yii::$app->user->id;
+        $selectedParticipationId = $this->getSelectedParticipationId();
+        $profileData = $this->userService->getParticipantProfileData($userId);
+        $form = $profileData['model'];
+        $selfCorrectionData = $this->participacaoService->getParticipantUniversitySelfCorrectionData($userId, $selectedParticipationId);
+        $requestData = $this->participacaoService->getParticipantUniversityCorrectionRequestData($userId, $selectedParticipationId);
+        $selectedParticipacao = $selfCorrectionData['participacao'] ?? null;
+        $availableParticipacoes = $selfCorrectionData['availableParticipacoes'] ?? [];
+
+        if ($selectedParticipacao !== null && $selectedParticipacao->universidade) {
+            $profileData['universidadeAtual'] = $selectedParticipacao->universidade->nome;
+        }
+        elseif (count($availableParticipacoes) !== 1) {
+            $profileData['universidadeAtual'] = null;
+        }
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $transaction = Yii::$app->db->beginTransaction();
             try {
-                $user->nome = $form->nome;
-                $user->email = $form->email;
-                $user->username = $form->username;
-                $user->cpf = $form->cpf;
-
-                if (!$user->save(false, ['nome', 'email', 'username', 'cpf', 'updated_at'])) {
-                    throw new \RuntimeException('Erro ao atualizar dados do usuario.');
-                }
-
-                if ($form->password !== '') {
-                    $user->setPassword($form->password);
-                    $user->generateAuthKey();
-
-                    if (!$user->save(false, ['password_hash', 'authKey', 'updated_at'])) {
-                        throw new \RuntimeException('Erro ao atualizar senha do usuario.');
-                    }
-                }
-
-                $participante->user_id = $user->id;
-                $participante->estudante = (int) $form->estudante;
-                $participante->estudante_medicina = (int) $form->estudante_medicina;
-                $participante->previsao_formatura = $form->previsao_formatura ?: null;
-
-                if (!$participante->save()) {
-                    throw new \RuntimeException('Erro ao atualizar perfil de participante: ' . json_encode($participante->errors));
-                }
-
-                $transaction->commit();
+                $this->userService->updateParticipantProfile($userId, $form);
                 Yii::$app->session->setFlash('success', 'Perfil atualizado com sucesso.');
 
                 return $this->refresh();
             } catch (\Throwable $e) {
-                $transaction->rollBack();
                 Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('perfil', [
-            'model' => $form,
-            'user' => $user,
-            'participante' => $participante,
-            'universidadeAtual' => $this->findCurrentUniversityName($user),
-        ]);
+        return $this->render('perfil', array_merge($profileData, [
+            'canSelfCorrect' => $selfCorrectionData['canSelfCorrect'],
+            'selfCorrectionReason' => $selfCorrectionData['selfCorrectionReason'],
+            'canRequestCorrection' => $requestData['canRequestCorrection'],
+            'requestCorrectionReason' => $requestData['requestCorrectionReason'],
+            'pendingRequest' => $requestData['pendingRequest'],
+            'availableParticipacoes' => $selfCorrectionData['availableParticipacoes'],
+            'selectedParticipationId' => $selfCorrectionData['selectedParticipationId'],
+            'selectedParticipacao' => $selectedParticipacao,
+        ]));
     }
 
-    private function findCurrentUser(): User
+    public function actionCorrigirUniversidade()
     {
-        if (!Yii::$app->user->isGuest) {
-            $user = User::findOne(Yii::$app->user->id);
-            if ($user === null) {
-                throw new NotFoundHttpException('Usuario nao encontrado.');
+        $this->layout = 'adminindex';
+
+        $userId = (int) Yii::$app->user->id;
+        $selectedParticipationId = $this->getSelectedParticipationId();
+        $correctionData = $this->participacaoService->getParticipantUniversitySelfCorrectionData($userId, $selectedParticipationId);
+        $form = $correctionData['model'];
+
+        if (!$correctionData['canSelfCorrect']) {
+            Yii::$app->session->setFlash('error', $correctionData['selfCorrectionReason']);
+            return $this->redirect(['perfil', 'participacao_id' => $correctionData['selectedParticipationId']]);
+        }
+
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $participacaoId = (int) ($form->participacaoId ?: $correctionData['selectedParticipationId']);
+                $this->participacaoService->selfCorrectParticipantUniversity($userId, $participacaoId, $form);
+                Yii::$app->session->setFlash('success', 'Universidade atualizada com sucesso na participacao selecionada.');
+
+                return $this->redirect(['perfil', 'participacao_id' => $participacaoId]);
+            } catch (\Throwable $e) {
+                Yii::$app->session->setFlash('error', $e->getMessage());
             }
-
-            return $user;
         }
 
-        if (!YII_ENV_DEV) {
-            throw new ForbiddenHttpException('Acesso negado');
-        }
-
-        $user = User::find()
-            ->where([
-                'role' => User::ROLE_PARTICIPANTE,
-                'status' => User::STATUS_ACTIVE,
-            ])
-            ->orderBy(['id' => SORT_ASC])
-            ->one();
-
-        if ($user === null) {
-            throw new NotFoundHttpException('Nenhum participante ativo foi encontrado para teste.');
-        }
-
-        return $user;
+        return $this->render('corrigir-universidade', $correctionData);
     }
 
-    private function findOrCreateParticipante(User $user): Participante
+    public function actionSolicitarCorrecaoUniversidade()
     {
-        $participante = Participante::findOne(['user_id' => $user->id]);
-        if ($participante !== null) {
-            return $participante;
+        $this->layout = 'adminindex';
+
+        $userId = (int) Yii::$app->user->id;
+        $selectedParticipationId = $this->getSelectedParticipationId();
+        $requestData = $this->participacaoService->getParticipantUniversityCorrectionRequestData($userId, $selectedParticipationId);
+        $form = $requestData['model'];
+
+        if (!$requestData['canRequestCorrection']) {
+            Yii::$app->session->setFlash('error', $requestData['requestCorrectionReason']);
+            return $this->redirect(['perfil', 'participacao_id' => $requestData['selectedParticipationId']]);
         }
 
-        return new Participante([
-            'user_id' => $user->id,
-            'estudante' => 1,
-            'estudante_medicina' => 0,
-        ]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $participacaoId = (int) ($form->participacaoId ?: $requestData['selectedParticipationId']);
+                $this->participacaoService->submitParticipantUniversityCorrectionRequest($userId, $participacaoId, $form);
+                Yii::$app->session->setFlash('success', 'Solicitacao enviada para analise da administracao.');
+
+                return $this->redirect(['perfil', 'participacao_id' => $participacaoId]);
+            } catch (\Throwable $e) {
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('solicitar-correcao-universidade', $requestData);
     }
 
-    private function findCurrentUniversityName(User $user): ?string
+    private function getSelectedParticipationId(): ?int
     {
-        $participacao = Participacao::find()
-            ->with('universidade')
-            ->where(['user_id' => $user->id])
-            ->orderBy([
-                'status' => SORT_ASC,
-                'id' => SORT_DESC,
-            ])
-            ->one();
+        $queryValue = Yii::$app->request->get('participacao_id');
+        if ($queryValue === null || $queryValue === '') {
+            return null;
+        }
 
-        return $participacao && $participacao->universidade
-            ? $participacao->universidade->nome
-            : null;
-    }
-
-    private function buildForm(User $user, Participante $participante): ParticipantProfileForm
-    {
-        $form = new ParticipantProfileForm();
-        $form->userId = (int) $user->id;
-        $form->nome = $user->nome;
-        $form->email = $user->email;
-        $form->username = $user->username;
-        $form->cpf = $user->getCpfFormatado() ?? $user->cpf;
-        $form->estudante = (int) $participante->estudante;
-        $form->estudante_medicina = (int) $participante->estudante_medicina;
-        $form->previsao_formatura = $participante->previsao_formatura;
-
-        return $form;
+        return (int) $queryValue;
     }
 }

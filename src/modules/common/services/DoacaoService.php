@@ -2,23 +2,30 @@
 
 namespace app\modules\common\services;
 
+use app\modules\common\models\Certificado;
 use app\modules\common\models\Doacao;
 use app\modules\common\models\Evento;
 use app\modules\common\models\Participacao;
 use app\modules\common\models\TipoDoacao;
 use app\modules\common\services\contracts\CertificadoServiceInterface;
+use app\modules\common\services\contracts\DoacaoServiceInterface;
+use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use Yii;
 use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
-class DoacaoService implements \app\modules\common\services\contracts\DoacaoServiceInterface
+class DoacaoService implements DoacaoServiceInterface
 {
     private CertificadoServiceInterface $certificadoService;
+    private RankingCacheServiceInterface $rankingCacheService;
 
-    public function __construct(CertificadoServiceInterface $certificadoService)
-    {
+    public function __construct(
+        CertificadoServiceInterface $certificadoService,
+        RankingCacheServiceInterface $rankingCacheService
+    ) {
         $this->certificadoService = $certificadoService;
+        $this->rankingCacheService = $rankingCacheService;
     }
 
     public function create($model): bool
@@ -29,6 +36,35 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
     public function update($model): bool
     {
         return $this->saveModel($model, false);
+    }
+
+    public function delete(Doacao $model): bool
+    {
+        if ($model->status !== Doacao::STATUS_REJEITADA) {
+            $model->addError('status', 'Somente doacoes rejeitadas podem ser excluidas.');
+            return false;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if ($model->delete() === false) {
+                $model->addError('arquivo', 'Erro ao excluir doacao.');
+                $transaction->rollBack();
+                return false;
+            }
+
+            $this->removeArquivo($model->arquivo);
+            $this->refreshRankingCacheForParticipacoes([(int) $model->participacao_id]);
+
+            $transaction->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            $model->addError('arquivo', 'Erro interno ao excluir doacao.');
+            Yii::error($e->getMessage(), __METHOD__);
+            return false;
+        }
     }
 
     public function getFormData(): array
@@ -55,7 +91,7 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
     {
         $participacao = Participacao::findOne($participacaoId);
 
-        if (!$participacao) {
+        if (!$participacao || $participacao->status !== Participacao::STATUS_ATIVO) {
             return [];
         }
 
@@ -86,7 +122,8 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
                 throw new \RuntimeException('Nao foi possivel aprovar a doacao.');
             }
 
-            $this->certificadoService->syncFromApprovedDoacao($model, (int) Yii::$app->user->id);
+            $this->certificadoService->syncFromApprovedDoacao($model, (int) (Yii::$app->user->id ?? 1));
+            $this->refreshRankingCacheForParticipacoes([(int) $model->participacao_id]);
 
             $transaction->commit();
             return true;
@@ -105,12 +142,27 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
             return false;
         }
 
-        $model->status = Doacao::STATUS_REJEITADA;
-        $model->motivo_reprovado = $motivoReprovado;
-        $model->validado_por = Yii::$app->user->id;
-        $model->validado_em = date('Y-m-d H:i:s');
+        $transaction = Yii::$app->db->beginTransaction();
 
-        return $model->save(false);
+        try {
+            $model->status = Doacao::STATUS_REJEITADA;
+            $model->motivo_reprovado = $motivoReprovado;
+            $model->validado_por = Yii::$app->user->id;
+            $model->validado_em = date('Y-m-d H:i:s');
+
+            if (!$model->save(false)) {
+                throw new \RuntimeException('Nao foi possivel reprovar a doacao.');
+            }
+
+            $this->refreshRankingCacheForParticipacoes([(int) $model->participacao_id]);
+
+            $transaction->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error($e->getMessage(), __METHOD__);
+            return false;
+        }
     }
 
     private function saveModel(Doacao $model, bool $isNew): bool
@@ -118,9 +170,24 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
+            $oldParticipacaoId = !$isNew ? (int) ($model->getOldAttribute('participacao_id') ?? 0) : null;
+            $oldArquivo = !$isNew ? $model->getOldAttribute('arquivo') : null;
+
+            if (!$isNew && $oldParticipacaoId > 0 && $oldParticipacaoId !== (int) $model->participacao_id) {
+                $model->addError('participacao_id', 'Nao e permitido alterar a participacao de uma doacao ja cadastrada.');
+                $transaction->rollBack();
+                return false;
+            }
+
             $participacao = Participacao::findOne($model->participacao_id);
             if (!$participacao) {
                 $model->addError('participacao_id', 'Participacao nao encontrada.');
+                $transaction->rollBack();
+                return false;
+            }
+
+            if ($participacao->status !== Participacao::STATUS_ATIVO) {
+                $model->addError('participacao_id', 'A participacao selecionada nao esta ativa para registrar doacoes.');
                 $transaction->rollBack();
                 return false;
             }
@@ -129,6 +196,7 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
 
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->file = $arquivo;
+            $novoArquivo = null;
 
             if (!$model->validate()) {
                 $transaction->rollBack();
@@ -136,27 +204,40 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
             }
 
             if ($arquivo) {
-                $arquivoAntigo = !$isNew ? $model->getOldAttribute('arquivo') : null;
-                $path = $this->saveArquivo($arquivo);
+                $novoArquivo = $this->saveArquivo($arquivo);
 
-                if (!$path) {
+                if (!$novoArquivo) {
                     $model->addError('file', 'Erro ao salvar arquivo.');
                     $transaction->rollBack();
                     return false;
                 }
 
-                $model->arquivo = $path;
-
-                if ($arquivoAntigo) {
-                    $this->removeArquivo($arquivoAntigo);
-                }
+                $model->arquivo = $novoArquivo;
             }
 
             if (!$model->save(false)) {
+                if ($novoArquivo !== null) {
+                    $this->removeArquivo($novoArquivo);
+                }
+
                 $model->addError('arquivo', 'Erro ao salvar doacao.');
                 $transaction->rollBack();
                 return false;
             }
+
+            if ($novoArquivo !== null && $oldArquivo) {
+                $this->removeArquivo($oldArquivo);
+            }
+
+            if ($model->status === Doacao::STATUS_APROVADA) {
+                $this->certificadoService->syncFromApprovedDoacao($model, (int) (Yii::$app->user->id ?? 1));
+            }
+
+            $rankingParticipacaoIds = [(int) $model->participacao_id];
+            if ($oldParticipacaoId !== null && $oldParticipacaoId > 0) {
+                $rankingParticipacaoIds[] = $oldParticipacaoId;
+            }
+            $this->refreshRankingCacheForParticipacoes($rankingParticipacaoIds);
 
             $transaction->commit();
             return true;
@@ -170,6 +251,25 @@ class DoacaoService implements \app\modules\common\services\contracts\DoacaoServ
             $model->addError('arquivo', 'Erro interno ao salvar doacao.');
             Yii::error($e->getMessage(), __METHOD__);
             return false;
+        }
+    }
+
+    private function refreshRankingCacheForParticipacoes(array $participacaoIds): void
+    {
+        $participacaoIds = array_values(array_unique(array_filter(array_map('intval', $participacaoIds))));
+        if (empty($participacaoIds)) {
+            return;
+        }
+
+        $troteIds = Participacao::find()
+            ->select('trote_id')
+            ->where(['id' => $participacaoIds])
+            ->andWhere(['not', ['trote_id' => null]])
+            ->column();
+
+        $troteIds = array_values(array_unique(array_map('intval', $troteIds)));
+        foreach ($troteIds as $troteId) {
+            $this->rankingCacheService->rebuild($troteId);
         }
     }
 

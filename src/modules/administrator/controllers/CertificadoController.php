@@ -173,9 +173,11 @@ class CertificadoController extends Controller
         }
 
         $pdfPath = $model->getArquivoPdfPath();
-        if ($pdfPath !== null) {
-            $message->attach($pdfPath, ['fileName' => basename($pdfPath)]);
+        if ($pdfPath === null) {
+            throw new \RuntimeException('Nao foi possivel localizar o PDF do certificado para envio.');
         }
+
+        $message->attach($pdfPath, ['fileName' => basename($pdfPath)]);
 
         if (!$message->send()) {
             throw new \RuntimeException('Nao foi possivel encaminhar o certificado por e-mail.');

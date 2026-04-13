@@ -10,7 +10,6 @@ use app\services\auth\AuthServiceInterface;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-
 class AuthController extends Controller
 {
     private $authService;

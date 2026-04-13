@@ -1,17 +1,6 @@
 <?php
-
-use kartik\alert\Alert;
 ?>
 <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <?php if (Yii::$app->session->hasFlash('success')): ?>
-            <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Doacao', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000]) ?>
-        <?php endif; ?>
-        <?php if (Yii::$app->session->hasFlash('error')): ?>
-            <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Doacao', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000]) ?>
-        <?php endif; ?>
-    </div>
-
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card shadow mb-4">

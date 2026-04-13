@@ -3,6 +3,7 @@
 /* @var $content string */
 
 use app\assets\AdminAsset;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 AdminAsset::register($this);
@@ -70,10 +71,16 @@ $menu_active = Yii::$app->controller->id;
                     <i class="fa fa-certificate" aria-hidden="true"></i>
                     <span>Doações</span></a>
             </li>
-            <li class="nav-item <?php $menu_active == 'certificado' ? 'active' : '' ?>">
+            <li class="nav-item <?= $menu_active == 'certificado' ? 'active' : '' ?>">
                 <a class="nav-link" href="/participante/certificado">
                     <i class="fas fa-file-contract"></i>
                     <span>Certificado</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
             </li>
 
             <!-- Divider -->
@@ -256,6 +263,7 @@ $menu_active = Yii::$app->controller->id;
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span
                                     class="mr-2 d-none d-lg-inline text-gray-600 small"><?= Yii::$app->user->identity->name ?></span>
+                                <i class="fas fa-chevron-down fa-sm fa-fw ml-2 text-gray-400"></i>
                                 <!--<img class="img-profile rounded-circle" src="img/undraw_profile.svg">-->
                             </a>
                             <!-- Dropdown - User Information -->
@@ -315,7 +323,9 @@ $menu_active = Yii::$app->controller->id;
                 <div class="modal-body">Selecione sair, para finalizar a sessão.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" data-method="POST" href="/participante/default/logout">Sair</a>
+                    <?= Html::beginForm(['/participante/default/logout'], 'post', ['class' => 'd-inline']) ?>
+                        <?= Html::submitButton('Sair', ['class' => 'btn btn-primary']) ?>
+                    <?= Html::endForm() ?>
                 </div>
             </div>
         </div>
@@ -330,6 +340,20 @@ $menu_active = Yii::$app->controller->id;
 
     <!-- Custom scripts for all pages-->
     <script src="/layoutadmin/js/sb-admin-2.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdownToggle = document.querySelector('#userDropdown');
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    var menu = dropdownToggle.nextElementSibling;
+                    if (menu && menu.classList.contains('dropdown-menu')) {
+                        menu.classList.toggle('show');
+                    }
+                });
+            }
+        });
+    </script>
 
     <!-- Page level plugins -->
     <!--<script src="/layoutadmin/vendor/chart.js/Chart.min.js"></script>-->

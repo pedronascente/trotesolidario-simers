@@ -11,6 +11,10 @@ $this->title = 'Meus certificados';
         <?= Html::a('Voltar para home', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
+    <div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
+        Cada certificado representa a sua participacao em uma edicao do trote. Quando novas doacoes aprovadas entram na mesma participacao, o certificado existente e atualizado com a nova carga horaria, em vez de criar um novo item na lista.
+    </div>
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-success">Certificados disponiveis</h6>
@@ -31,12 +35,13 @@ $this->title = 'Meus certificados';
                                             <div class="text-muted small text-uppercase">Codigo</div>
                                             <div class="fw-bold"><?= Html::encode($certificado->codigo_validador) ?></div>
                                         </div>
-                                        <span class="badge bg-success">Emitido</span>
+                                        <span class="badge bg-success">Disponivel</span>
                                     </div>
                                     <div class="mb-2"><strong>Trote:</strong> <?= Html::encode($certificado->participacao->trote->titulo ?: ('Trote ' . ($certificado->participacao->trote->edicao ?? '-'))) ?></div>
                                     <div class="mb-2"><strong>Universidade:</strong> <?= Html::encode($certificado->participacao->universidade->nome ?? '-') ?></div>
-                                    <div class="mb-2"><strong>Carga horaria:</strong> <?= (int) $certificado->carga_horaria_total ?>h</div>
-                                    <div class="mb-3"><strong>Emissao:</strong> <?= Yii::$app->formatter->asDatetime($certificado->data_emissao, 'php:d/m/Y H:i') ?></div>
+                                    <div class="mb-2"><strong>Carga horaria consolidada:</strong> <?= (int) $certificado->carga_horaria_total ?>h</div>
+                                    <div class="mb-1"><strong>Ultima atualizacao:</strong> <?= Yii::$app->formatter->asDatetime($certificado->data_emissao, 'php:d/m/Y H:i') ?></div>
+                                    <div class="text-muted small mb-3">Este horario muda quando novas doacoes aprovadas atualizam o certificado da mesma participacao.</div>
                                     <div class="mt-auto">
                                         <?= Html::a('Visualizar certificado', ['imprime', 'id' => $certificado->id], ['class' => 'btn btn-success w-100']) ?>
                                     </div>

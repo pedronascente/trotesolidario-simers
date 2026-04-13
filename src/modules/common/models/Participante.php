@@ -22,7 +22,7 @@ class Participante extends ActiveRecord
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['previsao_formatura'], 'required', 'when' => function (self $model) {
                 return (int) $model->estudante === 1;
-            }, 'whenClient' => "function () { return $('#participante-estudante').is(':checked') || $('#participante-estudante').val() === '1'; }"],
+            }, 'whenClient' => "function () { var field = $('#participante-estudante, #participantprofileform-estudante'); return field.length && field.val() === '1'; }"],
         ];
     }
 
@@ -48,11 +48,7 @@ class Participante extends ActiveRecord
             return false;
         }
 
-        if ($this->previsao_formatura === '') {
-            $this->previsao_formatura = null;
-        } elseif (!empty($this->previsao_formatura) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $this->previsao_formatura)) {
-            $this->previsao_formatura = str_replace('T', ' ', $this->previsao_formatura) . ':00';
-        }
+        $this->normalizePrevisaoFormatura();
 
         return true;
     }
@@ -72,9 +68,22 @@ class Participante extends ActiveRecord
             return false;
         }
 
+        $this->normalizePrevisaoFormatura();
         $this->estudante = (int) $this->estudante;
         $this->estudante_medicina = (int) $this->estudante_medicina;
 
         return true;
+    }
+
+    private function normalizePrevisaoFormatura(): void
+    {
+        if ($this->previsao_formatura === '') {
+            $this->previsao_formatura = null;
+            return;
+        }
+
+        if (!empty($this->previsao_formatura) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $this->previsao_formatura)) {
+            $this->previsao_formatura = str_replace('T', ' ', $this->previsao_formatura) . ':00';
+        }
     }
 }
