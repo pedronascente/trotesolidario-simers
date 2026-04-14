@@ -73,13 +73,12 @@ class CertificadoController extends Controller
 
     public function actionImprime($id)
     {
-        $this->layout = 'adminindex';
-        $model = $this->certificadoService->ensurePdf($this->findModel((int) $id));
+        $model = $this->certificadoService->ensurePdf($this->findModel((int) $id), true);
 
-        // $path = $model->getArquivoPdfPath();
-        // if ($path !== null) {
-        //     return Yii::$app->response->sendFile($path, basename($path), ['inline' => true]);
-        // }
+        $path = $model->getArquivoPdfPath();
+        if ($path !== null) {
+            return Yii::$app->response->sendFile($path, basename($path), ['inline' => true]);
+        }
 
         return $this->render('@app/modules/common/views/certificado/template', [
             'model' => $model,

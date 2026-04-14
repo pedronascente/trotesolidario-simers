@@ -11,3 +11,4 @@ interface CertificadoServiceInterface
 
     public function ensurePdf(Certificado $certificado, bool $force = false): Certificado;
 }
+ 

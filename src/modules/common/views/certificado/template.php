@@ -131,13 +131,13 @@ if ($edicaoBase !== '') {
     $secondPageCandidates[] = $basePath . '/certificado' . $edicaoBase . '2.php';
 }
 
-// if ($legacyModel['trote'] === '2025/2') {
-//     $firstPageCandidates = array_merge([$basePath . '/certificado202521.php'], $firstPageCandidates);
-//     $secondPageCandidates = array_merge([$basePath . '/certificado202511.php'], $secondPageCandidates);
-// }
+if ($legacyModel['trote'] === '2025/2') {
+    $firstPageCandidates = array_merge([$basePath . '/certificado202521.php'], $firstPageCandidates);
+    $secondPageCandidates = array_merge([$basePath . '/certificado202511.php'], $secondPageCandidates);
+}
 
-// $firstPageCandidates[] = $basePath . '/certificado.php';
-// $secondPageCandidates[] = $basePath . '/certificado2.php';
+$firstPageCandidates[] = $basePath . '/certificado.php';
+$secondPageCandidates[] = $basePath . '/certificado2.php';
 
 $findFirstExisting = static function (array $paths): ?string {
     foreach ($paths as $path) {
@@ -151,11 +151,6 @@ $findFirstExisting = static function (array $paths): ?string {
 
 $pageOne = $findFirstExisting($firstPageCandidates);
 $pageTwo = $findFirstExisting($secondPageCandidates);
-
-// echo $pageOne .'<br>  ';
-// echo $pageTwo .'<br>  ';
-
-
 
 if ($pageOne === null) {
     throw new \RuntimeException(html_entity_decode('Template de certificado n&atilde;o encontrado.', ENT_QUOTES | ENT_HTML5, 'UTF-8'));

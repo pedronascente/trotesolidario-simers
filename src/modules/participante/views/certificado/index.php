@@ -43,7 +43,7 @@ $this->title = 'Meus certificados';
                                     <div class="mb-1"><strong>Ultima atualizacao:</strong> <?= Yii::$app->formatter->asDatetime($certificado->data_emissao, 'php:d/m/Y H:i') ?></div>
                                     <div class="text-muted small mb-3">Este horario muda quando novas doacoes aprovadas atualizam o certificado da mesma participacao.</div>
                                     <div class="mt-auto">
-                                        <?= Html::a('Visualizar certificado', ['imprime', 'id' => $certificado->id], ['class' => 'btn btn-success w-100']) ?>
+                                        <?= Html::a('Visualizar certificado', ['imprime', 'id' => $certificado->id], ['class' => 'btn btn-success w-100', 'target' => '_blank', 'rel' => 'noopener']) ?>
                                     </div>
                                 </div>
                             </div>

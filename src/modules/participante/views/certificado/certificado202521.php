@@ -4,25 +4,7 @@ use yii\helpers\Html;
 
 $renderMode = isset($renderMode) && $renderMode === 'pdf' ? 'pdf' : 'web';
 
-$normalize = static function (?string $value): string {
-    $value = trim((string) $value);
-    if ($value === '') {
-        return '';
-    }
-
-    if (!mb_check_encoding($value, 'UTF-8')) {
-        $converted = @mb_convert_encoding($value, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
-        if (is_string($converted) && $converted !== '') {
-            $value = $converted;
-        }
-    }
-
-    return $value;
-};
-
-$asset = static function (string $pdfFileName, ?string $webFileName = null) use ($renderMode): string {
-    $webFileName = $webFileName ?? $pdfFileName;
-    $selectedFileName = $renderMode === 'pdf' ? $pdfFileName : $webFileName;
+$asset = static function (string $fileName) use ($renderMode): string {
     $path = null;
 
     foreach (['@webroot', '@app/web'] as $alias) {
@@ -31,7 +13,7 @@ $asset = static function (string $pdfFileName, ?string $webFileName = null) use 
             continue;
         }
 
-        $candidate = realpath($basePath . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $selectedFileName);
+        $candidate = realpath($basePath . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $fileName);
         if ($candidate !== false && is_file($candidate)) {
             $path = $candidate;
             break;
@@ -60,22 +42,30 @@ $asset = static function (string $pdfFileName, ?string $webFileName = null) use 
         return 'data:' . $mime . ';base64,' . base64_encode($data);
     }
 
-    return Yii::getAlias('@web') . '/img/' . rawurlencode($selectedFileName);
+    return Yii::getAlias('@web') . '/img/' . rawurlencode($fileName);
 };
 
-$logoPath = $asset('logo-site-2025.jpg', 'logo-site-2025.png');
-$bgPath = $asset('bg-certificado-2025_resized.jpg', 'bg-certificado-2025_resized.png');
-$elementLeftPath = $asset('element-left.jpg', 'element-left.png');
-$elementRightPath = $asset('element-right.jpg', 'element-right.png');
-$assinaturaMarcia = $asset('assinatura-marcia.jpg', 'assinatura-marcia.png');
-$assinaturaMarcelo = $asset('assinatura-marcelo.jpg', 'assinatura-marcelo.png');
+$normalize = static function (?string $value): string {
+    $value = trim((string) $value);
+    if ($value === '') {
+        return '';
+    }
+
+    if (!mb_check_encoding($value, 'UTF-8')) {
+        $converted = @mb_convert_encoding($value, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
+        if (is_string($converted) && $converted !== '') {
+            $value = $converted;
+        }
+    }
+
+    return $value;
+};
 
 $nome = $normalize($model['name'] ?? '-');
 $trote = $normalize($model['trote'] ?? '-');
-$qualidade = mb_strtoupper($normalize($model['qualidade'] ?? 'PARTICIPANTE'), 'UTF-8');
+$qualidade = $normalize($model['qualidade'] ?? 'PARTICIPANTE');
 $totalHoras = (int) ($model['total_horas'] ?? 0);
-$fraseBase = $normalize($model['frase_certificado'] ?? '');
-$fraseCertificado = trim($fraseBase . ' ' . $totalHoras . ' horas.');
+$fraseCertificado = $normalize($model['frase_certificado'] ?? '');
 
 $doacoes = [];
 foreach (($model['all_donations'] ?? []) as $doacao) {
@@ -86,53 +76,106 @@ foreach (($model['all_donations'] ?? []) as $doacao) {
 }
 
 $tiposDoacao = implode(', ', $doacoes);
-$textoPrincipal = 'Certificamos que <b>' . Html::encode($nome) . '</b>, participou do Trote Solid&aacute;rio ' . Html::encode($trote)
+
+$textoPrincipal = 'Certificamos que <b>' . Html::encode($nome) . '</b>, participou do Trote Solidário '
+    . Html::encode($trote)
     . ', na qualidade de ' . Html::encode($qualidade)
-    . ', como volunt&aacute;rio(a), realizando doa&ccedil;&otilde;es do tipo: ' . Html::encode($tiposDoacao)
-    . ', promovido pelo N&uacute;cleo Acad&ecirc;mico Simers, ' . Html::encode($fraseCertificado);
+    . ', como voluntário(a)';
+
+if ($tiposDoacao !== '') {
+    $textoPrincipal .= ', realizando doações do tipo: ' . Html::encode($tiposDoacao);
+}
+
+$textoPrincipal .= ', promovido pelo Núcleo Acadêmico Simers';
+
+if ($fraseCertificado !== '') {
+    $textoPrincipal .= ', ' . Html::encode($fraseCertificado);
+}
+
+if ($totalHoras > 0) {
+    $textoPrincipal .= ' ' . $totalHoras . ' horas';
+}
+
+$textoPrincipal .= '.';
+
+$backgroundPath = $asset('bg-certificado-2025_resized.png');
+$logoPath = $asset('logo-site-2025.png');
+$assinaturaMarciaPath = $asset('dramarcia.png');
+$assinaturaMarceloPath = $asset('drmarcelomarsillac.png');
 ?>
-<div style="position:relative; width:297mm; height:210mm; overflow:hidden; font-family:Arial, sans-serif; color:#5a2ca0;">
-    <?php if ($bgPath !== ''): ?>
-        <img src="<?= $bgPath ?>" alt="Fundo do certificado" style="position:absolute; left:0; top:0; width:297mm; height:210mm;">
-    <?php endif; ?>
 
-    <div style="position:absolute; left:13.5mm; top:8.2mm; width:271.5mm; height:193mm; background:#ffffff; border-radius:4mm;"></div>
-
-    <?php if ($elementRightPath !== ''): ?>
-        <img src="<?= $elementRightPath ?>" alt="Elemento decorativo superior direito" style="position:absolute; right:7.5mm; top:46.5mm; width:20mm;">
-    <?php endif; ?>
-
-    <?php if ($elementLeftPath !== ''): ?>
-        <img src="<?= $elementLeftPath ?>" alt="Elemento decorativo inferior esquerdo" style="position:absolute; left:8mm; bottom:18mm; width:17mm;">
-    <?php endif; ?>
-
-    <div style="position:absolute; left:22mm; top:11mm; width:253mm; height:184mm; text-align:center;">
-        <?php if ($logoPath !== ''): ?>
-            <img src="<?= $logoPath ?>" alt="Logo Trote Solid&aacute;rio Simers" style="display:block; width:57mm; margin:0 auto; margin-top:4mm;">
+<div style="width:297mm; height:210mm; margin:0; padding:0; overflow:hidden; background:#5b19c8;">
+    <table style="
+        width:297mm;
+        height:210mm;
+        border-collapse:collapse;
+        border-spacing:0;
+        table-layout:fixed;
+        margin:0;
+        padding:0;
+        background-color:#5b19c8;
+        <?php if ($backgroundPath !== ''): ?>
+            background-image:url('<?= $backgroundPath ?>');
+            background-repeat:no-repeat;
+            background-position:center center;
+            background-size:297mm 210mm;
         <?php endif; ?>
-
-        <div style="margin-top:5mm; font-size:15.5mm; line-height:1; font-weight:500; letter-spacing:0; color:#4b1fa8;">CERTIFICADO</div>
-
-        <div style="margin:11mm auto 0; width:236mm; font-size:7.05mm; line-height:1.28; color:#4b1fa8; text-align:center;">
-            <?= $textoPrincipal ?>
-        </div>
-
-        <div style="position:absolute; left:18mm; right:18mm; bottom:22mm; height:32mm; color:#35206d;">
-            <div style="position:absolute; left:25mm; width:75mm; text-align:center;">
-                <?php if ($assinaturaMarcia !== ''): ?>
-                    <img src="<?= $assinaturaMarcia ?>" alt="Assinatura Dra. Marcia Pires Barbosa" style="display:block; width:44mm; margin:0 auto 1mm;">
-                <?php endif; ?>
-                <div style="font-size:4.05mm; font-weight:700;">Dra. Marcia Pires Barbosa</div>
-                <div style="font-size:3.45mm; margin-top:2.2mm;">Diretora de Pol&iacute;ticas Estrat&eacute;gicas</div>
-            </div>
-
-            <div style="position:absolute; right:21mm; width:75mm; text-align:center;">
-                <?php if ($assinaturaMarcelo !== ''): ?>
-                    <img src="<?= $assinaturaMarcelo ?>" alt="Assinatura Dr. Marcelo Marsillac Matias" style="display:block; width:42mm; margin:0 auto 1mm;">
-                <?php endif; ?>
-                <div style="font-size:4.05mm; font-weight:700;">DR. Marcelo Marsillac Matias</div>
-                <div style="font-size:3.45mm; margin-top:2.2mm;">Presidente do Simers</div>
-            </div>
-        </div>
-    </div>
+    ">
+        <tr>
+            <td style="padding:18mm 16mm 16mm 16mm; vertical-align:top;">
+                <table style="width:100%; height:174mm; border-collapse:collapse; border-spacing:0; table-layout:fixed;">
+                    <tr>
+                        <td style="height:31mm; text-align:center; vertical-align:top; padding:0;">
+                            <?php if ($logoPath !== ''): ?>
+                                <img src="<?= $logoPath ?>" alt="Logo Trote Solidário Simers" style="width:53mm; height:auto; display:block; margin:0 auto;">
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:19mm; text-align:center; vertical-align:middle; font-family:Arial, Helvetica, sans-serif; font-size:12.2mm; line-height:1; font-weight:400; color:#4b27b4; padding:0;">
+                            CERTIFICADO
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:63mm; padding:8mm 15mm 0 15mm; text-align:center; vertical-align:top; font-family:Arial, Helvetica, sans-serif; font-size:6.45mm; line-height:1.24; color:#2f1ca0;">
+                            <?= $textoPrincipal ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:18mm;"></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top; padding:0 18mm;">
+                            <table style="width:100%; border-collapse:collapse; border-spacing:0; table-layout:fixed;">
+                                <tr>
+                                    <td style="width:50%; text-align:center; vertical-align:top; color:#2b1d70; padding-left:8mm;">
+                                        <?php if ($assinaturaMarciaPath !== ''): ?>
+                                            <img src="<?= $assinaturaMarciaPath ?>" alt="Dra. Marcia Pires Barbosa" style="width:65mm; height:auto; display:block; margin:0 auto;">
+                                        <?php endif; ?>
+                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:2.55mm; font-weight:700; line-height:1.1; margin-top:0.6mm;">
+                                            <b>DRA. MARCIA PIRES BARBOSA</b>
+                                        </div>
+                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:3.05mm; line-height:1.1; margin-top:1.6mm;">
+                                            Diretora de Políticas Estratégicas
+                                        </div>
+                                    </td>
+                                    <td style="width:50%; text-align:center; vertical-align:top; color:#2b1d70; padding-left:8mm;">
+                                        <?php if ($assinaturaMarceloPath !== ''): ?>
+                                            <img src="<?= $assinaturaMarceloPath ?>" alt="Assinatura Dr. Marcelo Marsillac Matias" style="width:42mm; height:auto; display:block; margin:0 auto;">
+                                        <?php endif; ?>
+                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:2.55mm; font-weight:700; line-height:1.1; margin-top:0.6mm;">
+                                            <b>DR. Marcelo Marsillac Matias</b>
+                                        </div>
+                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:3.05mm; line-height:1.1; margin-top:1.6mm;">
+                                            Presidente do Simers
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </div>
