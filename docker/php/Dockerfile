@@ -9,11 +9,14 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libicu-dev
+    libicu-dev \
+    libonig-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalar extensões PHP necessárias
+# Configurar GD
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
+# Instalar extensões PHP necessárias
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
