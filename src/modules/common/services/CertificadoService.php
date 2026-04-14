@@ -132,17 +132,47 @@ class CertificadoService implements CertificadoServiceInterface
 
             $mpdf = new Mpdf([
                 'mode' => 'utf-8',
-                'format' => 'A4-L',
+                'format' => 'A4',
+                'orientation' => 'L',
                 'tempDir' => $tempDir,
-                'margin_left' => 0,
-                'margin_right' => 0,
-                'margin_top' => 0,
-                'margin_bottom' => 0,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
                 'default_font' => 'Arial',
             ]);
+            $mpdf->showImageErrors = true;
             $mpdf->autoScriptToLang = false;
             $mpdf->autoLangToFont = false;
             $mpdf->SetTitle('Certificado Trote Solidario');
+
+            $bootstrapCssPath = Yii::getAlias('@vendor', false);
+            if (is_string($bootstrapCssPath) && $bootstrapCssPath !== '') {
+                $bootstrapCssPath .= DIRECTORY_SEPARATOR . 'kartik-v'
+                    . DIRECTORY_SEPARATOR . 'yii2-mpdf'
+                    . DIRECTORY_SEPARATOR . 'src'
+                    . DIRECTORY_SEPARATOR . 'assets'
+                    . DIRECTORY_SEPARATOR . 'kv-mpdf-bootstrap.min.css';
+
+                if (is_file($bootstrapCssPath)) {
+                    $bootstrapCss = file_get_contents($bootstrapCssPath);
+                    if (is_string($bootstrapCss) && $bootstrapCss !== '') {
+                        $mpdf->WriteHTML($bootstrapCss, 1);
+                    }
+                }
+            }
+
+            if (class_exists('\\kartik\\mpdf\\Pdf')) {
+                $pdfExtraClass = '\\kartik\\mpdf\\Pdf';
+                /** @var object $pdfExtra */
+                $pdfExtra = new $pdfExtraClass();
+                if (method_exists($pdfExtra, 'getCss')) {
+                    $extraCss = $pdfExtra->getCss();
+                    if (is_string($extraCss) && $extraCss !== '') {
+                        $mpdf->WriteHTML($extraCss, 1);
+                    }
+                }
+            }
 
             foreach ($pages as $index => $pageHtml) {
                 $pageHtml = $this->sanitizeHtmlForPdf($pageHtml);
