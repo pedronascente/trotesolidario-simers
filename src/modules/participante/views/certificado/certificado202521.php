@@ -97,85 +97,72 @@ if ($totalHoras > 0) {
 }
 
 $textoPrincipal .= '.';
-
 $backgroundPath = $asset('bg-certificado-2025_resized.png');
-$logoPath = $asset('logo-site-2025.png');
-$assinaturaMarciaPath = $asset('dramarcia.png');
-$assinaturaMarceloPath = $asset('drmarcelomarsillac.png');
+$logoPath = $asset('logo-site.png');
+$assinaturaMarciaPath = $asset('assinatura-marcia.png');
+$assinaturaMarceloPath = $asset('assinatura-marcelo.png');
 ?>
+<style type="text/css">
+    .tg {}
+    .tg td { font-family: AvenirLTStd-Roman; font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;}
+    .tg th { font-family: AvenirLTStd-Roman;font-size: 14px;font-weight: normal;overflow: hidden;padding: 10px 5px;word-break: normal;}
+    .tg .tg-baqh {text-align: center;vertical-align: top}
+    .tg .tg-0lax {text-align: left;vertical-align: top}
+</style>
 
-<div style="width:297mm; height:210mm; margin:0; padding:0; overflow:hidden; background:#5b19c8;">
-    <table style="
-        width:297mm;
-        height:210mm;
-        border-collapse:collapse;
-        border-spacing:0;
-        table-layout:fixed;
-        margin:0;
-        padding:0;
-        background-color:#5b19c8;
-        <?php if ($backgroundPath !== ''): ?>
-            background-image:url('<?= $backgroundPath ?>');
-            background-repeat:no-repeat;
-            background-position:center center;
-            background-size:297mm 210mm;
-        <?php endif; ?>
-    ">
-        <tr>
-            <td style="padding:18mm 16mm 16mm 16mm; vertical-align:top;">
-                <table style="width:100%; height:174mm; border-collapse:collapse; border-spacing:0; table-layout:fixed;">
-                    <tr>
-                        <td style="height:31mm; text-align:center; vertical-align:top; padding:0;">
-                            <?php if ($logoPath !== ''): ?>
-                                <img src="<?= $logoPath ?>" alt="Logo Trote Solidário Simers" style="width:53mm; height:auto; display:block; margin:0 auto;">
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:19mm; text-align:center; vertical-align:middle; font-family:Arial, Helvetica, sans-serif; font-size:12.2mm; line-height:1; font-weight:400; color:#4b27b4; padding:0;">
-                            CERTIFICADO
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:63mm; padding:8mm 15mm 0 15mm; text-align:center; vertical-align:top; font-family:Arial, Helvetica, sans-serif; font-size:6.45mm; line-height:1.24; color:#2f1ca0;">
-                            <?= $textoPrincipal ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:18mm;"></td>
-                    </tr>
-                    <tr>
-                        <td style="vertical-align:top; padding:0 18mm;">
-                            <table style="width:100%; border-collapse:collapse; border-spacing:0; table-layout:fixed;">
-                                <tr>
-                                    <td style="width:50%; text-align:center; vertical-align:top; color:#2b1d70; padding-left:8mm;">
-                                        <?php if ($assinaturaMarciaPath !== ''): ?>
-                                            <img src="<?= $assinaturaMarciaPath ?>" alt="Dra. Marcia Pires Barbosa" style="width:65mm; height:auto; display:block; margin:0 auto;">
-                                        <?php endif; ?>
-                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:2.55mm; font-weight:700; line-height:1.1; margin-top:0.6mm;">
-                                            <b>DRA. MARCIA PIRES BARBOSA</b>
-                                        </div>
-                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:3.05mm; line-height:1.1; margin-top:1.6mm;">
-                                            Diretora de Políticas Estratégicas
-                                        </div>
-                                    </td>
-                                    <td style="width:50%; text-align:center; vertical-align:top; color:#2b1d70; padding-left:8mm;">
-                                        <?php if ($assinaturaMarceloPath !== ''): ?>
-                                            <img src="<?= $assinaturaMarceloPath ?>" alt="Assinatura Dr. Marcelo Marsillac Matias" style="width:42mm; height:auto; display:block; margin:0 auto;">
-                                        <?php endif; ?>
-                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:2.55mm; font-weight:700; line-height:1.1; margin-top:0.6mm;">
-                                            <b>DR. Marcelo Marsillac Matias</b>
-                                        </div>
-                                        <div style="font-family:Arial, Helvetica, sans-serif; font-size:3.05mm; line-height:1.1; margin-top:1.6mm;">
-                                            Presidente do Simers
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+<body class="body">
+    <div style="background-color:#520EBA; background-repeat: no-repeat; background-size: cover;background-image: url('<?= $backgroundPath ?>');">
+        <div class="well"
+            style="background-color: transparent; border:none;height: 530px;">
+            <div class="row" style="padding:20px">
+                <table class="tg" style="table-layout: fixed; width: 100%">
+                    <thead>
+                        <tr>
+                            <th class="tg-0lax"></th>
+                            <th class="tg-baqh" colspan="3">
+                                <img src="<?= $logoPath ?>" style="width:auto;height: 130px;" alt="logo" />
+                            </th>
+                            <th class="tg-0lax"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="padding-top:20px;">
+                            <td class="tg-0lax"></td>
+                            <td class="tg-baqh" colspan="3" style="text-align: center;">
+                                <h1 style="color:#2e056b; ">CERTIFICADO</h1>
+                            </td>
+                            <td class="tg-0lax"></td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0lax"></td>
+                            <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
+                                <p style="color: #2e056b; font-size: 22px;"><?= $textoPrincipal ?> </p>
+                            </td>
+                            <td class="tg-0lax"></td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0lax"></td>
+                            <td class="tg-0lax"></td>
+                        </tr>
+                        <tr style="padding-top:20px;">
+                            <td class="tg-0lax"></td>
+                            <td class="tg-0lax"></td>
+                            <th class="tg-baqh" style="  flex-direction: row; justify-content: start; text-align: left;">
+                                <img src="<?=$assinaturaMarciaPath?>" style="width:auto;height: 80px;" alt="logo" />
+                            </th>
+                            <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
+                                <img src="<?=$assinaturaMarceloPath?>" style="width:auto;height: 80px;" alt="logo" />
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="tg-0lax"></td>
+                            <th class="tg-baqh" colspan="3">
+                            </th>
+                            <td class="tg-0lax"></td>
+                        </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-    </table>
-</div>
+            </div>
+        </div>
+    </div>
+</body>
