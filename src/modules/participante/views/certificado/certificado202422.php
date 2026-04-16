@@ -1,7 +1,53 @@
-<?php
+<?php 
 
-use app\modules\common\models\Helper;
-use yii\helpers\Url;
+$renderMode = isset($renderMode) && $renderMode === 'pdf' ? 'pdf' : 'web';
+
+$resolveAssetPath = static function (string $fileName): ?string {
+    foreach (['@webroot', '@app/web'] as $alias) {
+        $basePath = Yii::getAlias($alias, false);
+        if (!is_string($basePath) || $basePath === '') {
+            continue;
+        }
+
+        $candidate = realpath($basePath . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $fileName);
+        if ($candidate !== false && is_file($candidate)) {
+            return $candidate;
+        }
+    }
+
+    return null;
+};
+
+$asset = static function (string $fileName) use ($renderMode, $resolveAssetPath): string {
+    $path = $resolveAssetPath($fileName);
+    if ($path === null) {
+        return '';
+    }
+
+    if ($renderMode === 'pdf') {
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $mime = match ($extension) {
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+            default => 'application/octet-stream',
+        };
+
+        $data = file_get_contents($path);
+        if ($data === false) {
+            return '';
+        }
+
+        return 'data:' . $mime . ';base64,' . base64_encode($data);
+    }
+
+    return Yii::getAlias('@web') . '/img/' . rawurlencode($fileName);
+};
+
+$fundo = $asset('FUNDO.png');
+$LOGO20242 = $asset('LOGO20242.png');
+
 ?>
 <style type="text/css">
 .tg {}
@@ -37,15 +83,14 @@ use yii\helpers\Url;
 <body class="body">
     <div style="background-color: #4b3c91;padding: 40px 40px 30px 40px;">
         <div class="well"
-            style="background-repeat: no-repeat; background-size: cover;background-image: url('<?= Url::to('@web/img/FUNDO.png') ?>');background-color: #fefefe; border-radius:36px;">
+            style="background-repeat: no-repeat; background-size: cover;background-image: url('<?= $fundo; ?>');background-color: #fefefe; border-radius:36px;">
             <div class="row">
                 <table class="tg" style="table-layout: fixed; width: 100%">
                     <thead>
                         <tr>
                             <th class="tg-0lax"></th>
                             <th class="tg-baqh" colspan="3">
-                                <img src="<?= Url::to('@web/img/LOGO20242.png') ?>" style="width:auto;height: 130px;"
-                                    alt="logo" />
+                                <img src="<?=$LOGO20242 ?>" style="width:auto;height: 130px;"alt="logo" />
                             </th>
                             <th class="tg-0lax"></th>
                         </tr>
