@@ -14,19 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="trote-view container-fluid">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?php if ($model->status !== \app\modules\common\models\Trote::STATUS_ATIVO): ?>
-            <?= Html::a('Excluir', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
-                'data' => [
-                    'confirm' => 'Deseja realmente excluir este item?',
-                    'method' => 'post',
-                ],
-            ]) ?>
-        <?php endif; ?>
-    </p>
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -47,4 +34,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at:datetime',
         ],
     ]) ?>
+
+    <p>
+        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php if ($model->status !== \app\modules\common\models\Trote::STATUS_ATIVO): ?>
+            <?= Html::a('Excluir', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Deseja realmente excluir este item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif; ?>
+    </p>
 </div>

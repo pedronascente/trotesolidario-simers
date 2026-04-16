@@ -34,11 +34,13 @@ class Trote extends ActiveRecord
     public function rules()
     {
         return [
-            [['edicao'], 'required'],
+            [['titulo', 'edicao', 'data_inicio', 'data_fim'], 'required'],
+            [['titulo', 'edicao', 'descricao', 'status'], 'trim'],
             [['descricao'], 'string'],
             [['data_inicio', 'data_fim'], 'date', 'format' => 'php:Y-m-d'],
-            [['titulo'], 'string', 'max' => 255],
-            [['edicao'], 'string', 'max' => 10],
+            [['titulo'], 'string', 'min' => 2, 'max' => 200],
+            [['edicao'], 'string', 'length' => 6],
+            ['edicao', 'match', 'pattern' => '/^\d{4}\.\d$/', 'message' => 'A edicao deve seguir o formato 0000.9.'],
             [['status'], 'string', 'max' => 20],
             ['status', 'default', 'value' => self::STATUS_RASCUNHO],
             ['status', 'in', 'range' => array_keys(self::getStatusList())],
@@ -89,7 +91,8 @@ class Trote extends ActiveRecord
     public function validateDatas($attribute)
     {
         if ($this->data_inicio && $this->data_fim && strtotime($this->data_fim) < strtotime($this->data_inicio)) {
-            $this->addError($attribute, 'A data fim nao pode ser menor que a data inicio.');
+            $this->addError('data_inicio', 'A data inicio nao pode ser maior que a data fim.');
+            $this->addError('data_fim', 'A data fim nao pode ser menor que a data inicio.');
         }
     }
 

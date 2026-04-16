@@ -58,7 +58,6 @@ class TroteController extends Controller
     public function beforeAction($action)
     {
         $this->layout = 'adminsemjquery';
-
         return parent::beforeAction($action);
     }
 
@@ -83,6 +82,7 @@ class TroteController extends Controller
     public function actionCreate()
     {
         $trote = new Trote();
+        $trote->status = Trote::STATUS_RASCUNHO;
 
         if ($trote->load(Yii::$app->request->post())) {
             if ($this->service->create($trote)) {
@@ -91,7 +91,9 @@ class TroteController extends Controller
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', 'Erro ao criar trote');
+            if (!$trote->hasErrors()) {
+                Yii::$app->session->setFlash('error', 'Erro ao criar trote');
+            }
         }
 
         return $this->render('create', [
@@ -110,7 +112,9 @@ class TroteController extends Controller
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', 'Erro ao atualizar trote');
+            if (!$model->hasErrors()) {
+                Yii::$app->session->setFlash('error', 'Erro ao atualizar trote');
+            }
         }
 
         return $this->render('update', [

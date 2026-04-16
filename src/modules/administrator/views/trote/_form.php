@@ -7,6 +7,16 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Trote */
 /* @var $form yii\widgets\ActiveForm */
+
+$currentYear = (int) date('Y');
+$editionOptions = [];
+
+foreach ([1, 2] as $semester) {
+    for ($year = $currentYear; $year >= $currentYear - 6; $year--) {
+        $edition = $year . '.' . $semester;
+        $editionOptions[$edition] = $edition;
+    }
+}
 ?>
 
 <div class="trote-form container-fluid">
@@ -16,19 +26,23 @@ use yii\widgets\ActiveForm;
             'template' => "{label}\n{input}\n{error}",
             'options' => ['class' => 'form-group'],
             'inputOptions' => ['class' => 'form-control'],
-            'errorOptions' => ['class' => 'invalid-feedback'],
+            'errorOptions' => ['class' => 'invalid-feedback d-block'],
         ],
     ]); ?>
 
     <div class="row">
         <div class="col-md-8">
-            <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'titulo')->textInput([
+                'maxlength' => 200,
+                'minlength' => 2,
+                'required' => true,
+            ]) ?>
         </div>
 
         <div class="col-md-4">
-            <?= $form->field($model, 'edicao')->textInput([
-                'maxlength' => 10,
-                'placeholder' => 'Ex.: 2026.1',
+            <?= $form->field($model, 'edicao')->dropDownList($editionOptions, [
+                'prompt' => 'Selecione a edicao',
+                'required' => true,
             ]) ?>
         </div>
     </div>
@@ -38,20 +52,21 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-md-4">
             <?= $form->field($model, 'status')->dropDownList(
-                Trote::getStatusList(),
-                ['prompt' => 'Selecione o status']
+                Trote::getStatusList()
             ) ?>
         </div>
 
         <div class="col-md-4">
             <?= $form->field($model, 'data_inicio')->input('date', [
                 'value' => $model->data_inicio ? date('Y-m-d', strtotime($model->data_inicio)) : '',
+                'required' => true,
             ]) ?>
         </div>
 
         <div class="col-md-4">
             <?= $form->field($model, 'data_fim')->input('date', [
                 'value' => $model->data_fim ? date('Y-m-d', strtotime($model->data_fim)) : '',
+                'required' => true,
             ]) ?>
         </div>
     </div>
@@ -63,15 +78,21 @@ use yii\widgets\ActiveForm;
 
     <?php ActiveForm::end(); ?>
 </div>
-
 <?php
-$this->registerJs("
-$('form').on('afterValidate', function () {
-    $('.form-group').each(function () {
-        if ($(this).hasClass('has-error')) {
-            $(this).find('.form-control').addClass('is-invalid');
-        }
+$this->registerJs(<<<'JS'
+var syncFieldValidationState = function () {
+    $(".trote-form .form-group").each(function () {
+        var $group = $(this);
+        var hasError = $group.hasClass("has-error");
+
+        $group.find(".form-control").toggleClass("is-invalid", hasError);
     });
+};
+
+syncFieldValidationState();
+
+$('form').on('afterValidate', function () {
+    syncFieldValidationState();
 });
-");
+JS);
 ?>
