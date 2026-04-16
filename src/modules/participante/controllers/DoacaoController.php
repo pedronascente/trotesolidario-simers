@@ -106,7 +106,9 @@ class DoacaoController extends Controller
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', $this->getModelErrorMessage($model, 'Erro ao criar doacao.'));
+            if (!$model->hasErrors()) {
+                Yii::$app->session->setFlash('error', $this->getModelErrorMessage($model, 'Erro ao criar doacao.'));
+            }
         }
 
         return $this->render('create', array_merge(['model' => $model], $data));
@@ -135,7 +137,9 @@ class DoacaoController extends Controller
                 return $this->redirect(['index']);
             }
 
-            Yii::$app->session->setFlash('error', $this->getModelErrorMessage($model, 'Erro ao atualizar doacao.'));
+            if (!$model->hasErrors()) {
+                Yii::$app->session->setFlash('error', $this->getModelErrorMessage($model, 'Erro ao atualizar doacao.'));
+            }
         }
 
         return $this->render('update', array_merge(['model' => $model], $data));

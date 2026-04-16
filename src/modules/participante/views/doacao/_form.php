@@ -126,12 +126,17 @@ $isUpdate = !$model->isNewRecord;
 
 <?php
 $this->registerJs(<<<JS
-$('form').on('afterValidate', function () {
+var syncFieldValidationState = function () {
     $('.form-group').each(function () {
-        if ($(this).hasClass('has-error')) {
-            $(this).find('.form-control').addClass('is-invalid');
-        }
+        var hasError = $(this).hasClass('has-error');
+        $(this).find('.form-control').toggleClass('is-invalid', hasError);
     });
+};
+
+syncFieldValidationState();
+
+$('form').on('afterValidate', function () {
+    syncFieldValidationState();
 });
 JS);
 ?>
