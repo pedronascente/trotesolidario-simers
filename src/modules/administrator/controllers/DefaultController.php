@@ -93,13 +93,16 @@ class DefaultController extends Controller
             ->limit(5)
             ->all();
 
-        $troteAtivo = Trote::find()
+        $trotesAtivos = Trote::find()
             ->where(['status' => Trote::STATUS_ATIVO])
             ->orderBy(['data_inicio' => SORT_DESC, 'id' => SORT_DESC])
-            ->one();
+            ->all();
+
+        $troteAtivo = $trotesAtivos[0] ?? null;
 
         $troteResumo = null;
         $rankingUniversidades = [];
+        $trotesAtivosResumo = [];
 
         if ($troteAtivo !== null) {
             $eventoVinculado = Evento::find()
@@ -128,6 +131,14 @@ class DefaultController extends Controller
             $rankingUniversidades = array_slice($rankingService->getUniversityRanking((int) $troteAtivo->id), 0, 5);
         }
 
+        foreach ($trotesAtivos as $trote) {
+            $trotesAtivosResumo[] = [
+                'id' => (int) $trote->id,
+                'nome' => $trote->titulo ?: ('Trote ' . $trote->edicao),
+                'edicao' => $trote->edicao,
+            ];
+        }
+
         return $this->render('home', [
             'totalUsuarios' => $totalUsuarios,
             'totalParticipantes' => $totalParticipantes,
@@ -139,6 +150,7 @@ class DefaultController extends Controller
             'ultimosUsuarios' => $ultimosUsuarios,
             'ultimasDoacoes' => $ultimasDoacoes,
             'troteResumo' => $troteResumo,
+            'trotesAtivosResumo' => $trotesAtivosResumo,
             'rankingUniversidades' => $rankingUniversidades,
         ]);
     }

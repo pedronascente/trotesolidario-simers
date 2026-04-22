@@ -44,6 +44,8 @@ class ParticipacaoService implements ParticipacaoServiceInterface
                 throw new Exception('Erro ao salvar participacao.');
             }
 
+            $this->rebuildRankingForTrotes([$model->trote_id]);
+
             return true;
         });
     }
@@ -55,6 +57,8 @@ class ParticipacaoService implements ParticipacaoServiceInterface
         }
 
         return Yii::$app->db->transaction(function () use ($model) {
+            $oldTroteId = $model->getOldAttribute('trote_id');
+
             if (!$this->validateParticipacaoUser($model)) {
                 return false;
             }
@@ -66,6 +70,8 @@ class ParticipacaoService implements ParticipacaoServiceInterface
             if (!$model->save(false)) {
                 throw new Exception('Erro ao atualizar participacao.');
             }
+
+            $this->rebuildRankingForTrotes([$oldTroteId, $model->trote_id]);
 
             return true;
         });
@@ -86,9 +92,13 @@ class ParticipacaoService implements ParticipacaoServiceInterface
         }
 
         return Yii::$app->db->transaction(function () use ($model) {
+            $troteId = $model->trote_id;
+
             if ($model->delete() === false) {
                 throw new Exception('Erro ao excluir participacao.');
             }
+
+            $this->rebuildRankingForTrotes([$troteId]);
 
             return true;
         });
@@ -192,6 +202,8 @@ class ParticipacaoService implements ParticipacaoServiceInterface
         if (!$participacao->save(false, ['universidade_id', 'updated_at'])) {
             throw new Exception('Nao foi possivel atualizar a universidade da participacao.');
         }
+
+        $this->syncSideEffectsAfterUniversityChange($participacao);
 
         return $participacao;
     }
@@ -491,6 +503,15 @@ class ParticipacaoService implements ParticipacaoServiceInterface
         $certificado = Certificado::findOne(['participacao_id' => $participacao->id]);
         if ($certificado !== null) {
             $this->certificadoService->ensurePdf($certificado, true);
+        }
+    }
+
+    private function rebuildRankingForTrotes(array $troteIds): void
+    {
+        $troteIds = array_values(array_unique(array_filter(array_map('intval', $troteIds))));
+
+        foreach ($troteIds as $troteId) {
+            $this->rankingCacheService->rebuild($troteId);
         }
     }
 }

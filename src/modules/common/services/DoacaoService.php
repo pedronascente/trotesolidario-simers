@@ -45,6 +45,11 @@ class DoacaoService implements DoacaoServiceInterface
             return false;
         }
 
+        if ($this->hasCertificadoEmitido($model)) {
+            $model->addError('status', 'Doacoes com certificado emitido nao podem ser excluidas.');
+            return false;
+        }
+
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
@@ -321,5 +326,12 @@ class DoacaoService implements DoacaoServiceInterface
         if (file_exists($fullPath)) {
             unlink($fullPath);
         }
+    }
+
+    protected function hasCertificadoEmitido(Doacao $model): bool
+    {
+        return Certificado::find()
+            ->where(['participacao_id' => $model->participacao_id])
+            ->exists();
     }
 }

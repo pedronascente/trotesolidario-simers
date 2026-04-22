@@ -72,6 +72,17 @@ class DefaultController extends Controller
         $capa = Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_LOGIN])->one();
         $universidades = Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all();
 
+
+       $debug_array =  [
+            'model' => new \app\models\LoginForm(),
+            'capa' => $capa,
+            'universidades_botoes' => $universidades,
+       ] ; 
+
+
+       //echo '<pre>'; print_r( $debug_array);die;
+
+
         return $this->render('index', [
             'model' => new \app\models\LoginForm(),
             'capa' => $capa,

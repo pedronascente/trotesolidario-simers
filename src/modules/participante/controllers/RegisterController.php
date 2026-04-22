@@ -17,6 +17,11 @@ class RegisterController extends Controller
         }
 
         $model = new ParticipantRegistrationForm();
+        $cpf = preg_replace('/\D/', '', (string) Yii::$app->request->get('cpf', ''));
+
+        if ($cpf !== '' && strlen($cpf) <= 11 && Yii::$app->request->isGet) {
+            $model->cpf = $this->formatCpfForDisplay($cpf);
+        }
 
         if ($model->load(Yii::$app->request->post())) {
             $user = $model->register();
@@ -29,5 +34,14 @@ class RegisterController extends Controller
         return $this->render('index', [
             'model' => $model,
         ]);
+    }
+
+    private function formatCpfForDisplay(string $cpf): string
+    {
+        if (strlen($cpf) !== 11) {
+            return $cpf;
+        }
+
+        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf) ?: $cpf;
     }
 }

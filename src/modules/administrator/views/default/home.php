@@ -26,7 +26,7 @@ $relatorioDoacoes = [
             <span class="text-muted">Relatorios operacionais e acompanhamento do sistema</span>
         </div>
         <div class="text-muted small">
-            Atualizado em <?= Yii::$app->formatter->asDatetime('now', 'php:d/m/Y H:i') ?>
+            Pagina renderizada em <?= Yii::$app->formatter->asDatetime('now', 'php:d/m/Y H:i') ?>
         </div>
     </div>
 
@@ -41,6 +41,18 @@ $relatorioDoacoes = [
 
                 <h4 class="fw-bold mb-1"><?= Html::encode($troteResumo['nome']) ?></h4>
                 <div class="text-muted">Edicao <?= Html::encode($troteResumo['edicao']) ?></div>
+
+                <?php if (!empty($trotesAtivosResumo) && count($trotesAtivosResumo) > 1): ?>
+                    <div class="alert alert-warning py-2 px-3 mt-3 mb-0">
+                        O dashboard esta exibindo o trote ativo mais recente. Existem <?= count($trotesAtivosResumo) ?> trotes com status ativo no momento:
+                        <?php
+                            $trotesRotulos = array_map(static function (array $trote): string {
+                                return $trote['nome'] . ' | ' . $trote['edicao'];
+                            }, $trotesAtivosResumo);
+                        ?>
+                        <strong><?= Html::encode(implode(' | ', $trotesRotulos)) ?></strong>
+                    </div>
+                <?php endif; ?>
 
                 <div class="row mt-3">
                     <div class="col-md-3">

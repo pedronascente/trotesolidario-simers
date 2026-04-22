@@ -13,6 +13,8 @@ services:
 
   php:
     build: ./docker/php
+    env_file:
+      - ./.env
     volumes:
       - ./src:/var/www/html
     networks:
@@ -25,8 +27,8 @@ services:
     environment:
      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
      MYSQL_DATABASE: ${DB_DATABASE}
-     MYSQL_USER: trote
-     MYSQL_PASSWORD: trote
+     MYSQL_USER: ${DB_USERNAME}
+     MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
       # - ./docker/mysql/muhm.sql:/docker-entrypoint-initdb.d/muhm.sql
