@@ -29,6 +29,11 @@ class AuthController extends Controller
         }
 
         $model = new LoginForm();
+        $cpf = preg_replace('/\D/', '', (string) Yii::$app->request->get('cpf', ''));
+
+        if ($cpf !== '' && strlen($cpf) <= 11 && Yii::$app->request->isGet) {
+            $model->cpf = $this->formatCpfForDisplay($cpf);
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($this->authService->login($model->cpf, $model->password)) {
@@ -105,5 +110,14 @@ class AuthController extends Controller
     {
         Yii::$app->user->logout();
         return $this->redirect(['login']);
+    }
+
+    private function formatCpfForDisplay(string $cpf): string
+    {
+        if (strlen($cpf) !== 11) {
+            return $cpf;
+        }
+
+        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf) ?: $cpf;
     }
 }
