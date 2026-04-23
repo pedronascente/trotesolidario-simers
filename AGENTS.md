@@ -139,6 +139,61 @@ Em views Yii2:
 - Confirmar se existem blocos comuns de header/footer sendo injetados
 - Não modificar estrutura do framework sem necessidade
 
+### Fonte de verdade para alterações em Yii2
+Ao propor ou aplicar mudanças relacionadas a Yii2, usar esta ordem de autoridade:
+
+1. documentação interna do projeto em `/docs`
+2. documentação local do Yii2 versionada no repositório
+3. padrões já existentes no código do projeto
+
+Também é obrigatório:
+- não usar conhecimento memorizado como fonte principal quando houver documentação local disponível
+
+### Regra obrigatória de consulta documental
+Antes de propor ou aplicar qualquer alteração relacionada a Yii2, o agente deve:
+
+1. localizar os arquivos Markdown relevantes
+2. listar os arquivos consultados
+3. resumir objetivamente a regra encontrada
+4. explicar por que a alteração está coberta por essa documentação
+5. só então editar o código
+
+Se não houver base documental suficiente:
+- não aplicar a alteração como se fosse certa
+- informar que a documentação local não cobre o caso
+- apontar o que está faltando
+- limitar a resposta a análise ou hipótese claramente marcada
+
+### Formato obrigatório antes de qualquer patch
+Antes de editar qualquer arquivo em tarefa relacionada a Yii2, o agente deve responder com:
+
+#### Base documental consultada
+- `docs/...`
+- `docs/framework/yii2/...`
+
+#### Regra extraída
+- ...
+
+#### Alteração mínima proposta
+- ...
+
+### Restrições para Yii2
+- não inventar comportamento de classes, helpers, widgets, componentes ou eventos do Yii2
+- não usar exemplos genéricos da internet se a documentação local do projeto divergir
+- não assumir convenções do framework sem verificar a documentação local quando o caso envolver:
+  - layouts
+  - asset bundles
+  - views
+  - widgets
+  - validação
+  - ActiveRecord
+  - URL rules
+  - request/response
+  - PDF/renderização
+
+### Critério de bloqueio
+- nenhuma alteração estrutural em fluxo Yii2 deve ser aplicada sem citar pelo menos um arquivo de documentação local ou um padrão equivalente já existente no código do projeto
+
 ---
 
 ## Regras para HTML/CSS de certificado
@@ -225,3 +280,16 @@ Atue sempre com mentalidade de manutenção segura:
 - precisão antes de volume
 - correção mínima antes de refatoração
 - estabilidade visual antes de estética
+
+---
+
+## Skills locais do projeto
+Este projeto pode manter skills locais versionadas dentro do repositório.
+
+Convenção adotada:
+- armazenar skills em `/skills`
+- cada skill deve ficar em uma pasta própria
+- o arquivo principal da skill deve ser `SKILL.md`
+
+Skill local atualmente adicionada:
+- `/skills/agent-revisar-aplicacao-pos-tarefa/SKILL.md`
