@@ -8,8 +8,6 @@ body {
     font-size: 1rem;
 }
 
-}
-
 body {
     /* background: linear-gradient(135deg, #4e73df, #224abe); */
     height: 100vh;
@@ -24,6 +22,14 @@ body {
     max-width: 400px;
     border-radius: 12px;
     background: #fff;
+}
+
+.login-card-content {
+    width: 100%;
+}
+
+.login-card-content .alert {
+    margin-bottom: 1rem;
 }
 
 .login-card .form-control {

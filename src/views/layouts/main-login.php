@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use app\assets\AdminAsset;
+use app\widgets\Alert;
 
 AdminAsset::register($this);
 
@@ -30,7 +31,8 @@ $this->beginPage();
                 <p class="text-muted">Acesse sua conta</p>
             </div>
 
-            <div class="container">
+            <div class="login-card-content">
+                <?= Alert::widget() ?>
                 <?= $content ?> <!-- A VIEW VAI ENTRAR AQUI -->
             </div>
 
