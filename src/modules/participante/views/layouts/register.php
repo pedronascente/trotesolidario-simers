@@ -3,6 +3,7 @@
 /* @var $content string */
 
 use app\assets\AdminAsset;
+use app\widgets\Alert;
 
 AdminAsset::register($this);
 ?>
@@ -12,6 +13,7 @@ AdminAsset::register($this);
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <?= $this->head() ?>
         <!--Header-->
         <title>Trote Solidario</title>
         <meta name="title" content="Trote Solidario">
@@ -41,7 +43,7 @@ AdminAsset::register($this);
     </head>
     <body class="bg-gradient-success">
         <?php $this->beginBody() ?>
-        
+        <?= Alert::widget() ?>
         <?= $content ?>
         <?php $this->endBody() ?>
                 <!-- Bootstrap core JavaScript-->

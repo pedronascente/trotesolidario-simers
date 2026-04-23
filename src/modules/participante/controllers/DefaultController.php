@@ -7,14 +7,17 @@ use app\modules\common\models\Certificado;
 use app\modules\common\models\Doacao;
 use app\modules\common\models\Documento;
 use app\modules\common\models\Participacao;
+use app\modules\common\models\ParticipantStartParticipationForm;
 use app\modules\common\models\Trote;
 use app\modules\common\models\Universidade;
 use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use Yii;
+use yii\helpers\Url;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 class DefaultController extends Controller
 {
@@ -23,7 +26,7 @@ class DefaultController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'home', 'ranking', 'logout'],
+                'only' => ['index', 'start-participation', 'home', 'ranking', 'logout'],
                 'rules' => [
                     [
                         'actions' => ['home', 'ranking', 'logout'],
@@ -35,11 +38,17 @@ class DefaultController extends Controller
                         'allow' => true,
                         'roles' => ['?', '@'],
                     ],
+                    [
+                        'actions' => ['start-participation'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'start-participation' => ['post'],
                     'logout' => ['post'],
                 ],
             ],
@@ -88,6 +97,40 @@ class DefaultController extends Controller
             'capa' => $capa,
             'universidades_botoes' => $universidades,
         ]);
+    }
+
+    public function actionStartParticipation()
+    {
+        $model = $this->createStartParticipationForm();
+        $model->load(Yii::$app->request->post(), '');
+
+        if (!$model->validate()) {
+            return $this->buildStartParticipationFailureResponse(
+                $model->getFirstError('cpf') ?: 'Informe o CPF para continuar.'
+            );
+        }
+
+        try {
+            $existingUser = $model->findExistingUser();
+        } catch (\Throwable $e) {
+            Yii::error('Falha ao validar CPF na entrada do participante: ' . $e->getMessage(), __METHOD__);
+
+            return $this->buildStartParticipationFailureResponse(
+                'Nao foi possivel validar o CPF neste momento. Tente novamente em instantes.'
+            );
+        }
+
+        if ($existingUser !== null) {
+            return $this->buildStartParticipationSuccessResponse(
+                'Ja existe um participante cadastrado com este CPF. Faca login para acessar seu painel e concluir sua participacao.',
+                Url::to(['/auth/login', 'cpf' => $model->getFormattedCpf()])
+            );
+        }
+
+        return $this->buildStartParticipationSuccessResponse(
+            'CPF nao encontrado em nossa base. Complete seu cadastro para realizar sua participacao.',
+            Url::to(['/participante/register/index', 'cpf' => $model->getFormattedCpf()])
+        );
     }
 
     public function actionHome()
@@ -252,5 +295,47 @@ class DefaultController extends Controller
         }
 
         return null;
+    }
+
+    protected function createStartParticipationForm(): ParticipantStartParticipationForm
+    {
+        return new ParticipantStartParticipationForm();
+    }
+
+    protected function buildStartParticipationSuccessResponse(string $message, string $redirectUrl)
+    {
+        Yii::$app->session->setFlash('info', $message);
+
+        if ($this->isAjaxStartParticipationRequest()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'success' => true,
+                'redirectUrl' => $redirectUrl,
+            ];
+        }
+
+        return $this->redirect($redirectUrl);
+    }
+
+    protected function buildStartParticipationFailureResponse(string $message)
+    {
+        if ($this->isAjaxStartParticipationRequest()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'success' => false,
+                'message' => $message,
+            ];
+        }
+
+        Yii::$app->session->setFlash('error', $message);
+
+        return $this->redirect(['index']);
+    }
+
+    protected function isAjaxStartParticipationRequest(): bool
+    {
+        return Yii::$app->request->isAjax;
     }
 }

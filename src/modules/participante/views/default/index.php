@@ -158,7 +158,8 @@ $this->registerCss("
                             Informe seu CPF para participar do Trote 2026/1.
                         </p>
 
-                        <form id="participar-modal-form" action="<?= Html::encode(Url::to(['/participante/register/index'])) ?>" method="get" novalidate>
+                        <form id="participar-modal-form" action="<?= Html::encode(Url::to(['/participante/default/start-participation'])) ?>" method="post" novalidate>
+                            <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->getCsrfToken()) ?>
                             <label for="participar-cpf" class="participar-modal-label">CPF</label>
                             <input
                                 type="text"
@@ -173,6 +174,7 @@ $this->registerCss("
                             <div id="participar-cpf-error" class="participar-modal-error">
                                 Informe um CPF valido para continuar.
                             </div>
+                            <div id="participar-cpf-feedback" class="participar-modal-error"></div>
 
                             <div class="participar-modal-actions">
                                 <?= Html::submitButton('Continuar', ['class' => 'btn btn-success btn-custom px-4']) ?>
@@ -222,10 +224,11 @@ $this->registerJs(<<<JS
     var form = document.getElementById('participar-modal-form');
     var cpfInput = document.getElementById('participar-cpf');
     var error = document.getElementById('participar-cpf-error');
+    var feedback = document.getElementById('participar-cpf-feedback');
     var previousBodyOverflow = '';
     var lastFocusedElement = null;
 
-    if (!modal || !modalCard || !trigger || !closeButton || !form || !cpfInput || !error) {
+    if (!modal || !modalCard || !trigger || !closeButton || !form || !cpfInput || !error || !feedback) {
         return;
     }
 
@@ -249,9 +252,22 @@ $this->registerJs(<<<JS
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = previousBodyOverflow;
         error.style.display = 'none';
+        feedback.style.display = 'none';
         if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
             lastFocusedElement.focus();
         }
+    }
+
+    function showFieldError(message) {
+        error.textContent = message;
+        error.style.display = 'block';
+        feedback.style.display = 'none';
+    }
+
+    function showFeedback(message) {
+        feedback.textContent = message;
+        feedback.style.display = 'block';
+        error.style.display = 'none';
     }
 
     function applyCpfMask(value) {
@@ -270,6 +286,42 @@ $this->registerJs(<<<JS
         }
 
         return digits;
+    }
+
+    function isValidCpf(value) {
+        var cpf = value.replace(/\\D/g, '');
+        var sum = 0;
+        var remainder;
+        var i;
+
+        if (cpf.length !== 11 || /^(\\d)\\1{10}$/.test(cpf)) {
+            return false;
+        }
+
+        for (i = 1; i <= 9; i++) {
+            sum += parseInt(cpf.substring(i - 1, i), 10) * (11 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11) {
+            remainder = 0;
+        }
+
+        if (remainder !== parseInt(cpf.substring(9, 10), 10)) {
+            return false;
+        }
+
+        sum = 0;
+        for (i = 1; i <= 10; i++) {
+            sum += parseInt(cpf.substring(i - 1, i), 10) * (12 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11) {
+            remainder = 0;
+        }
+
+        return remainder === parseInt(cpf.substring(10, 11), 10);
     }
 
     trigger.addEventListener('click', openModal);
@@ -318,14 +370,50 @@ $this->registerJs(<<<JS
         if (cpfInput.value.replace(/\\D/g, '').length === 11) {
             error.style.display = 'none';
         }
+        feedback.style.display = 'none';
     });
 
     form.addEventListener('submit', function (event) {
-        if (cpfInput.value.replace(/\\D/g, '').length !== 11) {
-            event.preventDefault();
-            error.style.display = 'block';
+        var formData;
+
+        event.preventDefault();
+
+        if (cpfInput.value.replace(/\\D/g, '').length === 0) {
+            showFieldError('Informe o CPF para continuar.');
             cpfInput.focus();
+            return;
         }
+
+        if (!isValidCpf(cpfInput.value)) {
+            showFieldError('CPF invalido. Verifique o numero informado e tente novamente.');
+            cpfInput.focus();
+            return;
+        }
+
+        formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data || data.success !== true || !data.redirectUrl) {
+                    showFeedback((data && data.message) || 'Nao foi possivel validar o CPF neste momento. Tente novamente em instantes.');
+                    return;
+                }
+
+                window.location.href = data.redirectUrl;
+            })
+            .catch(function () {
+                showFeedback('Nao foi possivel validar o CPF neste momento. Tente novamente em instantes.');
+            });
     });
 })();
 JS);
