@@ -1,18 +1,9 @@
 <?php
 
-use app\modules\common\models\Trote;
-use app\modules\common\models\Universidade;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->title = 'Cadastro de participante';
-$trotes = ArrayHelper::map(Trote::getAtivos(), 'id', fn(Trote $trote) => trim(($trote->titulo ?: 'Trote') . ' | ' . ($trote->edicao ?: '-')));
-$universidades = ArrayHelper::map(
-    Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all(),
-    'id',
-    'nome'
-);
 ?>
 
 <style>
@@ -75,23 +66,17 @@ $universidades = ArrayHelper::map(
             <div class="student-fields border rounded p-3 mb-3">
                 <div class="row">
                     <div class="col-md-6">
-                        <?= $form->field($model, 'trote_id')->dropDownList($trotes, ['prompt' => 'Selecione']) ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?= $form->field($model, 'instituicao')->dropDownList($universidades, ['prompt' => 'Selecione']) ?>
-                    </div>
-                    <div class="col-md-6">
                         <?= $form->field($model, 'estudanteMedicina')->dropDownList([
                             '' => 'Selecione',
                             'Sim' => 'Sim',
                             'Nao' => 'Nao',
                         ]) ?>
                     </div>
-                    <div class="col-md-6 other-course-field">
-                        <?= $form->field($model, 'estudanteOutros')->textInput(['maxlength' => true]) ?>
-                    </div>
                     <div class="col-md-6">
                         <?= $form->field($model, 'previsaoFormatura')->textInput(['placeholder' => 'AAAA/MM']) ?>
+                    </div>
+                    <div class="col-md-6 other-course-field">
+                        <?= $form->field($model, 'estudanteOutros')->textInput(['maxlength' => true]) ?>
                     </div>
                 </div>
             </div>
@@ -124,27 +109,72 @@ $universidades = ArrayHelper::map(
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <script>
-    function toggleStudentFields() {
-        var isStudent = $('#participantregistrationform-estudante').val() === 'Sim';
-        $('.student-fields').toggle(isStudent);
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var estudanteField = document.getElementById('participantregistrationform-estudante');
+        var estudanteMedicinaField = document.getElementById('participantregistrationform-estudantemedicina');
+        var cpfField = document.getElementById('participantregistrationform-cpf');
+        var previsaoField = document.getElementById('participantregistrationform-previsaoformatura');
+        var studentFields = document.querySelector('.student-fields');
+        var otherCourseField = document.querySelector('.other-course-field');
 
-    function toggleOtherCourseField() {
-        var needsOtherCourse = $('#participantregistrationform-estudantemedicina').val() === 'Nao';
-        $('.other-course-field').toggle(needsOtherCourse);
-    }
+        function applyMask(value, pattern) {
+            var digits = value.replace(/\D/g, '');
+            var masked = '';
+            var index = 0;
 
-    $(function () {
-        $('#participantregistrationform-cpf').inputmask({ mask: '999.999.999-99' });
-        $('#participantregistrationform-previsaoformatura').inputmask({ mask: '9999/99' });
+            for (var i = 0; i < pattern.length && index < digits.length; i++) {
+                if (pattern[i] === '9') {
+                    masked += digits[index++];
+                } else {
+                    masked += pattern[i];
+                }
+            }
+
+            return masked;
+        }
+
+        function toggleStudentFields() {
+            var isStudent = estudanteField && estudanteField.value === 'Sim';
+            if (studentFields) {
+                studentFields.style.display = isStudent ? 'block' : 'none';
+            }
+
+            if (!isStudent && estudanteMedicinaField) {
+                toggleOtherCourseField();
+            }
+        }
+
+        function toggleOtherCourseField() {
+            var needsOtherCourse = estudanteMedicinaField && estudanteMedicinaField.value === 'Nao';
+            if (otherCourseField) {
+                otherCourseField.style.display = needsOtherCourse ? 'block' : 'none';
+            }
+        }
+
+        if (cpfField) {
+            cpfField.addEventListener('input', function () {
+                cpfField.value = applyMask(cpfField.value, '999.999.999-99');
+            });
+            cpfField.value = applyMask(cpfField.value, '999.999.999-99');
+        }
+
+        if (previsaoField) {
+            previsaoField.addEventListener('input', function () {
+                previsaoField.value = applyMask(previsaoField.value, '9999/99');
+            });
+            previsaoField.value = applyMask(previsaoField.value, '9999/99');
+        }
+
+        if (estudanteField) {
+            estudanteField.addEventListener('change', toggleStudentFields);
+        }
+
+        if (estudanteMedicinaField) {
+            estudanteMedicinaField.addEventListener('change', toggleOtherCourseField);
+        }
 
         toggleStudentFields();
         toggleOtherCourseField();
-
-        $('#participantregistrationform-estudante').on('change', toggleStudentFields);
-        $('#participantregistrationform-estudantemedicina').on('change', toggleOtherCourseField);
     });
 </script>

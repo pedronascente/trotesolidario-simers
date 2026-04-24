@@ -7,11 +7,14 @@ use app\modules\common\models\Certificado;
 use app\modules\common\models\Doacao;
 use app\modules\common\models\Documento;
 use app\modules\common\models\Participacao;
+use app\modules\common\models\Participante;
 use app\modules\common\models\ParticipantStartParticipationForm;
 use app\modules\common\models\Trote;
 use app\modules\common\models\Universidade;
+use app\modules\common\services\contracts\ParticipacaoServiceInterface;
 use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -88,10 +91,6 @@ class DefaultController extends Controller
             'universidades_botoes' => $universidades,
        ] ; 
 
-
-       //echo '<pre>'; print_r( $debug_array);die;
-
-
         return $this->render('index', [
             'model' => new \app\models\LoginForm(),
             'capa' => $capa,
@@ -137,7 +136,60 @@ class DefaultController extends Controller
     {
         $this->layout = 'adminindex';
 
-        $userId = Yii::$app->user->id;
+        $userId = (int) Yii::$app->user->id;
+        $participacaoService = Yii::$container->get(ParticipacaoServiceInterface::class);
+        $participante = Participante::findOne(['user_id' => $userId]);
+        $isAcademicParticipant = $participante !== null && (int) $participante->estudante === 1;
+
+        $trotesAtivos = Trote::find()
+            ->where(['status' => Trote::STATUS_ATIVO])
+            ->orderBy(['data_inicio' => SORT_DESC, 'id' => SORT_DESC])
+            ->all();
+        $troteAtivoGlobal = !empty($trotesAtivos) ? $trotesAtivos[0] : null;
+
+        $participacaoAtivaNoTroteGlobal = null;
+        if ($troteAtivoGlobal !== null) {
+            $participacaoAtivaNoTroteGlobal = Participacao::find()
+                ->where([
+                    'user_id' => $userId,
+                    'trote_id' => (int) $troteAtivoGlobal->id,
+                    'status' => Participacao::STATUS_ATIVO,
+                ])
+                ->orderBy(['id' => SORT_DESC])
+                ->one();
+        }
+
+        $showStartParticipationCard = $isAcademicParticipant
+            && $troteAtivoGlobal !== null
+            && $participacaoAtivaNoTroteGlobal === null;
+
+        $startParticipationModel = new Participacao();
+        $startParticipationUniversidades = $showStartParticipationCard ? $this->findActiveUniversidadesForStartParticipation() : [];
+        $shouldOpenStartParticipationModal = false;
+
+        if (
+            $showStartParticipationCard
+            && Yii::$app->request->isPost
+            && Yii::$app->request->post('participation_form') === 'start-active-trote'
+        ) {
+            $startParticipationModel->load(Yii::$app->request->post());
+            $startParticipationModel->user_id = $userId;
+            $startParticipationModel->trote_id = (int) $troteAtivoGlobal->id;
+            $startParticipationModel->status = Participacao::STATUS_ATIVO;
+
+            try {
+                if ($participacaoService->create($startParticipationModel)) {
+                    Yii::$app->session->setFlash('success', 'Sua participacao no trote ativo foi iniciada com sucesso.');
+
+                    return $this->redirect(['home', 'trote_id' => (int) $troteAtivoGlobal->id]);
+                }
+            } catch (\Throwable $e) {
+                Yii::error('Falha ao iniciar participacao do academico no trote ativo: ' . $e->getMessage(), __METHOD__);
+                Yii::$app->session->setFlash('error', 'Nao foi possivel iniciar sua participacao agora. Tente novamente em instantes.');
+            }
+
+            $shouldOpenStartParticipationModal = true;
+        }
 
         $participacoes = Participacao::find()
             ->with(['trote', 'universidade'])
@@ -222,6 +274,11 @@ class DefaultController extends Controller
             'certificados' => $certificados,
             'ranking' => $ranking,
             'universidadesDoacao' => $universidadesDoacao,
+            'showStartParticipationCard' => $showStartParticipationCard,
+            'startParticipationModel' => $startParticipationModel,
+            'startParticipationUniversidades' => $startParticipationUniversidades,
+            'shouldOpenStartParticipationModal' => $shouldOpenStartParticipationModal,
+            'troteAtivoGlobal' => $troteAtivoGlobal,
         ]);
     }
 
@@ -337,5 +394,20 @@ class DefaultController extends Controller
     protected function isAjaxStartParticipationRequest(): bool
     {
         return Yii::$app->request->isAjax;
+    }
+
+    private function findActiveUniversidadesForStartParticipation(): array
+    {
+        $universidades = Universidade::find()
+            ->where(['ativo' => 1])
+            ->orderBy(['nome' => SORT_ASC])
+            ->all();
+
+        return ArrayHelper::map($universidades, 'id', static function (Universidade $universidade) {
+            $cidade = $universidade->cidade ?: '-';
+            $uf = $universidade->uf ?: '-';
+
+            return $universidade->nome . ' | ' . $cidade . '/' . $uf;
+        });
     }
 }

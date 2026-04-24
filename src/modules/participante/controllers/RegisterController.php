@@ -13,10 +13,10 @@ class RegisterController extends Controller
         $this->layout = 'register';
 
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['default/home']);
+            return $this->redirectToParticipantHome();
         }
 
-        $model = new ParticipantRegistrationForm();
+        $model = $this->createRegistrationForm();
         $cpf = preg_replace('/\D/', '', (string) Yii::$app->request->get('cpf', ''));
 
         if ($cpf !== '' && strlen($cpf) <= 11 && Yii::$app->request->isGet) {
@@ -25,9 +25,9 @@ class RegisterController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $user = $model->register();
-            if ($user !== null && Yii::$app->user->login($user)) {
+            if ($user !== null && $this->loginUser($user)) {
                 Yii::$app->session->setFlash('success', 'Cadastro realizado com sucesso.');
-                return $this->redirect(['default/home']);
+                return $this->redirectToParticipantHome();
             }
         }
 
@@ -43,5 +43,20 @@ class RegisterController extends Controller
         }
 
         return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf) ?: $cpf;
+    }
+
+    protected function createRegistrationForm(): ParticipantRegistrationForm
+    {
+        return new ParticipantRegistrationForm();
+    }
+
+    protected function loginUser($user): bool
+    {
+        return Yii::$app->user->login($user);
+    }
+
+    protected function redirectToParticipantHome()
+    {
+        return $this->redirect(['/participante/default/home']);
     }
 }

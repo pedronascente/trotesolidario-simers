@@ -15,14 +15,9 @@ class ParticipantRegistrationForm extends Model
     public $estudante;
     public $estudanteMedicina;
     public $estudanteOutros;
-    public $instituicao;
-    public $outraInstituicao;
-    public $telefone;
     public $previsaoFormatura;
-    public $conheceONas;
     public $politicaPrivacidade;
     public $politicaImagem;
-    public $trote_id;
 
     public function rules(): array
     {
@@ -31,18 +26,34 @@ class ParticipantRegistrationForm extends Model
             [['politicaPrivacidade', 'politicaImagem'], 'required', 'requiredValue' => 1, 'message' => 'Voce precisa aceitar este termo.'],
             [['email'], 'email'],
             [['password'], 'string', 'min' => 6],
-            [['name', 'email', 'outraInstituicao', 'telefone', 'previsaoFormatura', 'conheceONas', 'estudanteOutros'], 'string', 'max' => 255],
+            [['name', 'email', 'previsaoFormatura', 'estudanteOutros'], 'string', 'max' => 255],
             [['cpf'], 'string', 'max' => 14],
-            [['trote_id', 'instituicao'], 'integer'],
             [['estudante'], 'in', 'range' => ['Sim', 'Nao']],
             [['estudanteMedicina'], 'in', 'range' => ['Sim', 'Nao']],
             [['cpf'], 'validateCpf'],
             [['email'], 'validateUniqueEmail'],
             [['cpf'], 'validateUniqueCpf'],
-            [['trote_id', 'instituicao', 'previsaoFormatura', 'estudanteMedicina'], 'required', 'when' => fn(self $model) => $model->isStudent()],
-            [['estudanteOutros'], 'required', 'when' => fn(self $model) => $model->isStudent() && !$model->isMedicineStudent(), 'message' => 'Informe o curso.'],
-            [['trote_id'], 'validateTrote'],
-            [['instituicao'], 'validateUniversidade'],
+            [
+                ['previsaoFormatura', 'estudanteMedicina'],
+                'required',
+                'when' => fn(self $model) => $model->isStudent(),
+                'whenClient' => "function () {
+                    return document.getElementById('participantregistrationform-estudante').value === 'Sim';
+                }",
+            ],
+            [
+                ['estudanteOutros'],
+                'required',
+                'when' => fn(self $model) => $model->isStudent() && !$model->isMedicineStudent(),
+                'whenClient' => "function () {
+                    var estudante = document.getElementById('participantregistrationform-estudante');
+                    var estudanteMedicina = document.getElementById('participantregistrationform-estudantemedicina');
+
+                    return estudante && estudante.value === 'Sim'
+                        && estudanteMedicina && estudanteMedicina.value === 'Nao';
+                }",
+                'message' => 'Informe o curso.',
+            ],
             [['previsaoFormatura'], 'validatePrevisaoFormatura'],
         ];
     }
@@ -57,14 +68,9 @@ class ParticipantRegistrationForm extends Model
             'estudante' => 'Voce e estudante?',
             'estudanteMedicina' => 'Voce e estudante de medicina?',
             'estudanteOutros' => 'Curso',
-            'instituicao' => 'Instituicao de ensino',
-            'outraInstituicao' => 'Outra instituicao',
-            'telefone' => 'Telefone',
             'previsaoFormatura' => 'Previsao de formatura',
-            'conheceONas' => 'Conhece o NAS?',
             'politicaPrivacidade' => 'Estou de acordo com a politica de privacidade.',
             'politicaImagem' => 'Autorizo o uso de imagem, video e voz.',
-            'trote_id' => 'Trote',
         ];
     }
 
@@ -82,15 +88,11 @@ class ParticipantRegistrationForm extends Model
         $this->estudanteMedicina = $this->normalizeChoice($this->estudanteMedicina);
         $this->politicaPrivacidade = $this->normalizeCheckbox($this->politicaPrivacidade);
         $this->politicaImagem = $this->normalizeCheckbox($this->politicaImagem);
-        $this->trote_id = $this->emptyToNullInt($this->trote_id);
-        $this->instituicao = $this->emptyToNullInt($this->instituicao);
         $this->estudanteOutros = trim((string) $this->estudanteOutros);
         $this->previsaoFormatura = trim((string) $this->previsaoFormatura);
 
         if (!$this->isStudent()) {
             $this->estudanteMedicina = 'Nao';
-            $this->instituicao = null;
-            $this->trote_id = null;
             $this->estudanteOutros = '';
             $this->previsaoFormatura = '';
         }
@@ -115,6 +117,7 @@ class ParticipantRegistrationForm extends Model
             $user->cpf = $this->cpf;
             $user->role = User::ROLE_PARTICIPANTE;
             $user->status = User::STATUS_ACTIVE;
+            $user->password = $this->password;
             $user->setPassword($this->password);
             $user->generateAuthKey();
 
@@ -134,21 +137,6 @@ class ParticipantRegistrationForm extends Model
                 $this->copyErrors($participante);
                 $transaction->rollBack();
                 return null;
-            }
-
-            if ($this->isStudent()) {
-                $participacao = $this->createParticipacaoModel();
-                $participacao->user_id = (int) $user->id;
-                $participacao->trote_id = (int) $this->trote_id;
-                $participacao->universidade_id = (int) $this->instituicao;
-                $participacao->curso = $this->resolveCurso();
-                $participacao->status = Participacao::STATUS_ATIVO;
-
-                if (!$this->saveParticipacaoModel($participacao)) {
-                    $this->copyErrors($participacao);
-                    $transaction->rollBack();
-                    return null;
-                }
             }
 
             $transaction->commit();
@@ -182,28 +170,6 @@ class ParticipantRegistrationForm extends Model
         }
     }
 
-    public function validateTrote($attribute): void
-    {
-        if ($this->hasErrors($attribute) || !$this->isStudent() || $this->$attribute === null) {
-            return;
-        }
-
-        if (!$this->troteIsAtivo((int) $this->$attribute)) {
-            $this->addError($attribute, 'Selecione um trote ativo.');
-        }
-    }
-
-    public function validateUniversidade($attribute): void
-    {
-        if ($this->hasErrors($attribute) || !$this->isStudent() || $this->$attribute === null) {
-            return;
-        }
-
-        if (!$this->universidadeIsAtiva((int) $this->$attribute)) {
-            $this->addError($attribute, 'Selecione uma instituicao valida.');
-        }
-    }
-
     public function validatePrevisaoFormatura($attribute): void
     {
         if (!$this->isStudent() || $this->hasErrors($attribute)) {
@@ -225,11 +191,6 @@ class ParticipantRegistrationForm extends Model
         return new Participante();
     }
 
-    protected function createParticipacaoModel(): Participacao
-    {
-        return new Participacao();
-    }
-
     protected function saveUserModel(User $user): bool
     {
         return $user->save();
@@ -238,11 +199,6 @@ class ParticipantRegistrationForm extends Model
     protected function saveParticipanteModel(Participante $participante): bool
     {
         return $participante->save();
-    }
-
-    protected function saveParticipacaoModel(Participacao $participacao): bool
-    {
-        return $participacao->save();
     }
 
     protected function emailExists(string $email): bool
@@ -260,16 +216,6 @@ class ParticipantRegistrationForm extends Model
         return User::find()->where(['username' => $username])->exists();
     }
 
-    protected function troteIsAtivo(int $troteId): bool
-    {
-        return Trote::find()->where(['id' => $troteId, 'status' => Trote::STATUS_ATIVO])->exists();
-    }
-
-    protected function universidadeIsAtiva(int $universidadeId): bool
-    {
-        return Universidade::find()->where(['id' => $universidadeId, 'ativo' => 1])->exists();
-    }
-
     protected function cpfValidationErrors(string $cpf): array
     {
         $user = $this->createUserModel();
@@ -281,31 +227,76 @@ class ParticipantRegistrationForm extends Model
 
     private function generateUsername(): string
     {
-        $base = strtolower((string) preg_replace('/[^a-z0-9]+/i', '.', strstr($this->email, '@', true) ?: $this->name));
+        $base = $this->buildUsernameBaseFromName();
+
+        if ($base === '') {
+            $base = strtolower((string) preg_replace('/[^a-z0-9]+/i', '.', strstr($this->email, '@', true)));
+        }
+
         $base = trim($base, '.');
 
         if ($base === '') {
             $base = 'participante';
         }
 
-        $username = $base;
-        $suffix = 1;
-
-        while ($this->usernameExists($username)) {
-            $username = $base . '.' . $suffix;
-            $suffix++;
-        }
-
-        return substr($username, 0, 80);
+        return $this->buildUniqueUsername($base);
     }
 
-    private function resolveCurso(): string
+    private function buildUsernameBaseFromName(): string
     {
-        if ($this->isMedicineStudent()) {
-            return 'Medicina';
+        $name = trim((string) $this->name);
+        if ($name === '') {
+            return '';
         }
 
-        return $this->estudanteOutros !== '' ? $this->estudanteOutros : 'Nao informado';
+        $normalized = $this->normalizeUsernameSegment($name);
+        if ($normalized === '') {
+            return '';
+        }
+
+        $parts = preg_split('/\.+/', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+        if ($parts === false || $parts === []) {
+            return '';
+        }
+
+        if (count($parts) === 1) {
+            return $parts[0];
+        }
+
+        return $parts[0] . '.' . $parts[count($parts) - 1];
+    }
+
+    private function normalizeUsernameSegment(string $value): string
+    {
+        $ascii = function_exists('iconv') ? iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value) : $value;
+        $ascii = is_string($ascii) ? $ascii : $value;
+
+        return strtolower((string) preg_replace('/[^a-z0-9]+/i', '.', $ascii));
+    }
+
+    private function buildUniqueUsername(string $base): string
+    {
+        $base = trim($base, '.');
+        $base = $base !== '' ? $base : 'participante';
+
+        $candidate = substr($base, 0, 80);
+        if (!$this->usernameExists($candidate)) {
+            return $candidate;
+        }
+
+        $suffix = 1;
+        while (true) {
+            $suffixText = '.' . $suffix;
+            $maxBaseLength = 80 - strlen($suffixText);
+            $truncatedBase = substr($base, 0, max(1, $maxBaseLength));
+            $candidate = rtrim($truncatedBase, '.') . $suffixText;
+
+            if (!$this->usernameExists($candidate)) {
+                return $candidate;
+            }
+
+            $suffix++;
+        }
     }
 
     private function normalizedPrevisaoFormatura(): ?string
@@ -334,7 +325,7 @@ class ParticipantRegistrationForm extends Model
     private function normalizeChoice($value): string
     {
         $value = trim((string) $value);
-        if ($value === 'Não') {
+        if (in_array($value, ['Nï¿½o', 'NÃ£o', 'No'], true)) {
             return 'Nao';
         }
 
@@ -344,11 +335,6 @@ class ParticipantRegistrationForm extends Model
     private function normalizeCheckbox($value): int
     {
         return in_array($value, [1, '1', true, 'true', 'on'], true) ? 1 : 0;
-    }
-
-    private function emptyToNullInt($value): ?int
-    {
-        return ($value === '' || $value === null) ? null : (int) $value;
     }
 
     private function copyErrors($model): void

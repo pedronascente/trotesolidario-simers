@@ -7,6 +7,7 @@ use yii\helpers\Html;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
+$action_id = Yii::$app->controller->action ? Yii::$app->controller->action->id : null;
 $identity = Yii::$app->user->identity;
 $displayName = $identity ? $identity->name : 'Participante';
 ?>
@@ -33,7 +34,7 @@ $displayName = $identity ? $identity->name : 'Participante';
 
         <hr class="sidebar-divider my-0">
 
-        <li class="nav-item <?= $menu_active === 'default' ? 'active' : '' ?>">
+        <li class="nav-item <?= $menu_active === 'default' && $action_id === 'home' ? 'active' : '' ?>">
             <a class="nav-link" href="/participante/default/home">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
@@ -48,6 +49,18 @@ $displayName = $identity ? $identity->name : 'Participante';
             <a class="nav-link" href="/participante/doacao">
                 <i class="fas fa-hand-holding-heart"></i>
                 <span>Doacoes</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/participante/default/home#doacao-alimentos">
+                <i class="fas fa-apple-alt"></i>
+                <span>Doar alimentos</span>
+            </a>
+        </li>
+        <li class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
+            <a class="nav-link" href="/participante/default/ranking">
+                <i class="fas fa-trophy"></i>
+                <span>Ranking</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
@@ -83,7 +96,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                     <div class="topbar-divider d-none d-sm-block"></div>
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $displayName ?></span>
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= Html::encode($displayName) ?></span>
                             <i class="fas fa-chevron-down fa-sm fa-fw ml-2 text-gray-400"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
