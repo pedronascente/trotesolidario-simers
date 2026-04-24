@@ -292,4 +292,4 @@ Convenção adotada:
 - o arquivo principal da skill deve ser `SKILL.md`
 
 Skill local atualmente adicionada:
-- `/skills/agent-revisar-aplicacao-pos-tarefa/SKILL.md`
+- `/skills/auditoria-pos-tarefa-docker/SKILL.md`

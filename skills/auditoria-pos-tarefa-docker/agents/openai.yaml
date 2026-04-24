@@ -1,0 +1,3 @@
+interface:
+  display_name: "Auditoria Pos Tarefa Docker"
+  short_description: "Revisa bugs, lógica, arquitetura e validações por Docker antes de corrigir."
