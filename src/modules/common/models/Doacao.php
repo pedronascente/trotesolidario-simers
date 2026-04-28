@@ -165,7 +165,7 @@ class Doacao extends ActiveRecord
 
     public function validateParticipacaoAtiva(string $attribute): void
     {
-        if ($this->hasErrors($attribute) || empty($this->participacao_id)) {
+        if ($this->hasErrors($attribute) || empty($this->participacao_id) || !$this->isNewRecord) {
             return;
         }
 
