@@ -110,11 +110,12 @@ $config = [
         'gridview' => ['class' => 'kartik\grid\Module'],
         'participante' => [
             'class' => 'app\modules\participante\participante',
-            'layout' => '@app/modules/participante/views/layouts/participante',
+            'layout' => '@app/modules/participante/views/layouts/adminindex',
         ],
         'administrator' => [
             'class' => 'app\modules\administrator\administrator',
-            'layout' => '@app/modules/participante/views/layouts/participante',
+            'layout' => '@app/modules/participante/views/layouts/adminsemjquery',
+           // 'layout' => '@app/modules/participante/views/layouts/participante',
         ],
         'markdown' => [
             // the module class
