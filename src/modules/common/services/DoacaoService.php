@@ -35,6 +35,8 @@ class DoacaoService implements DoacaoServiceInterface
 
     public function update($model): bool
     {
+        $model->status = Doacao::STATUS_PENDENTE;
+        $model->motivo_reprovado = null;
         return $this->saveModel($model, false);
     }
 
@@ -151,11 +153,16 @@ class DoacaoService implements DoacaoServiceInterface
 
         try {
             $model->status = Doacao::STATUS_REJEITADA;
-            $model->motivo_reprovado = $motivoReprovado;
+            $model->motivo_reprovado = trim($motivoReprovado);
             $model->validado_por = Yii::$app->user->id;
             $model->validado_em = date('Y-m-d H:i:s');
 
-            if (!$model->save(false)) {
+            if (!$model->validate(['status', 'motivo_reprovado', 'validado_por', 'validado_em'])) {
+                $transaction->rollBack();
+                return false;
+            }
+
+            if (!$model->save(false, ['status', 'motivo_reprovado', 'validado_por', 'validado_em', 'updated_at'])) {
                 throw new \RuntimeException('Nao foi possivel reprovar a doacao.');
             }
 
@@ -170,7 +177,7 @@ class DoacaoService implements DoacaoServiceInterface
         }
     }
 
-    private function saveModel(Doacao $model, bool $isNew): bool
+    protected function saveModel(Doacao $model, bool $isNew): bool
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -191,7 +198,7 @@ class DoacaoService implements DoacaoServiceInterface
                 return false;
             }
 
-            if ($participacao->status !== Participacao::STATUS_ATIVO) {
+            if ($isNew && $participacao->status !== Participacao::STATUS_ATIVO) {
                 $model->addError('participacao_id', 'A participacao selecionada nao esta ativa para registrar doacoes.');
                 $transaction->rollBack();
                 return false;
@@ -306,8 +313,8 @@ class DoacaoService implements DoacaoServiceInterface
         $nome = uniqid('doacao_', true) . '.' . $arquivo->extension;
         $caminho = Yii::getAlias('@imgArquivosDoacao');
 
-        if (!is_dir($caminho)) {
-            mkdir($caminho, 0777, true);
+        if (!$this->ensureWritableDirectory($caminho)) {
+            return null;
         }
 
         $fullPath = rtrim($caminho, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $nome;
@@ -326,6 +333,15 @@ class DoacaoService implements DoacaoServiceInterface
         if (file_exists($fullPath)) {
             unlink($fullPath);
         }
+    }
+
+    protected function ensureWritableDirectory(string $path): bool
+    {
+        if (!is_dir($path) && !@mkdir($path, 0775, true) && !is_dir($path)) {
+            return false;
+        }
+
+        return is_writable($path);
     }
 
     protected function hasCertificadoEmitido(Doacao $model): bool
