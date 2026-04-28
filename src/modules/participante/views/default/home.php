@@ -6,7 +6,7 @@ use app\modules\common\models\Participacao;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = 'Minha area';
+$this->title = 'Minha área';
 
 $totalParticipacoes = count($participacoes);
 $totalParticipacoesAtivas = count($participacoesAtivas);
@@ -58,6 +58,383 @@ $summaryCards = [
 ];
 ?>
 
+<style>
+
+.participant-dashboard {
+  background: linear-gradient(180deg, #f4fff8 0%, #f8fafc 45%, #ffffff 100%);
+  padding-top: 24px;
+  padding-bottom: 32px;
+}
+
+/* Hero */
+.dashboard-hero {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 45%, #38bdf8 100%);
+  border-radius: 24px;
+  padding: 28px;
+  color: #fff;
+  box-shadow: 0 18px 45px rgba(22, 163, 74, 0.22);
+}
+
+.dashboard-hero h1,
+.dashboard-hero p {
+  color: #fff !important;
+}
+
+.dashboard-eyebrow {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #16a34a;
+  margin-bottom: 8px;
+}
+
+.dashboard-hero .dashboard-eyebrow,
+.dashboard-eyebrow-light {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Cards base */
+.participant-dashboard .card {
+  border-radius: 22px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.participant-dashboard .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12) !important;
+}
+
+.participant-dashboard .card-body {
+  padding: 24px;
+}
+
+/* Banner */
+.dashboard-banner img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Ações */
+.dashboard-actions .btn {
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dashboard-action-primary {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
+}
+
+.dashboard-action-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(34, 197, 94, 0.45);
+  background: linear-gradient(135deg, #15803d, #16a34a);
+}
+
+
+/* Card iniciar participação */
+.start-participation-card {
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #0ea5e9 100%);
+  color: #fff;
+}
+
+.start-participation-card p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Contexto */
+.dashboard-context-card {
+  background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+  border-left: 6px solid #22c55e !important;
+}
+
+.dashboard-context-metrics span {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.dashboard-context-metrics strong {
+  display: block;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+/* Cards de resumo */
+.dashboard-summary-card {
+  position: relative;
+  color: #fff;
+  min-height: 150px;
+}
+
+.dashboard-summary-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -30px -35px auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-summary-primary {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+}
+
+.dashboard-summary-success {
+  background: linear-gradient(135deg, #16a34a, #84cc16);
+}
+
+.dashboard-summary-warning {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+}
+
+.dashboard-summary-info {
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+}
+
+.dashboard-summary-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  opacity: 0.9;
+}
+
+.dashboard-summary-value {
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 8px;
+}
+
+.dashboard-summary-hint {
+  margin-top: 18px;
+  font-size: 0.9rem;
+  opacity: 0.92;
+}
+
+.dashboard-summary-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+
+/* Seções */
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.dashboard-food-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.dashboard-food-count {
+  display: inline-block;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+/* Listas */
+.dashboard-list-item {
+  border: 0;
+  border-radius: 16px !important;
+  margin-bottom: 10px;
+  background: #f8fafc;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dashboard-list-item:hover {
+  background: #ecfdf5;
+  transform: translateX(4px);
+}
+
+.dashboard-document-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.dashboard-empty-state,
+.dashboard-empty-note {
+  background: #f1f5f9;
+  color: #64748b;
+  border-radius: 18px;
+  padding: 18px;
+  font-weight: 600;
+}
+
+/* Links de doação */
+.dashboard-food-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 58px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #dcfce7, #e0f2fe);
+  color: #166534;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 10px 22px rgba(34, 197, 94, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-food-link:hover {
+  color: #14532d;
+  text-decoration: none;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(34, 197, 94, 0.22);
+}
+
+/* Ranking */
+.dashboard-ranking-item {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 18px;
+  background: #f8fafc;
+  margin-bottom: 12px;
+}
+
+.dashboard-ranking-position {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #22c55e, #38bdf8);
+  color: #fff;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-ranking-body {
+  flex: 1;
+}
+
+.dashboard-ranking-body .progress {
+  height: 8px;
+  border-radius: 999px;
+  margin-top: 8px;
+  background: #dcfce7;
+}
+
+/* Status doações */
+.dashboard-donation-status {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.dashboard-donation-status > div {
+  border-radius: 18px;
+  padding: 18px;
+  background: linear-gradient(135deg, #f0fdf4, #eff6ff);
+  text-align: center;
+}
+
+.dashboard-donation-status span {
+  display: block;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dashboard-donation-status strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 2rem;
+  color: #16a34a;
+}
+
+/* Forms */
+.dashboard-trote-filter .form-control,
+.dashboard-trote-filter .btn {
+  border-radius: 14px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .dashboard-hero {
+    padding: 22px;
+  }
+
+  .dashboard-actions {
+    justify-content: flex-start !important;
+  }
+
+  .dashboard-actions .btn {
+    margin-left: 0;
+    margin-right: 8px;
+  }
+
+  .dashboard-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-donation-status {
+    grid-template-columns: 1fr;
+  }
+}
+/* Botão Doar alimentos */
+.dashboard-actions .btn-outline-success {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #fff !important;
+  border: none;
+  box-shadow: 0 8px 18px rgba(249, 115, 22, 0.35);
+}
+
+.dashboard-actions .btn-outline-success:hover {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(249, 115, 22, 0.45);
+}
+
+/* Botão Meu perfil */
+.dashboard-actions .btn-outline-secondary {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff !important;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+}
+
+.dashboard-actions .btn-outline-secondary:hover {
+  background: #ffffff;
+  color: #0284c7 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.35);
+}
+</style>
+
+
 <div class="participant-dashboard container-fluid">
     <?php if (Yii::$app->session->hasFlash('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -81,7 +458,7 @@ $summaryCards = [
         <div class="row align-items-center">
             <div class="col-lg-7">
                 <div class="dashboard-eyebrow">Minha jornada</div>
-                <h1 class="h3 mb-2 text-gray-900">Minha area</h1>
+                <h1 class="h3 mb-2 text-gray-900">Minha área</h1>
                 <p class="mb-0 text-gray-700">
                     Acompanhe seu trote ativo, registre doacoes e acesse informativos, ranking e certificados em um unico painel.
                 </p>
@@ -376,8 +753,6 @@ $summaryCards = [
                     <?php endif; ?>
                 </div>
             </section>
-
-            
         </div>
 
         <div class="col-xl-4">
@@ -419,13 +794,10 @@ $summaryCards = [
                     <?php endif; ?>
                 </div>
             </section>
-
-           
-
             <section class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
                     <div class="dashboard-section-header">
-                        <h2 class="h5 mb-0 text-gray-900">Status das doacoes</h2>
+                        <h2 class="h5 mb-0 text-gray-900">Status das doações</h2>
                     </div>
                     <div class="dashboard-donation-status">
                         <div>

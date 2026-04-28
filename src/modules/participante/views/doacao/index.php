@@ -126,7 +126,20 @@ $this->registerCssFile('@web/css/donation-styles.css');
                             'edicao_snapshot',
                             [
                                 'attribute' => 'status',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return match ($model->status) {
+                                        Doacao::STATUS_APROVADA => Html::tag('span', 'Aprovada', ['class' => 'badge badge-success']),
+                                        Doacao::STATUS_REJEITADA => Html::tag('span', 'Rejeitada', ['class' => 'badge badge-danger']),
+                                        default => Html::tag('span', 'Pendente', ['class' => 'badge badge-warning']),
+                                    };
+                                },
+                                'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => Doacao::getStatusList(),
+                                'filterInputOptions' => ['placeholder' => 'Status'],
+                                'filterWidgetOptions' => [
+                                    'pluginOptions' => ['allowClear' => true],
+                                ],
                             ],
                             [
                                 'attribute' => 'motivo_reprovado',

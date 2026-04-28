@@ -125,10 +125,21 @@ class DoacaoController extends Controller
 
         $data = $this->getParticipantFormData();
 
+        if (!isset($data['participacoes'][$model->participacao_id])) {
+            $participacaoAtual = Participacao::find()
+                ->with(['user', 'trote', 'universidade'])
+                ->where(['id' => $model->participacao_id])
+                ->one();
+
+            if ($participacaoAtual !== null) {
+                $data['participacoes'][$participacaoAtual->id] = $participacaoAtual->getDisplayLabel();
+            }
+        }
+
         if ($model->load(Yii::$app->request->post())) {
             $model->participacao_id = (int) ($model->getOldAttribute('participacao_id') ?? $model->participacao_id);
 
-            if (!$this->pertenceParticipacaoAtivaAoUsuarioLogado((int) $model->participacao_id)) {
+            if (!$this->pertenceParticipacaoAoUsuarioLogado((int) $model->participacao_id)) {
                 throw new ForbiddenHttpException('Participacao invalida para este usuario.');
             }
 
@@ -241,6 +252,16 @@ class DoacaoController extends Controller
                 'id' => $participacaoId,
                 'user_id' => Yii::$app->user->id,
                 'status' => Participacao::STATUS_ATIVO,
+            ])
+            ->exists();
+    }
+
+    private function pertenceParticipacaoAoUsuarioLogado(int $participacaoId): bool
+    {
+        return Participacao::find()
+            ->where([
+                'id' => $participacaoId,
+                'user_id' => Yii::$app->user->id,
             ])
             ->exists();
     }

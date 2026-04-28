@@ -80,7 +80,7 @@ class DefaultController extends Controller
             return $this->redirect(['home']);
         }
 
-        $this->layout = 'login';
+        $this->layout = 'index';
         $capa = Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_LOGIN])->one();
         $universidades = Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all();
 

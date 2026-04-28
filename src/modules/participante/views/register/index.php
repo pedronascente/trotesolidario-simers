@@ -7,18 +7,17 @@ $this->title = 'Cadastro de participante';
 ?>
 
 <style>
-    .register-card {
-        max-width: 960px;
-        margin: 40px auto;
-    }
-
-    .student-fields {
-        display: none;
-    }
-
-    .other-course-field {
-        display: none;
-    }
+    .register-card {max-width: 960px;margin: 40px auto;}
+    .student-fields {display: none;}
+    .other-course-field {display: none;}
+    .register-card { max-width: 960px; margin: 40px auto;}
+    .student-fields {display: none;}
+    .other-course-field {display: none;}
+    .scrollable-content {max-height: 500px; overflow-y: auto;padding-right: 10px;border-left: 3px solid #007bff;padding-left: 15px;}
+    .scrollable-content::-webkit-scrollbar {width: 8px;}
+    .scrollable-content::-webkit-scrollbar-track {background: #f1f1f1;border-radius: 10px;}
+    .scrollable-content::-webkit-scrollbar-thumb {background: #007bff;border-radius: 10px;}
+    .scrollable-content::-webkit-scrollbar-thumb:hover {background: #0056b3;}
 </style>
 
 <div class="container register-card">
@@ -83,14 +82,17 @@ $this->title = 'Cadastro de participante';
 
             <div class="mb-3">
                 <small class="text-muted d-block mb-2">
-                    O Simers utiliza cookies e tecnologias semelhantes, como explicado em nossa politica de privacidade.
+                    O Simers utiliza cookies e tecnologias semelhantes, como explicado em nossa  
+                    <a href="#" id="privacyPolicyLink">Política de Privacidade</a>    
+                    , para melhorar a experiência de usuário. 
+                   Ao navegar por nosso conteúdo, o usuário aceita tais condições.
                 </small>
                 <?= $form->field($model, 'politicaPrivacidade')->checkbox(['uncheck' => 0]) ?>
             </div>
 
             <div class="mb-4">
                 <small class="text-muted d-block mb-2">
-                    Autorizo o uso da minha imagem, video e voz para divulgacao do Trote Solidario.
+                    Autorizo que o SINDICATO MÉDICO DO RIO GRANDE DO SUL- SIMERS, em razão do TROTE SOLIDÁRIO, disponha de meus dados pessoais, de acordo com os artigos 7º e 11, da Lei 13.709/2018, bem como autorizo a utilização da minha imagem e/ou voz para a finalidade de divulgação do Trote Solidário em postagens em redes sociais do NAS/SIMERS.
                 </small>
                 <?= $form->field($model, 'politicaImagem')->checkbox(['uncheck' => 0]) ?>
             </div>
@@ -103,8 +105,31 @@ $this->title = 'Cadastro de participante';
                 <?= Html::a('Ja possuo acesso', ['/auth/login'], ['class' => 'd-block']) ?>
                 <?= Html::a('Esqueci minha senha', ['/participante/recovery-password/index'], ['class' => 'd-block mt-2']) ?>
             </div>
-
             <?php ActiveForm::end(); ?>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Política de Privacidade -->
+<div class="modal fade" id="privacyPolicyModal" tabindex="-1" role="dialog" aria-labelledby="privacyPolicyLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyPolicyLabel">Política de Privacidade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body scrollable-content" id="privacyPolicyContent">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Carregando...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -176,5 +201,77 @@ $this->title = 'Cadastro de participante';
 
         toggleStudentFields();
         toggleOtherCourseField();
+
+        // Gerenciar modal de Política de Privacidade
+        var privacyPolicyLink = document.getElementById('privacyPolicyLink');
+        var privacyPolicyModal = document.getElementById('privacyPolicyModal');
+        var contentLoaded = false;
+        
+        if (privacyPolicyLink && privacyPolicyModal) {
+            privacyPolicyLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Se conteúdo já foi carregado, apenas abre o modal
+                if (contentLoaded) {
+                    if (typeof jQuery !== 'undefined') {
+                        jQuery('#privacyPolicyModal').modal('show');
+                    } else {
+                        privacyPolicyModal.classList.add('show');
+                        privacyPolicyModal.style.display = 'block';
+                    }
+                    return;
+                }
+                
+                var contentDiv = document.getElementById('privacyPolicyContent');
+                
+                // Mostrar spinner de carregamento
+                contentDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Carregando...</span></div></div>';
+                
+                // Abrir o modal
+                if (typeof jQuery !== 'undefined') {
+                    jQuery('#privacyPolicyModal').modal('show');
+                } else {
+                    privacyPolicyModal.classList.add('show');
+                    privacyPolicyModal.style.display = 'block';
+                }
+                
+                // Fazer requisição AJAX para carregar o conteúdo
+                fetch('/participante/politica-de-privacidade/index')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao carregar: ' + response.statusText);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Criar parser do HTML
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(html, 'text/html');
+                        
+                        // Procurar especificamente pelo .scrollable-content que contém o texto
+                        var scrollableDiv = doc.querySelector('.scrollable-content');
+                        
+                        if (scrollableDiv) {
+                            // Extrair apenas o conteúdo interno (sem a div wrapper)
+                            contentDiv.innerHTML = scrollableDiv.innerHTML;
+                        } else {
+                            // Fallback: procurar por outro seletor
+                            var mainContent = doc.querySelector('article') || 
+                                            doc.querySelector('[role="main"]') ||
+                                            doc.querySelector('.container');
+                            if (mainContent) {
+                                contentDiv.innerHTML = mainContent.innerHTML;
+                            }
+                        }
+                        
+                        contentLoaded = true;
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar política de privacidade:', error);
+                        contentDiv.innerHTML = '<div class="alert alert-danger"><strong>Erro!</strong> Não foi possível carregar a política de privacidade. Tente novamente mais tarde.</div>';
+                    });
+            });
+        }
     });
 </script>

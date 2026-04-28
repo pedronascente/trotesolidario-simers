@@ -10,6 +10,9 @@ use yii\widgets\ActiveForm;
 /* @var $model app\modules\common\models\Doacao */
 
 $isUpdate = !$model->isNewRecord;
+
+
+
 ?>
 
 <div class="container-fluid">
@@ -29,7 +32,7 @@ $isUpdate = !$model->isNewRecord;
         <div class="col-md-6">
             <?= $form->field($model, 'participacao_id')->dropDownList($participacoes, [
                 'id' => 'doacao-participacao-id',
-                'prompt' => 'Selecione a participacao',
+                'prompt' => 'Selecione a participação',
                 'class' => 'form-control',
                 'disabled' => $isUpdate,
             ]) ?>
@@ -39,7 +42,7 @@ $isUpdate = !$model->isNewRecord;
         </div>
         <div class="col-md-6">
             <?= $form->field($model, 'tipo_doacao_id')->dropDownList($tipoDoacao, [
-                'prompt' => 'Selecione o tipo de doacao',
+                'prompt' => 'Selecione o tipo de doação',
                 'class' => 'form-control',
             ]) ?>
         </div>

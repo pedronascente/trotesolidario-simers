@@ -3,7 +3,7 @@
 /* @var $content string */
 
 use app\assets\AdminAsset;
-use yii\helpers\Html;
+use yii\helpers\Html;  
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
@@ -48,7 +48,7 @@ $displayName = $identity ? $identity->name : 'Participante';
         <li class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
             <a class="nav-link" href="/participante/doacao">
                 <i class="fas fa-hand-holding-heart"></i>
-                <span>Doacoes</span>
+                <span>Doações</span>
             </a>
         </li>
         <li class="nav-item">

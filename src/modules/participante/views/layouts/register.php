@@ -35,10 +35,6 @@ AdminAsset::register($this);
         <!--<meta property="og:image" content="/imagens/favicon-32x32.jpg">-->
         <!--Fim Facebook-->
         <!--<link rel="shortcut icon" href="/imagens/favicon.png" type="image/x-icon">-->
-        <!-- Custom fonts for this template-->
-        <link href="/layoutadmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-        <!-- Custom styles for this template-->
-        <link href="/layoutadmin/css/sb-admin-2.css" rel="stylesheet">
         <!-- End Google Analytics -->
     </head>
     <body class="bg-gradient-success">
@@ -46,15 +42,6 @@ AdminAsset::register($this);
         <?= Alert::widget() ?>
         <?= $content ?>
         <?php $this->endBody() ?>
-                <!-- Bootstrap core JavaScript-->
-        <!--<script src="/layoutadmin/vendor/jquery/jquery.min.js"></script>-->
-        <script src="/layoutadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="/layoutadmin/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="/layoutadmin/js/sb-admin-2.js"></script>
     </body>
 </html>
 <?php $this->endPage() ?>
