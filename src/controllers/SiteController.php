@@ -37,11 +37,11 @@ class SiteController extends Controller
     public function actionIndex()
     {
         if (Yii::$app->user->isGuest) {
-            return $this->render('index');
+            return $this->redirect(['/participante']);
         }
 
         return Yii::$app->user->identity->isAdmin()
             ? $this->redirect(['/administrator/default/index'])
-            : $this->redirect(['/participante//default/index']);
+            : $this->redirect(['/participante/default/index']);
     }
 }
