@@ -114,13 +114,13 @@ class CertificadoService implements CertificadoServiceInterface
             ->one() ?? $certificado;
 
         $directory = Yii::getAlias('@pdf') . DIRECTORY_SEPARATOR . 'certificados';
-        $this->ensureDirectoryExists($directory);
+        $this->ensureWritableDirectory($directory);
 
         $relativePath = $this->buildRelativePdfPath($certificado);
         $fileName = basename($relativePath);
         $fullPath = $directory . DIRECTORY_SEPARATOR . $fileName;
         $tempDir = Yii::getAlias('@runtime') . DIRECTORY_SEPARATOR . 'mpdf';
-        $this->ensureDirectoryExists($tempDir);
+        $this->ensureWritableDirectory($tempDir);
 
         $previousMemoryLimit = ini_get('memory_limit');
         $previousMaxExecutionTime = ini_get('max_execution_time');
@@ -215,6 +215,15 @@ class CertificadoService implements CertificadoServiceInterface
         }
 
         return $pages;
+    }
+
+    private function ensureWritableDirectory(string $directory): void
+    {
+        $this->ensureDirectoryExists($directory);
+
+        if (!is_writable($directory)) {
+            throw new RuntimeException('Diretorio sem permissao de escrita: ' . $directory);
+        }
     }
 
     protected function buildLegacyCertificateModel(Certificado $certificado): array
