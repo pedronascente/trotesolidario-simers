@@ -29,6 +29,10 @@ RUN docker-php-ext-install \
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY docker-entrypoint.sh /usr/local/bin/trotesolidario-entrypoint.sh
+RUN chmod +x /usr/local/bin/trotesolidario-entrypoint.sh
 
 # Diretório do projeto
 WORKDIR /var/www/html
+ENTRYPOINT ["/usr/local/bin/trotesolidario-entrypoint.sh"]
+CMD ["php-fpm"]
