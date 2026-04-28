@@ -9,6 +9,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\helpers\Html;
 
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -303,5 +304,14 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $this->cpf);
+    }
+
+    public function getStatusBadge(): string
+    {
+        return match ($this->status) {
+            self::STATUS_ACTIVE => Html::tag('span', 'Ativo', ['class' => 'badge badge-success']),
+            self::STATUS_INACTIVE => Html::tag('span', 'Inativo', ['class' => 'badge badge-danger']),
+            default => Html::tag('span', 'Desconhecido', ['class' => 'badge badge-secondary']),
+        };
     }
 }
