@@ -6,6 +6,8 @@ use app\models\User;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\helpers\Html;
+
 
 class Participacao extends ActiveRecord
 {
@@ -54,7 +56,7 @@ class Participacao extends ActiveRecord
             'trote_id' => 'Trote',
             'universidade_id' => 'Universidade',
             'curso' => 'Curso',
-            'status' => 'Status',
+            'status' => 'Status Participação',
             'created_at' => 'Criado em',
             'updated_at' => 'Atualizado em',
         ];
@@ -95,5 +97,14 @@ class Participacao extends ActiveRecord
         $universidade = $this->universidade->nome ?? 'Sem universidade';
 
         return sprintf('%s | %s | %s', $nome, $edicao, $universidade);
+    }
+
+    public function getStatusBadge(): string
+    {
+        return match ($this->status) {
+            self::STATUS_ATIVO => Html::tag('span', 'Ativo', ['class' => 'badge badge-success']),
+            self::STATUS_CANCELADO => Html::tag('span', 'Cancelado', ['class' => 'badge badge-danger']),
+            default => Html::tag('span', 'Desconhecido', ['class' => 'badge badge-secondary']),
+        };
     }
 }
