@@ -392,6 +392,7 @@ body {
 }
 
 @media (max-width: 991.98px) {
+
     .dashboard-hero,
     .start-participation-card .card-body {
         padding: 1.25rem;
