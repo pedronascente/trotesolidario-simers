@@ -56,7 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     if (!$model->participante) {
                                         return '-';
                                     }
-
                                     return (int) $model->participante->estudante === 1 ? 'Sim' : 'Nao';
                                 },
                             ],
@@ -68,7 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     if (!$model->participante) {
                                         return '-';
                                     }
-
                                     return (int) $model->participante->estudante_medicina === 1 ? 'Sim' : 'Nao';
                                 },
                             ],
@@ -82,11 +80,16 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             [
                                 'attribute' => 'status',
-                                'filter' => \app\models\User::getStatusList(),
-                                'value' => static function ($model) {
-                                    $statuses = \app\models\User::getStatusList();
-                                    return $statuses[$model->status] ?? $model->status;
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return $model->getStatusBadge();
                                 },
+                                'filterType' => GridView::FILTER_SELECT2,
+                                'filter' => \app\models\User::getStatusList(),
+                                'filterInputOptions' => ['placeholder' => 'Status'],
+                                'filterWidgetOptions' => [
+                                    'pluginOptions' => ['allowClear' => true],
+                                ],
                             ],
                             'created_at:datetime',
                             [

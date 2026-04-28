@@ -72,11 +72,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'filter' => ArrayHelper::map(Universidade::find()->orderBy(['nome' => SORT_ASC])->all(), 'nome', 'nome'),
                             ],
                             'curso',
-                            [
+                           
+
+                             [
                                 'attribute' => 'status',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return $model->getStatusBadge();
+                                },
+                                'filterType' => GridView::FILTER_SELECT2,
                                 'filter' => \app\modules\common\models\Participacao::getStatusList(),
-                                'value' => static fn($model) => \app\modules\common\models\Participacao::getStatusList()[$model->status] ?? $model->status,
+                                'filterInputOptions' => ['placeholder' => 'Status'],
+                                'filterWidgetOptions' => [
+                                    'pluginOptions' => ['allowClear' => true],
+                                ],
                             ],
+
+
+
+
                             [
                                 'attribute' => 'created_at',
                                 'format' => ['datetime', 'php:d/m/Y H:i'],
