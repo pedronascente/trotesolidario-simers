@@ -122,7 +122,99 @@ Tambem e possivel importar com o usuario `trote`:
 docker compose exec -T mysql-db mysql -utrote -ptrote trotesolidario < dump.sql
 ```
 
-## 9. Alternativa sem dump: migrations e seeds
+## 9. Como acessar o MySQL via Docker
+
+Para abrir um shell dentro do container do MySQL:
+
+```bash
+docker compose exec mysql-db bash
+```
+
+Para conectar no MySQL como `root`:
+
+```bash
+mysql -uroot -ptrote
+```
+
+Se preferir conectar direto sem entrar antes no shell do container:
+
+```bash
+docker compose exec mysql-db mysql -uroot -ptrote
+```
+
+Depois de conectar no cliente MySQL, voce pode usar:
+
+Mostrar os databases:
+
+```sql
+SHOW DATABASES;
+```
+
+Selecionar o database do projeto:
+
+```sql
+USE trotesolidario;
+```
+
+Mostrar as tabelas do database selecionado:
+
+```sql
+SHOW TABLES;
+```
+
+Se quiser fazer tudo em um comando so, sem entrar no cliente interativamente:
+
+```bash
+docker compose exec mysql-db mysql -uroot -ptrote -e "SHOW DATABASES;"
+docker compose exec mysql-db mysql -uroot -ptrote -e "USE trotesolidario; SHOW TABLES;"
+```
+
+## 10. Como conectar no MySQL pelo MySQL Workbench
+
+Com o container `mysql-db` em execucao, voce pode conectar pelo MySQL Workbench usando a porta publicada na maquina host.
+
+Primeiro, confirme que o banco esta ativo:
+
+```bash
+docker compose up -d mysql-db
+```
+
+No MySQL Workbench, crie uma nova conexao com estes dados:
+
+- Connection Name: `trotesolidario-docker`
+- Connection Method: `Standard (TCP/IP)`
+- Hostname: `127.0.0.1`
+- Port: `3309`
+- Username: `root`
+- Password: `trote`
+
+Se preferir acessar com o usuario da aplicacao, use:
+
+- Username: `trote`
+- Password: `trote`
+
+Depois de salvar a conexao:
+
+1. Clique em `Test Connection`.
+2. Se a conexao funcionar, clique em `OK`.
+3. Abra a conexao criada.
+4. No painel `Schemas`, localize o database `trotesolidario`.
+
+Se o schema nao aparecer de imediato, clique no botao de refresh do painel `Schemas` ou execute:
+
+```sql
+SHOW DATABASES;
+USE trotesolidario;
+SHOW TABLES;
+```
+
+Observacoes:
+
+- o host `mysql-db` funciona apenas entre containers; no Workbench da sua maquina, use `127.0.0.1`
+- a porta correta para o Workbench e `3309`, porque ela esta mapeada do host para o container
+- se a conexao falhar, confirme se o container `mysql-db` esta em execucao com `docker compose ps`
+
+## 11. Alternativa sem dump: migrations e seeds
 
 Se voce nao tiver um dump e quiser montar a base pela aplicacao:
 
@@ -140,13 +232,13 @@ docker compose exec php php yii seed/all
 
 O comando de seeds existe em [`src/commands/SeedController.php`](/home/pedro/project/trotesolidario/src/commands/SeedController.php).
 
-## 10. Acessos e portas
+## 12. Acessos e portas
 
 - Aplicacao web: `http://localhost:8080`
 - MySQL pela maquina host: `127.0.0.1:3309`
 - MySQL entre containers: `mysql-db:3306`
 
-## 11. Comandos uteis
+## 13. Comandos uteis
 
 Subir tudo:
 
@@ -174,10 +266,35 @@ docker compose down -v
 
 Use `down -v` com cuidado, porque isso apaga os dados persistidos do MySQL em `mysql-data`.
 
-## 12. Fluxo recomendado para ambiente novo
+## 14. Fluxo recomendado para ambiente novo
 
 1. Conferir [`.env`](/home/pedro/project/trotesolidario/.env) e [`src/config/db.php`](/home/pedro/project/trotesolidario/src/config/db.php).
 2. Subir os containers com `docker compose up -d --build`.
 3. Rodar `docker compose run --rm php composer install`.
 4. Importar o dump com `docker compose exec -T mysql-db mysql -uroot -ptrote trotesolidario < dump.sql`.
 5. Acessar `http://localhost:8080`.
+
+
+
+## 15. Segue um procedimento seguro para corrigir os erros de permissão no projeto Yii2/Docker.
+
+Procedimento
+1. Rodar correção geral no container PHP
+docker exec -u root trotesolidario-php-1 bash -lc "
+mkdir -p \
+  /var/www/html/web/assets \
+  /var/www/html/runtime/mpdf/mpdf \
+  /var/www/html/web/pdf/certificados
+
+chown -R www-data:www-data \
+  /var/www/html/runtime \
+  /var/www/html/web/assets \
+  /var/www/html/web/pdf
+
+chmod -R 775 \
+  /var/www/html/runtime \
+  /var/www/html/web/assets \
+  /var/www/html/web/pdf
+"
+2. Reiniciar os containers
+docker compose restart
