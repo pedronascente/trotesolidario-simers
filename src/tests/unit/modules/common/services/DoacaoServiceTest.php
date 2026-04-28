@@ -2,6 +2,7 @@
 
 namespace tests\unit\modules\common\services;
 
+require_once dirname(__DIR__, 4) . '/_bootstrap.php';
 require_once dirname(__DIR__, 5) . '/modules/common/models/Doacao.php';
 require_once dirname(__DIR__, 5) . '/modules/common/services/contracts/DoacaoServiceInterface.php';
 require_once dirname(__DIR__, 5) . '/modules/common/services/contracts/CertificadoServiceInterface.php';
@@ -39,6 +40,20 @@ class DoacaoServiceTest extends TestCase
         }
 
         parent::tearDown();
+    }
+
+    public function testUpdateResetaStatusParaPendenteELimpaMotivoReprovado(): void
+    {
+        $service = $this->makeServiceWithSaveModelMock();
+
+        $model = new TestDoacao();
+        $model->status = Doacao::STATUS_REJEITADA;
+        $model->motivo_reprovado = 'Documento invalido';
+
+        $service->update($model);
+
+        $this->assertSame(Doacao::STATUS_PENDENTE, $model->status);
+        $this->assertNull($model->motivo_reprovado);
     }
 
     public function testDeleteFailsWhenDoacaoIsPendente(): void
@@ -120,6 +135,14 @@ class DoacaoServiceTest extends TestCase
 
         return new TestDoacaoService($certificadoService, $rankingCacheService, $hasCertificado);
     }
+
+    private function makeServiceWithSaveModelMock(): DoacaoService
+    {
+        $certificadoService = $this->createMock(CertificadoServiceInterface::class);
+        $rankingCacheService = $this->createMock(RankingCacheServiceInterface::class);
+
+        return new TestDoacaoServiceWithSaveModelMock($certificadoService, $rankingCacheService);
+    }
 }
 
 class TestDoacao extends Doacao
@@ -127,6 +150,7 @@ class TestDoacao extends Doacao
     public $status;
     public $participacao_id;
     public $arquivo;
+    public $motivo_reprovado;
     public $deleteResult = 1;
     public $deleteCalls = 0;
 
@@ -134,6 +158,14 @@ class TestDoacao extends Doacao
     {
         $this->deleteCalls++;
         return $this->deleteResult;
+    }
+}
+
+class TestDoacaoServiceWithSaveModelMock extends DoacaoService
+{
+    protected function saveModel(Doacao $model, bool $isNew): bool
+    {
+        return true;
     }
 }
 
