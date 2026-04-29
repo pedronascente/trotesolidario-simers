@@ -157,7 +157,6 @@ $displayName = $identity ? $identity->name : 'Participante';
 </div>
 <?php endif; ?>
 
-
 </body>
 </html>
 <?php $this->endPage() ?> 

@@ -10,9 +10,6 @@ use yii\widgets\ActiveForm;
 /* @var $model app\modules\common\models\Doacao */
 
 $isUpdate = !$model->isNewRecord;
-
-
-
 ?>
 
 <div class="container-fluid">

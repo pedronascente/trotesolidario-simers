@@ -7,12 +7,20 @@ use app\modules\common\models\Doacao;
 use app\modules\common\models\Participacao;
 use RuntimeException;
 use app\modules\common\services\contracts\CertificadoServiceInterface;
-use Mpdf\Mpdf;
-use Mpdf\Output\Destination;
 use Yii;
 
 class CertificadoService implements CertificadoServiceInterface
 {
+    private PdfGeneratorService $pdfGenerator;
+    private CertificadoModelBuilder $modelBuilder;
+
+    public function __construct(
+        ?PdfGeneratorService $pdfGenerator = null,
+        ?CertificadoModelBuilder $modelBuilder = null
+    ) {
+        $this->pdfGenerator = $pdfGenerator ?? new PdfGeneratorService();
+        $this->modelBuilder = $modelBuilder ?? new CertificadoModelBuilder();
+    }
     public function syncFromApprovedDoacao(Doacao $doacao, int $adminUserId): Certificado
     {
         if ($doacao->status !== Doacao::STATUS_APROVADA) {
@@ -114,91 +122,12 @@ class CertificadoService implements CertificadoServiceInterface
             ->one() ?? $certificado;
 
         $directory = Yii::getAlias('@pdf') . DIRECTORY_SEPARATOR . 'certificados';
-        $this->ensureWritableDirectory($directory);
-
         $relativePath = $this->buildRelativePdfPath($certificado);
         $fileName = basename($relativePath);
         $fullPath = $directory . DIRECTORY_SEPARATOR . $fileName;
-        $tempDir = Yii::getAlias('@runtime') . DIRECTORY_SEPARATOR . 'mpdf';
-        $this->ensureWritableDirectory($tempDir);
 
-        $previousMemoryLimit = ini_get('memory_limit');
-        $previousMaxExecutionTime = ini_get('max_execution_time');
-        @ini_set('memory_limit', '256M');
-        @set_time_limit(120);
-
-        try {
-            $pages = $this->renderCertificatePages($certificado, 'pdf');
-
-            $mpdf = new Mpdf([
-                'mode' => 'utf-8',
-                'format' => 'A4',
-                'orientation' => 'L',
-                'tempDir' => $tempDir,
-                'margin_left' => 10,
-                'margin_right' => 10,
-                'margin_top' => 10,
-                'margin_bottom' => 10,
-                'default_font' => 'Arial',
-            ]);
-            $mpdf->showImageErrors = true;
-            $mpdf->autoScriptToLang = false;
-            $mpdf->autoLangToFont = false;
-            $mpdf->SetTitle('Certificado Trote Solidario');
-
-            $bootstrapCssPath = Yii::getAlias('@vendor', false);
-            if (is_string($bootstrapCssPath) && $bootstrapCssPath !== '') {
-                $bootstrapCssPath .= DIRECTORY_SEPARATOR . 'kartik-v'
-                    . DIRECTORY_SEPARATOR . 'yii2-mpdf'
-                    . DIRECTORY_SEPARATOR . 'src'
-                    . DIRECTORY_SEPARATOR . 'assets'
-                    . DIRECTORY_SEPARATOR . 'kv-mpdf-bootstrap.min.css';
-
-                if (is_file($bootstrapCssPath)) {
-                    $bootstrapCss = file_get_contents($bootstrapCssPath);
-                    if (is_string($bootstrapCss) && $bootstrapCss !== '') {
-                        $mpdf->WriteHTML($bootstrapCss, 1);
-                    }
-                }
-            }
-
-            if (class_exists('\\kartik\\mpdf\\Pdf')) {
-                $pdfExtraClass = '\\kartik\\mpdf\\Pdf';
-                /** @var object $pdfExtra */
-                $pdfExtra = new $pdfExtraClass();
-                if (method_exists($pdfExtra, 'getCss')) {
-                    $extraCss = $pdfExtra->getCss();
-                    if (is_string($extraCss) && $extraCss !== '') {
-                        $mpdf->WriteHTML($extraCss, 1);
-                    }
-                }
-            }
-
-            foreach ($pages as $index => $pageHtml) {
-                $pageHtml = $this->sanitizeHtmlForPdf($pageHtml);
-                $mpdf->WriteHTML($pageHtml);
-
-                if ($index < count($pages) - 1) {
-                    $mpdf->AddPage();
-                }
-            }
-
-            $mpdf->Output($fullPath, Destination::FILE);
-        } catch (\Throwable $e) {
-            if (is_file($fullPath)) {
-                @unlink($fullPath);
-            }
-
-            throw $e;
-        } finally {
-            if ($previousMemoryLimit !== false) {
-                @ini_set('memory_limit', (string) $previousMemoryLimit);
-            }
-
-            if ($previousMaxExecutionTime !== false) {
-                @ini_set('max_execution_time', (string) $previousMaxExecutionTime);
-            }
-        }
+        $pages = $this->renderCertificatePages($certificado, 'pdf');
+        $this->pdfGenerator->generatePdf($fullPath, $pages);
     }
 
     private function renderCertificatePages(Certificado $certificado, string $renderMode): array
@@ -217,132 +146,9 @@ class CertificadoService implements CertificadoServiceInterface
         return $pages;
     }
 
-    private function ensureWritableDirectory(string $directory): void
-    {
-        $this->ensureDirectoryExists($directory);
-
-        if (!is_writable($directory)) {
-            throw new RuntimeException('Diretorio sem permissao de escrita: ' . $directory);
-        }
-    }
-
     protected function buildLegacyCertificateModel(Certificado $certificado): array
     {
-        $participacao = $certificado->participacao;
-        $trote = $participacao->trote ?? null;
-        $participante = $participacao->user ?? null;
-
-        $normalize = static function (?string $value): string {
-            $value = trim((string) $value);
-            if ($value === '') {
-                return '';
-            }
-
-            if (!mb_check_encoding($value, 'UTF-8')) {
-                $converted = @mb_convert_encoding($value, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
-                if (is_string($converted) && $converted !== '') {
-                    $value = $converted;
-                }
-            }
-
-            return $value;
-        };
-
-        $formatarDataExtenso = static function (?string $data): string {
-            if (empty($data)) {
-                return '-';
-            }
-
-            $timestamp = strtotime($data);
-            if ($timestamp === false) {
-                return '-';
-            }
-
-            $meses = [
-                1 => 'janeiro',
-                2 => 'fevereiro',
-                3 => 'março',
-                4 => 'abril',
-                5 => 'maio',
-                6 => 'junho',
-                7 => 'julho',
-                8 => 'agosto',
-                9 => 'setembro',
-                10 => 'outubro',
-                11 => 'novembro',
-                12 => 'dezembro',
-            ];
-
-            $dia = (int) date('d', $timestamp);
-            $mes = $meses[(int) date('n', $timestamp)] ?? date('m', $timestamp);
-            $ano = date('Y', $timestamp);
-
-            return $dia . ' de ' . $mes . ' de ' . $ano;
-        };
-
-        $approvedDoacoes = [];
-        foreach (($participacao->doacoes ?? []) as $doacao) {
-            if (($doacao->status ?? null) === Doacao::STATUS_APROVADA) {
-                $approvedDoacoes[] = $doacao;
-            }
-        }
-
-        $tipos = [];
-        $totalHoras = 0;
-        $temComissao = false;
-        $tiposSomados = [];
-        $tipoPrincipal = '';
-
-        foreach ($approvedDoacoes as $doacao) {
-            $tipo = $doacao->tipoDoacao ?? null;
-            if ($tipo === null) {
-                continue;
-            }
-
-            $nomeTipo = $normalize((string) $tipo->nome);
-            if ($nomeTipo === '') {
-                continue;
-            }
-
-            if ($tipoPrincipal === '') {
-                $tipoPrincipal = $nomeTipo;
-            }
-
-            if (!in_array($nomeTipo, $tipos, true)) {
-                $tipos[] = $nomeTipo;
-            }
-
-            $tipoId = (int) ($tipo->id ?? 0);
-            if ($tipoId > 0 && !in_array($tipoId, $tiposSomados, true)) {
-                $tiposSomados[] = $tipoId;
-                $totalHoras += (int) ($tipo->carga_horaria ?? 0);
-            }
-
-            if (stripos($nomeTipo, 'comiss') !== false) {
-                $temComissao = true;
-            }
-        }
-
-        if ($totalHoras <= 0) {
-            $totalHoras = (int) ($certificado->carga_horaria_total ?? 0);
-        }
-
-        $dataInicioExtenso = $formatarDataExtenso($trote->data_inicio ?? null);
-        $dataFimExtenso = $formatarDataExtenso($trote->data_fim ?? null);
-
-        return [
-            'name' => $normalize($participante->nome ?? '-') ?: '-',
-            'trote' => str_replace('.', '/', (string) ($trote->edicao ?? '-')),
-            'tipo_doacao' => $tipoPrincipal,
-            'all_donations' => $tipos,
-            'total_horas' => $totalHoras,
-            'frase_certificado' => 'nos dias ' . $dataInicioExtenso . ' à ' . $dataFimExtenso . ', com carga horária total de',
-            'qualidade' => $temComissao ? 'MEMBRO DA COMISSÃO ORGANIZADORA' : 'PARTICIPANTE',
-            'codigo_validador' => $normalize($certificado->codigo_validador ?? ''),
-            'data_inicio_extenso' => $dataInicioExtenso,
-            'data_fim_extenso' => $dataFimExtenso,
-            'universidade' => $normalize($participacao->universidade->nome ?? ''),
-        ];
+        return $this->modelBuilder->build($certificado);
     }
 
     protected function resolveCertificateTemplatePaths(string $troteEdicao): array
@@ -384,40 +190,6 @@ class CertificadoService implements CertificadoServiceInterface
         }
 
         return [$pageOne, $pageTwo];
-    }
-
-    protected function sanitizeHtmlForPdf(string $html): string
-    {
-        if ($html === '') {
-            return $html;
-        }
-
-        $html = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $html) ?? $html;
-
-        if (!mb_check_encoding($html, 'UTF-8')) {
-            $converted = @mb_convert_encoding($html, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252, ASCII');
-            if (is_string($converted) && $converted !== '') {
-                $html = $converted;
-            }
-        }
-
-        $iconv = @iconv('UTF-8', 'UTF-8//IGNORE', $html);
-        if ($iconv !== false) {
-            $html = $iconv;
-        }
-
-        return $html;
-    }
-
-    private function ensureDirectoryExists(string $directory): void
-    {
-        if (is_dir($directory)) {
-            return;
-        }
-
-        if (!@mkdir($directory, 0777, true) && !is_dir($directory)) {
-            throw new RuntimeException(html_entity_decode('N&atilde;o foi poss&iacute;vel preparar o diret&oacute;rio de certificados: ', ENT_QUOTES | ENT_HTML5, 'UTF-8') . $directory);
-        }
     }
 
     private function buildRelativePdfPath(Certificado $certificado): string

@@ -4,20 +4,27 @@ namespace app\modules\participante\controllers;
 
 use app\modules\common\models\Certificado;
 use app\modules\common\services\contracts\CertificadoServiceInterface;
+use app\modules\common\services\CertificadoRepository;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 
 class CertificadoController extends Controller
 {
     private CertificadoServiceInterface $certificadoService;
+    private CertificadoRepository $certificadoRepository;
 
-    public function __construct($id, $module, CertificadoServiceInterface $certificadoService, $config = [])
-    {
+    public function __construct(
+        $id,
+        $module,
+        CertificadoServiceInterface $certificadoService,
+        ?CertificadoRepository $certificadoRepository = null,
+        $config = []
+    ) {
         $this->certificadoService = $certificadoService;
+        $this->certificadoRepository = $certificadoRepository ?? new CertificadoRepository();
         parent::__construct($id, $module, $config);
     }
 
@@ -59,12 +66,7 @@ class CertificadoController extends Controller
     {
         $this->layout = 'adminindex';
 
-        $certificados = Certificado::find()
-            ->with(['participacao.trote', 'participacao.universidade'])
-            ->joinWith('participacao')
-            ->where(['participacao.user_id' => Yii::$app->user->id])
-            ->orderBy(['data_emissao' => SORT_DESC, 'id' => SORT_DESC])
-            ->all();
+        $certificados = $this->certificadoRepository->findAllByUserId(Yii::$app->user->id);
 
         return $this->render('index', [
             'certificados' => $certificados,
@@ -73,7 +75,8 @@ class CertificadoController extends Controller
 
     public function actionImprime($id)
     {
-        $model = $this->certificadoService->ensurePdf($this->findModel((int) $id), true);
+        $model = $this->certificadoRepository->findByIdAndUserId((int) $id, Yii::$app->user->id);
+        $model = $this->certificadoService->ensurePdf($model, true);
 
         $path = $model->getArquivoPdfPath();
         if ($path !== null) {
@@ -84,23 +87,5 @@ class CertificadoController extends Controller
             'model' => $model,
             'renderMode' => 'web',
         ]);
-    }
-
-    protected function findModel(int $id): Certificado
-    {
-        $model = Certificado::find()
-            ->with(['participacao.user', 'participacao.trote', 'participacao.universidade', 'emissor'])
-            ->joinWith('participacao')
-            ->where([
-                'certificado.id' => $id,
-                'participacao.user_id' => Yii::$app->user->id,
-            ])
-            ->one();
-
-        if ($model !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('Certificado nao encontrado.');
     }
 }
