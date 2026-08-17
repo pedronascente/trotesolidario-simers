@@ -101,15 +101,15 @@ class Doacao extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'participacao_id' => 'Participacao',
-            'tipo_doacao_id' => 'Tipo de Doacao',
+            'participacao_id' => 'Participação',
+            'tipo_doacao_id' => 'Tipo de Doação',
             'evento_id' => 'Evento',
             'cpf_snapshot' => 'CPF registrado',
-            'edicao_snapshot' => 'Edicao registrada',
+            'edicao_snapshot' => 'Edição registrada',
             'arquivo' => 'Arquivo',
-            'file' => 'Arquivo',
+            'file' => 'Comprovante da doação',
             'status' => 'Status',
-            'motivo_reprovado' => 'Motivo da reprovacao',
+            'motivo_reprovado' => 'Motivo da reprovação',
             'validado_por' => 'Validado por',
             'validado_em' => 'Validado em',
             'created_at' => 'Criado em',

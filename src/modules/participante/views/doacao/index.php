@@ -12,33 +12,10 @@ $this->registerCssFile('@web/css/donation-styles.css');
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
 <style>
-    .doacao-thumb-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-
-    .doacao-thumb-img {
-        width: 72px;
-        height: 72px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid #dfe3e8;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        cursor: zoom-in;
-        background: #f8fafc;
-    }
-
-    .doacao-thumb-link:hover .doacao-thumb-img {
-        transform: scale(1.06);
-        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
-    }
-
-    .doacao-file-link {
-        white-space: nowrap;
-    }
+    .doacao-thumb-link { display: inline-flex; align-items: center;justify-content: center;text-decoration: none;}
+    .doacao-thumb-img {width: 72px;height: 72px; object-fit: cover;border-radius: 8px; border: 1px solid #dfe3e8; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;cursor: zoom-in; background: #f8fafc;}
+    .doacao-thumb-link:hover .doacao-thumb-img {transform: scale(1.06); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);}
+    .doacao-file-link {white-space: nowrap;}
 </style>
 
 <div class="container-fluid">
@@ -54,7 +31,7 @@ $this->registerCssFile('@web/css/donation-styles.css');
         <div class="col-lg-12 mb-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Doacao', ['create'], ['class' => 'btn btn-success']) ?></h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Doação', ['create'], ['class' => 'btn btn-success']) ?></h6>
                 </div>
                 <div class="p-3" style="overflow-x: auto; width: 100%;">
                     <?= GridView::widget([
