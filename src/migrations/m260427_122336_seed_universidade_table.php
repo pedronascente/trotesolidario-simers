@@ -18,11 +18,11 @@ class m260427_122336_seed_universidade_table extends Migration
             'created_at',
             'updated_at'
         ], [
-            //['UFRGS - Universidade Federal do RS', 'Porto Alegre', 'RS', null, 'https://bit.ly/ufrgs26', true, $now, $now],
-            // ['UFCSPA - Universidade Federal de Ciências da Saúde de POA', 'Porto Alegre', 'RS', null, 'https://bit.ly/ufcspa26', true, $now, $now],
-            // ['PUCRS - Pontifícia Universidade Católica do RGS', 'Porto Alegre', 'RS', null, 'https://bit.ly/pucrs26', true, $now, $now],
-            //['UNISINOS - Universidade do Vale do Rio dos Sinos', 'São Leopoldo', 'RS', null, 'https://bit.ly/unisinos26', true, $now, $now],
-            //  ['FEEVALE', 'Novo Hamburgo', 'RS', null, 'https://bit.ly/feevale26', true, $now, $now],
+            ['UFRGS - Universidade Federal do RS', 'Porto Alegre', 'RS', null, 'https://bit.ly/ufrgs26', true, $now, $now],
+            ['UFCSPA - Universidade Federal de Ciências da Saúde de POA', 'Porto Alegre', 'RS', null, 'https://bit.ly/ufcspa26', true, $now, $now],
+            ['PUCRS - Pontifícia Universidade Católica do RGS', 'Porto Alegre', 'RS', null, 'https://bit.ly/pucrs26', true, $now, $now],
+            ['UNISINOS - Universidade do Vale do Rio dos Sinos', 'São Leopoldo', 'RS', null, 'https://bit.ly/unisinos26', true, $now, $now],
+            ['FEEVALE', 'Novo Hamburgo', 'RS', null, 'https://bit.ly/feevale26', true, $now, $now],
             ['UCS - Universidade Caxias do Sul', 'Caxias do Sul', 'RS', null, 'https://bit.ly/ucs26', true, $now, $now],
             ['UPF - Universidade de Passo Fundo', 'Passo Fundo', 'RS', null, 'https://bit.ly/upf2026', true, $now, $now],
             ['ATITUS', 'Passo Fundo', 'RS', null, 'https://bit.ly/atitus26', true, $now, $now],
@@ -44,11 +44,11 @@ class m260427_122336_seed_universidade_table extends Migration
     {
         $this->delete('{{%universidade}}', [
             'link_doacao_alimento' => [
-               // 'https://bit.ly/ufrgs26',
-               // 'https://bit.ly/ufcspa26',
-               // 'https://bit.ly/pucrs26',
-               // 'https://bit.ly/unisinos26',
-               // 'https://bit.ly/feevale26',
+                'https://bit.ly/ufrgs26',
+                'https://bit.ly/ufcspa26',
+                'https://bit.ly/pucrs26',
+                'https://bit.ly/unisinos26',
+                'https://bit.ly/feevale26',
                 'https://bit.ly/ucs26',
                 'https://bit.ly/upf2026',
                 'https://bit.ly/atitus26',
