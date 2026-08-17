@@ -18,7 +18,7 @@ $asset = static function (string $fileName) use ($renderMode): string {
             $path = $candidate;
             break;
         }
-    }
+    } 
 
     if ($path === null) {
         return '';
@@ -77,9 +77,7 @@ foreach (($model['all_donations'] ?? []) as $doacao) {
 
 $tiposDoacao = implode(', ', $doacoes);
 
-$textoPrincipal = 'Certificamos que <b>' . Html::encode($nome) . '</b>, participou do Trote Solidário '
-    . Html::encode($trote)
-    . ', na qualidade de ' . Html::encode($qualidade)
+$textoPrincipal = 'Certificamos que <b>' . Html::encode($nome) . '</b>, participou do Trote Solidário ' . Html::encode($trote) . ', na qualidade de ' . Html::encode($qualidade)
     . ', como voluntário(a)';
 
 if ($tiposDoacao !== '') {
