@@ -147,13 +147,17 @@ JS);
 
 <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion sidebar-hover-menu">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Url::to(['/administrator/default']) ?>">
-        <div class="sidebar-brand-text mx-3">Trote Solidário</div>
+        <span class="administrator-brand-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></span>
+        <span class="administrator-brand-copy">
+            <strong>Trote Solidário</strong>
+            <small>Administração</small>
+        </span>
     </a>
 
     <hr class="sidebar-divider my-0">
 
     <li class="nav-item <?= $controller === 'default' ? 'active' : '' ?>">
-        <a class="nav-link" href="<?= Url::to(['/administrator/default']) ?>">
+        <a class="nav-link" href="<?= Url::to(['/administrator/default']) ?>" <?= $controller === 'default' ? 'aria-current="page"' : '' ?>>
             <i class="fas fa-home"></i>
             <span>Home</span>
         </a>
@@ -191,7 +195,7 @@ JS);
             <ul class="submenu" id="<?= $submenuId ?>" <?= $isParentActive ? '' : 'hidden' ?>>
                 <?php foreach ($group['items'] as $id => $menu): ?>
                     <li class="nav-item <?= $controller === $id ? 'active' : '' ?>">
-                        <a class="nav-link" href="<?= Url::to(['/administrator/' . $id]) ?>">
+                        <a class="nav-link" href="<?= Url::to(['/administrator/' . $id]) ?>" <?= $controller === $id ? 'aria-current="page"' : '' ?>>
                             <i class="fa <?= $menu['icon'] ?>"></i>
                             <span class="ml-2"><?= $menu['label'] ?></span>
                         </a>

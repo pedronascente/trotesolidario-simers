@@ -7,6 +7,9 @@ use kartik\dialog\Dialog;
 /* @var $content string */
 
 AdminAsset::register($this);
+$this->registerCssFile('@web/css/administrator-dashboard.css?v=20260817-1', [
+    'depends' => [AdminAsset::class],
+]);
 
 $this->beginPage();
 ?>
@@ -22,7 +25,7 @@ $this->beginPage();
     <?php $this->head() ?>
 </head>
 
-<body id="page-top">
+<body id="page-top" class="administrator-shell">
     <?php $this->beginBody() ?>
 
     <?php

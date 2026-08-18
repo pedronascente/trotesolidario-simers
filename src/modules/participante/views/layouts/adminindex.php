@@ -3,7 +3,7 @@
 /* @var $content string */
 
 use app\assets\AdminAsset;
-use yii\helpers\Html;  
+use yii\helpers\Html;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
@@ -25,17 +25,21 @@ $displayName = $identity ? $identity->name : 'Participante';
     <?php $this->registerCsrfMetaTags() ?>
     <?php $this->head() ?>
 </head>
-<body class="page-top" id="page-top">
+<body class="page-top participant-shell" id="page-top">
 <div id="wrapper">
     <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/participante/default/home">
-            <div class="sidebar-brand-text mx-3">Trote Solidario</div>
+            <span class="sidebar-brand-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></span>
+            <span class="sidebar-brand-copy">
+                <strong>Trote</strong>
+                <small>Solidário</small>
+            </span>
         </a>
 
         <hr class="sidebar-divider my-0">
 
         <li class="nav-item <?= $menu_active === 'default' && $action_id === 'home' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/default/home">
+            <a class="nav-link" href="/participante/default/home" <?= $menu_active === 'default' && $action_id === 'home' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
@@ -46,7 +50,7 @@ $displayName = $identity ? $identity->name : 'Participante';
         <div class="sidebar-heading">Minha jornada</div>
 
         <li class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/doacao">
+            <a class="nav-link" href="/participante/doacao" <?= $menu_active === 'doacao' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-hand-holding-heart"></i>
                 <span>Doações</span>
             </a>
@@ -58,19 +62,19 @@ $displayName = $identity ? $identity->name : 'Participante';
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/default/ranking">
+            <a class="nav-link" href="/participante/default/ranking" <?= $menu_active === 'default' && $action_id === 'ranking' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-trophy"></i>
                 <span>Ranking</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/certificado">
+            <a class="nav-link" href="/participante/certificado" <?= $menu_active === 'certificado' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-file-contract"></i>
                 <span>Certificados</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'users' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/users/perfil">
+            <a class="nav-link" href="/participante/users/perfil" <?= $menu_active === 'users' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-user"></i>
                 <span>Meu perfil</span>
             </a>
@@ -92,12 +96,22 @@ $displayName = $identity ? $identity->name : 'Participante';
                     <i class="fa fa-bars"></i>
                 </button>
 
+                <div class="participant-topbar-title d-none d-sm-flex">
+                    <span class="participant-topbar-title-icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
+                    <span class="participant-topbar-title-copy">
+                        <strong><?= Html::encode($this->title ?: 'Minha jornada') ?></strong>
+                    </span>
+                </div>
+
                 <ul class="navbar-nav ml-auto">
                     <div class="topbar-divider d-none d-sm-block"></div>
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= Html::encode($displayName) ?></span>
-                            <i class="fas fa-chevron-down fa-sm fa-fw ml-2 text-gray-400"></i>
+                            <span class="participant-user-avatar" aria-hidden="true"><i class="fas fa-user"></i></span>
+                            <span class="participant-user-copy d-none d-lg-flex">
+                                <strong><?= Html::encode($displayName) ?></strong>
+                            </span>
+                            <i class="fas fa-chevron-down fa-sm fa-fw ml-2 participant-user-chevron"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="/participante/users/perfil">
@@ -124,7 +138,7 @@ $displayName = $identity ? $identity->name : 'Participante';
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright Trote Solidario</span>
+                    <span>Trote Solidário <span aria-hidden="true">•</span> Universidade que transforma</span>
                 </div>
             </div>
         </footer>
@@ -145,7 +159,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                     <span aria-hidden="true">x</span>
                 </button>
             </div>
-            <div class="modal-body">Selecione sair para finalizar a sessao.</div>
+<div class="modal-body">Selecione sair para finalizar a sessão.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <?= Html::beginForm(['/participante/default/logout'], 'post', ['class' => 'd-inline']) ?>
@@ -159,4 +173,4 @@ $displayName = $identity ? $identity->name : 'Participante';
 
 </body>
 </html>
-<?php $this->endPage() ?> 
+<?php $this->endPage() ?>
