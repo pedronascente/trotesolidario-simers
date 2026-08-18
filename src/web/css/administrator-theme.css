@@ -1,0 +1,190 @@
+.administrator-shell {
+    --admin-ink: #172033;
+    --admin-muted: #6f798b;
+    --admin-green: #13795b;
+    --admin-green-dark: #0d4a3e;
+    --admin-lime: #b7e565;
+    --admin-line: #e4e8ef;
+    color: var(--admin-ink);
+    background: #f6f7fa;
+}
+
+.administrator-shell #content-wrapper,
+.administrator-shell #content {
+    background: #f6f7fa;
+}
+
+.administrator-shell #content > .container-fluid {
+    padding: 1.5rem;
+}
+
+.administrator-shell .sidebar {
+    background: linear-gradient(180deg, #103e35, #173f3b 52%, #28394a) !important;
+    box-shadow: 0.65rem 0 1.8rem rgba(24, 42, 49, 0.1);
+}
+
+.administrator-shell .sidebar-brand {
+    height: 5rem;
+    padding: 0 1rem;
+    justify-content: flex-start !important;
+    text-align: left;
+}
+
+.administrator-brand-icon,
+.administrator-topbar-icon,
+.administrator-user-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.6rem;
+}
+
+.administrator-brand-icon {
+    flex: 0 0 2.35rem;
+    color: #164631;
+    background: var(--admin-lime);
+}
+
+.administrator-brand-copy {
+    display: flex;
+    min-width: 0;
+    margin-left: 0.7rem;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.administrator-brand-copy strong {
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.administrator-brand-copy small {
+    margin-top: 0.28rem;
+    color: var(--admin-lime);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.administrator-shell .sidebar .sidebar-divider {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.administrator-shell .sidebar .nav-item .nav-link,
+.administrator-shell .sidebar-hover-menu .submenu .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.administrator-shell .sidebar .nav-item > .nav-link {
+    border-radius: 0.45rem;
+}
+
+.administrator-shell .sidebar .nav-item.active > .nav-link,
+.administrator-shell .sidebar-hover-menu .submenu .nav-item.active > .nav-link {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: var(--admin-lime);
+}
+
+.administrator-shell .sidebar .nav-item.active > .nav-link i,
+.administrator-shell .sidebar-hover-menu .submenu .nav-item.active > .nav-link i {
+    color: var(--admin-lime);
+}
+
+.administrator-shell .topbar {
+    height: 4.25rem;
+    margin-bottom: 0 !important;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--admin-line);
+    box-shadow: 0 0.4rem 1.2rem rgba(31, 42, 68, 0.05) !important;
+}
+
+.administrator-topbar-title {
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.administrator-topbar-icon {
+    color: var(--admin-green);
+    background: #e5f4ee;
+}
+
+.administrator-topbar-title strong,
+.administrator-user-name {
+    color: var(--admin-ink);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.administrator-shell .topbar .nav-link {
+    display: flex;
+    align-items: center;
+    height: 3rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.55rem;
+}
+
+.administrator-shell .topbar .nav-link:hover,
+.administrator-shell .topbar .nav-link:focus {
+    background: #f3f7f5;
+}
+
+.administrator-user-avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-right: 0.6rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--admin-green), #6750a4);
+}
+
+.administrator-user-chevron {
+    color: #9da5b4;
+}
+
+.administrator-shell .dropdown-menu {
+    padding: 0.5rem;
+    border: 1px solid var(--admin-line);
+    border-radius: 0.6rem;
+    box-shadow: 0 1rem 2rem rgba(31, 42, 68, 0.12) !important;
+}
+
+.administrator-shell .dropdown-item {
+    border-radius: 0.45rem;
+}
+
+.administrator-shell .sticky-footer {
+    color: var(--admin-muted);
+    border-top: 1px solid var(--admin-line);
+    font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .administrator-shell .sidebar:not(.toggled) {
+        width: 15.5rem !important;
+    }
+
+    .administrator-shell .sidebar .nav-item .nav-link {
+        width: 100%;
+    }
+
+    .administrator-shell .sidebar.toggled .administrator-brand-copy {
+        display: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .administrator-shell #content > .container-fluid {
+        padding: 1rem;
+    }
+
+    .administrator-brand-copy {
+        display: none;
+    }
+}

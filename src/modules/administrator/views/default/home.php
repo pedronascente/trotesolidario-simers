@@ -4,6 +4,9 @@ use app\modules\common\models\Doacao;
 use yii\helpers\Html;
 
 $this->title = 'Visão geral';
+$this->registerCssFile('@web/css/administrator-dashboard.css', [
+    'depends' => [\app\assets\AdminAsset::class],
+]);
 
 $cards = [
     ['label' => 'Usuários', 'value' => $totalUsuarios, 'hint' => 'Contas cadastradas', 'variant' => 'primary', 'icon' => 'fas fa-users'],

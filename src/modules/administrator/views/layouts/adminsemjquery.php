@@ -7,7 +7,7 @@ use kartik\dialog\Dialog;
 /* @var $content string */
 
 AdminAsset::register($this);
-$this->registerCssFile('@web/css/administrator-dashboard.css?v=20260817-1', [
+$this->registerCssFile('@web/css/administrator-theme.css', [
     'depends' => [AdminAsset::class],
 ]);
 

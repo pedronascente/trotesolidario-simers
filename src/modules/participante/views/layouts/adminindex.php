@@ -17,15 +17,14 @@ $displayName = $identity ? $identity->name : 'Participante';
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Trote Solidario</title>
+    <title><?= Html::encode($this->title ?: 'Trote Solidário') ?></title>
     <link rel="shortcut icon" href="/img/favicon_trote.png" type="image/x-icon">
-    <link href="/layoutadmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
-    <link href="/layoutadmin/css/sb-admin-2.css" rel="stylesheet">
     <?php $this->registerCsrfMetaTags() ?>
     <?php $this->head() ?>
 </head>
 <body class="page-top participant-shell" id="page-top">
+<?php $this->beginBody() ?>
 <div id="wrapper">
     <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/participante/default/home">
@@ -130,9 +129,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                 </ul>
             </nav>
 
-            <?php $this->beginBody() ?>
             <?= $content ?>
-            <?php $this->endBody() ?>
         </div>
 
         <footer class="sticky-footer bg-white">
@@ -171,6 +168,7 @@ $displayName = $identity ? $identity->name : 'Participante';
 </div>
 <?php endif; ?>
 
+<?php $this->endBody() ?>
 </body>
 </html>
 <?php $this->endPage() ?>

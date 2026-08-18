@@ -216,25 +216,28 @@ class DefaultController extends Controller
         $selectedTroteId = $troteAtivo ? (int) $troteAtivo->id : null;
 
         $doacaoQuery = Doacao::find()
-            ->with(['tipoDoacao', 'participacao.trote', 'participacao.universidade'])
             ->joinWith('participacao')
-            ->where(['participacao.user_id' => $userId])
-            ->orderBy(['doacao.created_at' => SORT_DESC, 'doacao.id' => SORT_DESC]);
+            ->where(['participacao.user_id' => $userId]);
 
         if ($selectedTroteId !== null) {
             $doacaoQuery->andWhere(['participacao.trote_id' => $selectedTroteId]);
         }
-        $doacoes = $doacaoQuery->all();
+        $totalDoacoes = (int) (clone $doacaoQuery)->count('doacao.id');
+        $totalDoacoesAprovadas = (int) (clone $doacaoQuery)
+            ->andWhere(['doacao.status' => Doacao::STATUS_APROVADA])
+            ->count('doacao.id');
+        $totalDoacoesPendentes = (int) (clone $doacaoQuery)
+            ->andWhere(['doacao.status' => Doacao::STATUS_PENDENTE])
+            ->count('doacao.id');
 
         $certificadoQuery = Certificado::find()
             ->joinWith('participacao')
-            ->where(['participacao.user_id' => $userId])
-            ->orderBy(['data_emissao' => SORT_DESC, 'id' => SORT_DESC]);
+            ->where(['participacao.user_id' => $userId]);
 
         if ($selectedTroteId !== null) {
             $certificadoQuery->andWhere(['participacao.trote_id' => $selectedTroteId]);
         }
-        $certificados = $certificadoQuery->all();
+        $totalCertificados = (int) $certificadoQuery->count('certificado.id');
 
         $ranking = [];
         if ($troteAtivo !== null) {
@@ -266,12 +269,15 @@ class DefaultController extends Controller
                 ->limit(6)
                 ->all(),
             'participacoes' => $participacoes,
-            'participacoesAtivas' => $participacoesAtivas,
             'troteAtivo' => $troteAtivo,
             'selectedTroteId' => $selectedTroteId,
             'trotesDisponiveis' => $trotesDisponiveis,
-            'doacoes' => $doacoes,
-            'certificados' => $certificados,
+            'dashboardSummary' => [
+                'doacoes' => $totalDoacoes,
+                'doacoesAprovadas' => $totalDoacoesAprovadas,
+                'doacoesPendentes' => $totalDoacoesPendentes,
+                'certificados' => $totalCertificados,
+            ],
             'ranking' => $ranking,
             'universidadesDoacao' => $universidadesDoacao,
             'showStartParticipationCard' => $showStartParticipationCard,

@@ -41,7 +41,11 @@ body {
     border-radius: 8px;
 }
 
-/* Participant dashboard */
+/*
+ * Legacy participant dashboard rules kept temporarily for history.
+ * The active dashboard styles live in /web/css/participant-dashboard.css.
+ */
+@media not all {
 .participant-dashboard {
     padding-bottom: 1.5rem;
 }
@@ -257,6 +261,8 @@ body {
 .dashboard-section-header .btn {
     flex-shrink: 0;
     margin-left: 1rem;
+}
+
 }
 
 /* Participant shell: sidebar and top navigation */

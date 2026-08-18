@@ -1,23 +1,13 @@
 <?php
 
-use app\modules\common\models\Doacao;
 use app\modules\common\models\Helper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Visão geral';
-$this->registerCssFile('@web/css/participant-dashboard.css?v=20260817-4', [
+$this->registerCssFile('@web/css/participant-dashboard.css', [
     'depends' => [\app\assets\AdminAsset::class],
 ]);
-
-$totalDoacoes = count($doacoes);
-$totalCertificados = count($certificados);
-$totalDoacoesAprovadas = count(array_filter($doacoes, static function (Doacao $doacao) {
-    return $doacao->status === Doacao::STATUS_APROVADA;
-}));
-$totalDoacoesPendentes = count(array_filter($doacoes, static function (Doacao $doacao) {
-    return $doacao->status === Doacao::STATUS_PENDENTE;
-}));
 
 $troteAtivoGlobalDisplayEdition = $troteAtivoGlobal !== null ? str_replace('.', '/', (string) $troteAtivoGlobal->edicao) : '-';
 $hasMultipleTrotes = !empty($trotesDisponiveis) && count($trotesDisponiveis) > 1;
@@ -29,28 +19,28 @@ foreach ($ranking as $rankingItem) {
 $summaryCards = [
     [
         'label' => 'Doações',
-        'value' => $totalDoacoes,
+        'value' => $dashboardSummary['doacoes'],
         'hint' => 'Registros enviados',
         'icon' => 'fas fa-hand-holding-heart',
         'variant' => 'primary',
     ],
     [
         'label' => 'Aprovadas',
-        'value' => $totalDoacoesAprovadas,
+        'value' => $dashboardSummary['doacoesAprovadas'],
         'hint' => 'Doações validadas',
         'icon' => 'fas fa-check',
         'variant' => 'success',
     ],
     [
         'label' => 'Pendentes',
-        'value' => $totalDoacoesPendentes,
+        'value' => $dashboardSummary['doacoesPendentes'],
         'hint' => 'Aguardando validação',
         'icon' => 'fas fa-clock',
         'variant' => 'warning',
     ],
     [
         'label' => 'Certificados',
-        'value' => $totalCertificados,
+        'value' => $dashboardSummary['certificados'],
         'hint' => 'Disponíveis para acesso',
         'icon' => 'fas fa-file-contract',
         'variant' => 'info',
@@ -110,7 +100,7 @@ $summaryCards = [
     <?php if ($banner !== null && (!empty($banner->img_dsk) || !empty($banner->img_mob))): ?>
         <div class="dashboard-banner card shadow-sm border-0 mb-4 overflow-hidden">
             <img
-                src="/img/<?= Html::encode(Helper::isMobile() ? ($banner->img_mob ?: $banner->img_dsk) : ($banner->img_dsk ?: $banner->img_mob)) ?>"
+                src="<?= Html::encode(Url::to('@web/img/' . rawurlencode(basename(Helper::isMobile() ? ($banner->img_mob ?: $banner->img_dsk) : ($banner->img_dsk ?: $banner->img_mob))))) ?>"
                 alt="Banner do trote"
             >
         </div>
@@ -242,7 +232,7 @@ $summaryCards = [
                                     <span class="dashboard-document-name">
                                         <?= Html::encode($informativo->nome ?? ('Documento #' . $informativo->id)) ?>
                                     </span>
-                                    <a href="/pdf/<?= Html::encode($informativo->arquivo) ?>" target="_blank"
+                                    <a href="<?= Html::encode(Url::to('@web/pdf/' . rawurlencode(basename($informativo->arquivo)))) ?>" target="_blank"
                                     class="btn btn-outline-success btn-sm" rel="noopener noreferrer">
                                     Abrir
                                     </a>
@@ -269,7 +259,7 @@ $summaryCards = [
                                     <span class="dashboard-document-name">
                                         <?= Html::encode($regulamento->nome ?? ('Regulamento #' . $regulamento->id)) ?>
                                     </span>
-                                    <a href="/pdf/<?= Html::encode($regulamento->arquivo) ?>" target="_blank"
+                                    <a href="<?= Html::encode(Url::to('@web/pdf/' . rawurlencode(basename($regulamento->arquivo)))) ?>" target="_blank"
                                     class="btn btn-outline-success btn-sm" rel="noopener noreferrer">
                                     Abrir
                                     </a>
