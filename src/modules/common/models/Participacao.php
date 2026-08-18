@@ -13,6 +13,7 @@ class Participacao extends ActiveRecord
 {
     public const STATUS_ATIVO = 'ativo';
     public const STATUS_CANCELADO = 'cancelado';
+    public const STATUS_ENCERRADO = 'encerrado';
 
     public static function tableName()
     {
@@ -67,6 +68,7 @@ class Participacao extends ActiveRecord
         return [
             self::STATUS_ATIVO => 'Ativo',
             self::STATUS_CANCELADO => 'Cancelado',
+            self::STATUS_ENCERRADO => 'Encerrado',
         ];
     }
 
@@ -109,6 +111,7 @@ class Participacao extends ActiveRecord
         return match ($this->status) {
             self::STATUS_ATIVO => Html::tag('span', 'Ativo', ['class' => 'badge badge-success']),
             self::STATUS_CANCELADO => Html::tag('span', 'Cancelado', ['class' => 'badge badge-danger']),
+            self::STATUS_ENCERRADO => Html::tag('span', 'Encerrado', ['class' => 'badge badge-secondary']),
             default => Html::tag('span', 'Desconhecido', ['class' => 'badge badge-secondary']),
         };
     }

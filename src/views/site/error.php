@@ -1,11 +1,19 @@
 <?php
 
 use yii\helpers\Html;
+use yii\web\HttpException;
 
 /** @var yii\web\View $this */
 /** @var Exception $exception */
 
-$this->title = 'Erro';
+$statusCode = $exception instanceof HttpException ? $exception->statusCode : 500;
+$isNotFound = $statusCode === 404;
+$title = $isNotFound ? 'Página não encontrada' : 'Erro interno';
+$description = $isNotFound
+    ? 'Ops! A página que você está procurando não existe ou foi movida.'
+    : 'Não foi possível concluir a operação. Tente novamente ou entre em contato com o suporte.';
+
+$this->title = $title;
 ?>
 
 <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
@@ -14,14 +22,14 @@ $this->title = 'Erro';
             <i class="bi bi-exclamation-triangle display-3 text-warning"></i>
         </div>
         <!-- Código -->
-        <h1 class="display-1 fw-bold text-primary">404</h1>
+        <h1 class="display-1 fw-bold text-primary"><?= Html::encode($statusCode) ?></h1>
 
         <!-- Título -->
-        <h3 class="mb-3">Página não encontrada</h3>
+        <h3 class="mb-3"><?= Html::encode($title) ?></h3>
 
         <!-- Descrição -->
         <p class="text-muted mb-4">
-            Ops! A página que você está procurando não existe ou foi movida.
+            <?= Html::encode($description) ?>
         </p>
 
         <!-- Botões -->

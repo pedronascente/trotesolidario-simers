@@ -10,5 +10,5 @@ interface EventoServiceInterface
     public function update($model): bool;
     public function delete($model): bool;
     public function findModel(int $id): ?Evento;
-    public function findTrotes();
-} 
+    public function findTrotes(bool $incluirEncerrados = true): array;
+}

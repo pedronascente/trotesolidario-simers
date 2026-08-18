@@ -71,7 +71,7 @@ class EventoController extends Controller
     public function actionCreate()
     {
         $model = new Evento();
-        $trotes = $this->service->findTrotes();
+        $trotes = $this->service->findTrotes(false);
 
         if ($model->load(Yii::$app->request->post()) && $this->service->create($model)) {
             Yii::$app->session->setFlash('success', 'Evento criado com sucesso.');

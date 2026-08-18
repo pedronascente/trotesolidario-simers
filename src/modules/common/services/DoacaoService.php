@@ -7,6 +7,7 @@ use app\modules\common\models\Doacao;
 use app\modules\common\models\Evento;
 use app\modules\common\models\Participacao;
 use app\modules\common\models\TipoDoacao;
+use app\modules\common\models\Trote;
 use app\modules\common\services\contracts\CertificadoServiceInterface;
 use app\modules\common\services\contracts\DoacaoServiceInterface;
 use app\modules\common\services\contracts\RankingCacheServiceInterface;
@@ -78,7 +79,9 @@ class DoacaoService implements DoacaoServiceInterface
     {
         $participacoes = Participacao::find()
             ->with(['user', 'trote', 'universidade'])
-            ->where(['status' => Participacao::STATUS_ATIVO])
+            ->joinWith('trote')
+            ->where(['participacao.status' => Participacao::STATUS_ATIVO])
+            ->andWhere(['<>', 'trote.status', Trote::STATUS_ENCERRADO])
             ->orderBy(['id' => SORT_DESC])
             ->all();
 
@@ -99,6 +102,10 @@ class DoacaoService implements DoacaoServiceInterface
         $participacao = Participacao::findOne($participacaoId);
 
         if (!$participacao || $participacao->status !== Participacao::STATUS_ATIVO) {
+            return [];
+        }
+
+        if ($participacao->trote === null || $participacao->trote->status === Trote::STATUS_ENCERRADO) {
             return [];
         }
 
@@ -200,6 +207,13 @@ class DoacaoService implements DoacaoServiceInterface
 
             if ($isNew && $participacao->status !== Participacao::STATUS_ATIVO) {
                 $model->addError('participacao_id', 'A participacao selecionada nao esta ativa para registrar doacoes.');
+                $transaction->rollBack();
+                return false;
+            }
+
+            if ($isNew && ($participacao->trote === null
+                || $participacao->trote->status === Trote::STATUS_ENCERRADO)) {
+                $model->addError('participacao_id', 'Nao e possivel registrar doacoes para um trote encerrado.');
                 $transaction->rollBack();
                 return false;
             }

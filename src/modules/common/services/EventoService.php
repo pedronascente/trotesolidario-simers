@@ -65,9 +65,15 @@ class EventoService implements EventoServiceInterface
         return Evento::findOne($id);
     }
 
-    public function findTrotes(): array
+    public function findTrotes(bool $incluirEncerrados = true): array
     {
-        $trotes = Trote::find()->orderBy(['titulo' => SORT_ASC, 'edicao' => SORT_DESC])->all();
+        $query = Trote::find()->orderBy(['titulo' => SORT_ASC, 'edicao' => SORT_DESC]);
+
+        if (!$incluirEncerrados) {
+            $query->andWhere(['<>', 'status', Trote::STATUS_ENCERRADO]);
+        }
+
+        $trotes = $query->all();
 
         return ArrayHelper::map($trotes, 'id', function (Trote $trote) {
             $titulo = $trote->titulo ?: 'Sem titulo';

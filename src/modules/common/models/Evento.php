@@ -24,7 +24,20 @@ class Evento extends ActiveRecord
                 'targetClass' => Trote::class,
                 'targetAttribute' => ['trote_id' => 'id'],
             ],
+            ['trote_id', 'validateTroteAberto', 'skipOnError' => true],
         ];
+    }
+
+    public function validateTroteAberto($attribute): void
+    {
+        if (!$this->isNewRecord) {
+            return;
+        }
+
+        $trote = Trote::findOne($this->$attribute);
+        if ($trote !== null && $trote->status === Trote::STATUS_ENCERRADO) {
+            $this->addError($attribute, 'Nao e possivel criar eventos para um trote encerrado.');
+        }
     }
 
     public function attributeLabels()

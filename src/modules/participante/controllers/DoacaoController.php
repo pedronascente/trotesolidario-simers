@@ -7,6 +7,7 @@ use app\modules\common\models\DoacaoSearchModel;
 use app\modules\common\models\Evento;
 use app\modules\common\models\Participacao;
 use app\modules\common\models\TipoDoacao;
+use app\modules\common\models\Trote;
 use app\modules\common\services\contracts\DoacaoServiceInterface;
 use Yii;
 use yii\filters\AccessControl;
@@ -196,10 +197,12 @@ class DoacaoController extends Controller
         $data = $this->service->getFormData();
         $participacoesUsuario = Participacao::find()
             ->with(['user', 'trote', 'universidade'])
+            ->joinWith('trote')
             ->where([
-                'user_id' => Yii::$app->user->id,
-                'status' => Participacao::STATUS_ATIVO,
+                'participacao.user_id' => Yii::$app->user->id,
+                'participacao.status' => Participacao::STATUS_ATIVO,
             ])
+            ->andWhere(['<>', 'trote.status', Trote::STATUS_ENCERRADO])
             ->orderBy(['id' => SORT_DESC])
             ->all();
 
@@ -249,11 +252,13 @@ class DoacaoController extends Controller
     private function pertenceParticipacaoAtivaAoUsuarioLogado(int $participacaoId): bool
     {
         return Participacao::find()
+            ->joinWith('trote')
             ->where([
-                'id' => $participacaoId,
-                'user_id' => Yii::$app->user->id,
-                'status' => Participacao::STATUS_ATIVO,
+                'participacao.id' => $participacaoId,
+                'participacao.user_id' => Yii::$app->user->id,
+                'participacao.status' => Participacao::STATUS_ATIVO,
             ])
+            ->andWhere(['<>', 'trote.status', Trote::STATUS_ENCERRADO])
             ->exists();
     }
 

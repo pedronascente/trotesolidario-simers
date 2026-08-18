@@ -5,6 +5,7 @@ namespace app\modules\common\services;
 use Yii;
 use DomainException;
 use RuntimeException;
+use app\modules\common\models\Participacao;
 use app\modules\common\models\Trote;
 use app\modules\common\services\contracts\TroteServiceInterface;
 
@@ -12,9 +13,11 @@ class TroteService implements TroteServiceInterface
 {
     public function create(Trote $trote): bool
     {
-        return Yii::$app->db->transaction(function () use ($trote) 
+        return Yii::$app->db->transaction(function () use ($trote)
         {
-            if (!$trote->validate()) 
+            $this->aplicarDataEncerramento($trote);
+
+            if (!$trote->validate())
             {
                 return false;
             }
@@ -23,15 +26,22 @@ class TroteService implements TroteServiceInterface
                 $this->encerrarOutros($trote->id ?? null);
             }
 
-            return $trote->save(false);
+            if (!$trote->save(false)) {
+                return false;
+            }
+
+            $this->encerrarParticipacoes($trote);
+            return true;
         });
     }
 
     public function update(Trote $trote): bool
     {
-        return Yii::$app->db->transaction(function () use ($trote) 
+        return Yii::$app->db->transaction(function () use ($trote)
         {
-            if (!$trote->validate()) 
+            $this->aplicarDataEncerramento($trote);
+
+            if (!$trote->validate())
             {
                 return false;
             }
@@ -42,7 +52,12 @@ class TroteService implements TroteServiceInterface
                 $this->encerrarOutros($trote->id);
             }
 
-            return $trote->save(false);
+            if (!$trote->save(false)) {
+                return false;
+            }
+
+            $this->encerrarParticipacoes($trote);
+            return true;
         });
     }
 
@@ -69,9 +84,34 @@ class TroteService implements TroteServiceInterface
     private function encerrarOutros(?int $idAtual = null): void
     {
         Trote::updateAll(
-            ['status' => Trote::STATUS_ENCERRADO],
+            [
+                'status' => Trote::STATUS_ENCERRADO,
+                'data_fim' => date('Y-m-d'),
+            ],
             $idAtual ? ['<>', 'id', $idAtual] : []
         );
+
+        Participacao::updateAll(
+            ['status' => Participacao::STATUS_ENCERRADO],
+            $idAtual ? ['<>', 'trote_id', $idAtual] : []
+        );
+    }
+
+    private function aplicarDataEncerramento(Trote $trote): void
+    {
+        if ($trote->status === Trote::STATUS_ENCERRADO) {
+            $trote->data_fim = date('Y-m-d');
+        }
+    }
+
+    private function encerrarParticipacoes(Trote $trote): void
+    {
+        if ($trote->status === Trote::STATUS_ENCERRADO && $trote->id !== null) {
+            Participacao::updateAll(
+                ['status' => Participacao::STATUS_ENCERRADO],
+                ['trote_id' => $trote->id]
+            );
+        }
     }
 
     public function delete(Trote $trote): void

@@ -59,6 +59,7 @@ class Doacao extends ActiveRecord
                 'targetAttribute' => ['participacao_id' => 'id'],
             ],
             [['participacao_id'], 'validateParticipacaoAtiva'],
+            [['participacao_id'], 'validateTroteAberto'],
             [
                 ['tipo_doacao_id'],
                 'exist',
@@ -176,6 +177,23 @@ class Doacao extends ActiveRecord
 
         if ($participacao !== null && $participacao->status !== Participacao::STATUS_ATIVO) {
             $this->addError($attribute, 'A participacao selecionada nao esta ativa para registrar doacoes.');
+        }
+    }
+
+    public function validateTroteAberto(string $attribute): void
+    {
+        if ($this->hasErrors($attribute) || empty($this->participacao_id) || !$this->isNewRecord) {
+            return;
+        }
+
+        $participacao = $this->participacao;
+        if ($participacao === null) {
+            $participacao = Participacao::findOne((int) $this->participacao_id);
+        }
+
+        if ($participacao !== null && $participacao->trote !== null
+            && $participacao->trote->status === Trote::STATUS_ENCERRADO) {
+            $this->addError($attribute, 'Nao e possivel registrar doacoes para um trote encerrado.');
         }
     }
 
