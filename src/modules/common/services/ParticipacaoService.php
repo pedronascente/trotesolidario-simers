@@ -219,7 +219,10 @@ class ParticipacaoService implements ParticipacaoServiceInterface
 
         $model = new ParticipantUniversityCorrectionRequestForm();
         $model->userId = $userId;
-        $pendingRequest = $participacao ? $this->findPendingUniversityCorrectionRequestByParticipationId((int) $participacao->id) : null;
+        $latestRequest = $participacao ? $this->findLatestUniversityCorrectionRequestByParticipationId((int) $participacao->id) : null;
+        $pendingRequest = $latestRequest !== null && $latestRequest->status === ParticipacaoUniversidadeChangeRequest::STATUS_PENDENTE
+            ? $latestRequest
+            : null;
 
         if ($participacao !== null) {
             $model->participacaoId = (int) $participacao->id;
@@ -233,6 +236,7 @@ class ParticipacaoService implements ParticipacaoServiceInterface
             'canRequestCorrection' => $eligibility['allowed'],
             'requestCorrectionReason' => $eligibility['reason'],
             'pendingRequest' => $pendingRequest,
+            'latestRequest' => $latestRequest,
             'availableParticipacoes' => $availableParticipacoes,
             'selectedParticipationId' => $participacao ? (int) $participacao->id : null,
         ];
@@ -290,17 +294,21 @@ class ParticipacaoService implements ParticipacaoServiceInterface
 
     public function approveUniversityCorrectionRequest(int $requestId, int $reviewedBy, ?string $reviewNotes = null): ParticipacaoUniversidadeChangeRequest
     {
-        $request = $this->findPendingUniversityCorrectionRequestOrFail($requestId);
-        $participacao = $this->findModel((int) $request->participacao_id);
+        Yii::$app->db->transaction(function () use ($requestId, $reviewedBy, $reviewNotes) {
+            $request = $this->findPendingUniversityCorrectionRequestForUpdateOrFail($requestId);
+            $participacao = $this->findModel((int) $request->participacao_id);
 
-        if ($participacao === null) {
-            throw new Exception('Participacao vinculada a solicitacao nao encontrada.');
-        }
+            if ($participacao === null) {
+                throw new Exception('Participacao vinculada a solicitacao nao encontrada.');
+            }
 
-        Yii::$app->db->transaction(function () use ($request, $participacao, $reviewedBy, $reviewNotes) {
             $currentUniversidadeId = (int) $participacao->universidade_id;
             $oldUniversidadeId = (int) $request->old_universidade_id;
             $newUniversidadeId = (int) $request->new_universidade_id;
+
+            if (!Universidade::find()->where(['id' => $newUniversidadeId, 'ativo' => 1])->exists()) {
+                throw new Exception('A universidade solicitada nao esta mais ativa. Revise a solicitacao antes de aprovar.');
+            }
 
             if ($currentUniversidadeId !== $oldUniversidadeId && $currentUniversidadeId !== $newUniversidadeId) {
                 throw new Exception('A participacao foi alterada depois que a solicitacao foi aberta. Revise o estado atual antes de concluir a analise.');
@@ -330,17 +338,19 @@ class ParticipacaoService implements ParticipacaoServiceInterface
 
     public function rejectUniversityCorrectionRequest(int $requestId, int $reviewedBy, ?string $reviewNotes = null): ParticipacaoUniversidadeChangeRequest
     {
-        $request = $this->findPendingUniversityCorrectionRequestOrFail($requestId);
-        $request->status = ParticipacaoUniversidadeChangeRequest::STATUS_REJEITADO;
-        $request->reviewed_by = $reviewedBy;
-        $request->review_notes = $reviewNotes;
-        $request->reviewed_at = date('Y-m-d H:i:s');
+        Yii::$app->db->transaction(function () use ($requestId, $reviewedBy, $reviewNotes) {
+            $request = $this->findPendingUniversityCorrectionRequestForUpdateOrFail($requestId);
+            $request->status = ParticipacaoUniversidadeChangeRequest::STATUS_REJEITADO;
+            $request->reviewed_by = $reviewedBy;
+            $request->review_notes = $reviewNotes;
+            $request->reviewed_at = date('Y-m-d H:i:s');
 
-        if (!$request->save(false, ['status', 'reviewed_by', 'review_notes', 'reviewed_at'])) {
-            throw new Exception('Nao foi possivel rejeitar a solicitacao.');
-        }
+            if (!$request->save(false, ['status', 'reviewed_by', 'review_notes', 'reviewed_at'])) {
+                throw new Exception('Nao foi possivel rejeitar a solicitacao.');
+            }
+        });
 
-        return $request;
+        return $this->findUniversityCorrectionRequest($requestId);
     }
 
     protected function hasDoacoesVinculadas(int $participacaoId): bool
@@ -387,15 +397,7 @@ class ParticipacaoService implements ParticipacaoServiceInterface
             return ['allowed' => false, 'reason' => 'A autocorrecao so esta disponivel para participacoes ativas.'];
         }
 
-        if ($this->hasDoacoesVinculadas((int) $participacao->id)) {
-            return ['allowed' => false, 'reason' => 'A universidade desta participacao nao pode ser alterada porque ja existem doacoes vinculadas.'];
-        }
-
-        if ($this->hasCertificadosVinculados((int) $participacao->id)) {
-            return ['allowed' => false, 'reason' => 'A universidade desta participacao nao pode ser alterada porque ja existe certificado emitido.'];
-        }
-
-        return ['allowed' => true, 'reason' => null];
+        return ['allowed' => false, 'reason' => 'Toda alteracao de universidade deve ser enviada para analise da administracao.'];
     }
 
     private function evaluateRequestEligibility(?Participacao $participacao): array
@@ -467,6 +469,25 @@ class ParticipacaoService implements ParticipacaoServiceInterface
             ])
             ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
             ->one();
+    }
+
+    private function findLatestUniversityCorrectionRequestByParticipationId(int $participacaoId): ?ParticipacaoUniversidadeChangeRequest
+    {
+        return ParticipacaoUniversidadeChangeRequest::find()
+            ->with(['oldUniversidade', 'newUniversidade', 'revisor'])
+            ->where(['participacao_id' => $participacaoId])
+            ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
+            ->one();
+    }
+
+    private function findPendingUniversityCorrectionRequestForUpdateOrFail(int $requestId): ParticipacaoUniversidadeChangeRequest
+    {
+        Yii::$app->db->createCommand(
+            'SELECT id FROM participacao_universidade_change_request WHERE id = :id FOR UPDATE',
+            [':id' => $requestId]
+        )->queryScalar();
+
+        return $this->findPendingUniversityCorrectionRequestOrFail($requestId);
     }
 
     private function findPendingUniversityCorrectionRequestOrFail(int $requestId): ParticipacaoUniversidadeChangeRequest

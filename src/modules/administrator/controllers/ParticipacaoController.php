@@ -156,7 +156,7 @@ class ParticipacaoController extends Controller
                     Yii::$app->session->setFlash('success', 'Solicitacao aprovada e participacao atualizada com sucesso.');
                 } else {
                     $this->service->rejectUniversityCorrectionRequest((int) $request->id, (int) Yii::$app->user->id, $model->review_notes);
-                    Yii::$app->session->setFlash('success', 'Solicitacao rejeitada com sucesso.');
+                    Yii::$app->session->setFlash('success', 'Solicitacao reprovada com sucesso.');
                 }
 
                 return $this->redirect(['solicitacoes-correcao-universidade']);

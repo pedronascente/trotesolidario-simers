@@ -18,7 +18,7 @@ class UniversityCorrectionReviewForm extends Model
             [['decision'], 'required'],
             [['decision'], 'in', 'range' => [self::DECISION_APPROVE, self::DECISION_REJECT]],
             [['review_notes'], 'string', 'max' => 1000],
-            [['review_notes'], 'required', 'when' => fn(self $model) => $model->decision === self::DECISION_REJECT, 'message' => 'Informe o motivo da rejeicao.'],
+            [['review_notes'], 'required', 'when' => fn(self $model) => $model->decision === self::DECISION_REJECT, 'message' => 'Informe o motivo da reprovacao.'],
         ];
     }
 

@@ -49,9 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
                     <?= $form->field($model, 'decision')->dropDownList([
                         UniversityCorrectionReviewForm::DECISION_APPROVE => 'Aprovar',
-                        UniversityCorrectionReviewForm::DECISION_REJECT => 'Rejeitar',
+                        UniversityCorrectionReviewForm::DECISION_REJECT => 'Reprovar',
                     ], ['prompt' => 'Selecione a decisao']) ?>
-                    <?= $form->field($model, 'review_notes')->textarea(['rows' => 5, 'placeholder' => 'Explique a decisao, especialmente em caso de rejeicao.']) ?>
+                    <?= $form->field($model, 'review_notes')->textarea(['rows' => 5, 'placeholder' => 'Explique a decisao, especialmente em caso de reprovacao.']) ?>
                     <div class="alert alert-info small">
                         Ao aprovar, a universidade da participacao sera alterada, o ranking do trote sera reconstruido e, se existir certificado emitido, o PDF sera regenerado para manter consistencia.
                     </div>

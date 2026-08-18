@@ -7,6 +7,7 @@ use yii\helpers\Html;
 $this->title = 'Meu perfil';
 $selectedParticipationId = $selectedParticipationId ?? null;
 $selectedParticipacao = $selectedParticipacao ?? null;
+$latestRequest = $latestRequest ?? null;
 ?>
 <div class="container-fluid">
     <?php if (Yii::$app->session->hasFlash('success')): ?>
@@ -84,17 +85,32 @@ $selectedParticipacao = $selectedParticipacao ?? null;
                         <p class="text-muted small mb-2">Voce esta analisando a participacao do trote <strong><?= Html::encode($selectedParticipacao->trote->edicao ?? '-') ?></strong>.</p>
                         <div class="font-weight-bold text-dark mb-3"><?= Html::encode($selectedParticipacao->universidade->nome ?? 'Nao informada') ?></div>
 
-                        <?php if ($pendingRequest !== null): ?>
-                            <div class="alert alert-warning small mb-3">
-                                <div><strong>Solicitacao pendente:</strong> <?= Html::encode(ParticipacaoUniversidadeChangeRequest::getStatusList()[$pendingRequest->status] ?? $pendingRequest->status) ?></div>
-                                <div><strong>Nova universidade:</strong> <?= Html::encode($pendingRequest->newUniversidade->nome ?? '-') ?></div>
-                                <div class="mb-0"><strong>Motivo:</strong> <?= Html::encode($pendingRequest->motivo) ?></div>
+                        <?php if ($latestRequest !== null): ?>
+                            <?php
+                            $requestAlertClass = [
+                                ParticipacaoUniversidadeChangeRequest::STATUS_PENDENTE => 'alert-warning',
+                                ParticipacaoUniversidadeChangeRequest::STATUS_APROVADO => 'alert-success',
+                                ParticipacaoUniversidadeChangeRequest::STATUS_REJEITADO => 'alert-danger',
+                            ][$latestRequest->status] ?? 'alert-secondary';
+                            ?>
+                            <div class="alert <?= $requestAlertClass ?> small mb-3">
+                                <div><strong>Ultima solicitacao:</strong> <?= Html::encode(ParticipacaoUniversidadeChangeRequest::getStatusList()[$latestRequest->status] ?? $latestRequest->status) ?></div>
+                                <div><strong>Universidade anterior:</strong> <?= Html::encode($latestRequest->oldUniversidade->nome ?? '-') ?></div>
+                                <div><strong>Universidade solicitada:</strong> <?= Html::encode($latestRequest->newUniversidade->nome ?? '-') ?></div>
+                                <div><strong>Solicitada em:</strong> <?= Yii::$app->formatter->asDatetime($latestRequest->created_at, 'php:d/m/Y H:i') ?></div>
+                                <?php if ($latestRequest->reviewed_at): ?>
+                                    <div><strong>Analisada em:</strong> <?= Yii::$app->formatter->asDatetime($latestRequest->reviewed_at, 'php:d/m/Y H:i') ?></div>
+                                <?php endif; ?>
+                                <?php if ($latestRequest->review_notes): ?>
+                                    <div><strong>Retorno da administracao:</strong> <?= nl2br(Html::encode($latestRequest->review_notes)) ?></div>
+                                <?php endif; ?>
+                                <div class="mb-0"><strong>Motivo informado:</strong> <?= nl2br(Html::encode($latestRequest->motivo)) ?></div>
                             </div>
                         <?php endif; ?>
 
                         <?php if ($canSelfCorrect): ?>
                             <div class="alert alert-info small mb-3">
-                                A correcao imediata esta disponivel para a participacao selecionada porque ela ainda nao possui doacoes nem certificados vinculados.
+                                A correcao imediata esta disponivel para a participacao selecionada.
                             </div>
                             <?= Html::a('Corrigir universidade', ['corrigir-universidade', 'participacao_id' => $selectedParticipationId], ['class' => 'btn btn-info btn-sm']) ?>
                         <?php elseif ($canRequestCorrection): ?>

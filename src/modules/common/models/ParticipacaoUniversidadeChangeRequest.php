@@ -54,7 +54,7 @@ class ParticipacaoUniversidadeChangeRequest extends ActiveRecord
         return [
             self::STATUS_PENDENTE => 'Pendente',
             self::STATUS_APROVADO => 'Aprovado',
-            self::STATUS_REJEITADO => 'Rejeitado',
+            self::STATUS_REJEITADO => 'Reprovado',
         ];
     }
 

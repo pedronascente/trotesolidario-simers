@@ -14,7 +14,9 @@ class FileStorageService{
         }
 
         $filename = uniqid() . '.' . $file->extension;
-        $file->saveAs($path . '/' . $filename);
+        if (!$file->saveAs($path . '/' . $filename)) {
+            throw new \RuntimeException('Não foi possível salvar o arquivo enviado.');
+        }
 
         return $filename;
     }

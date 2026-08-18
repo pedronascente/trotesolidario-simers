@@ -79,7 +79,7 @@ class UsersController extends Controller
             'selfCorrectionReason' => $selfCorrectionData['selfCorrectionReason'],
             'canRequestCorrection' => $requestData['canRequestCorrection'],
             'requestCorrectionReason' => $requestData['requestCorrectionReason'],
-            'pendingRequest' => $requestData['pendingRequest'],
+            'latestRequest' => $requestData['latestRequest'],
             'availableParticipacoes' => $selfCorrectionData['availableParticipacoes'],
             'selectedParticipationId' => $selfCorrectionData['selectedParticipationId'],
             'selectedParticipacao' => $selectedParticipacao,

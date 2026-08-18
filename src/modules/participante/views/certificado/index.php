@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\common\models\Doacao;
 use yii\helpers\Html;
 
 $this->title = 'Meus certificados';
@@ -43,7 +44,7 @@ $this->title = 'Meus certificados';
                                             $tipos = [];
                                             if (!empty($certificado->participacao->doacoes)) {
                                                 foreach ($certificado->participacao->doacoes as $doacao) {
-                                                    if ($doacao->tipoDoacao) {
+                                                    if ($doacao->status === Doacao::STATUS_APROVADA && $doacao->tipoDoacao) {
                                                         $tipos[] = $doacao->tipoDoacao->nome;
                                                     }
                                                 }

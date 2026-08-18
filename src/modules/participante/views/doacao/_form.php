@@ -38,13 +38,6 @@ $isUpdate = !$model->isNewRecord;
             <?php endif; ?>
         </div>
         <div class="col-md-6">
-            <?php
-                $arrayPermitidos = ['Alimentos','Sangue'];
-                $tipoDoacao = array_filter($tipoDoacao, function($item) use ($arrayPermitidos) {
-                    return in_array($item, $arrayPermitidos);
-                });
-            ?>    
-
             <?= $form->field($model, 'tipo_doacao_id')->dropDownList($tipoDoacao, [
                 'prompt' => 'Selecione o tipo de doação',
                 'class' => 'form-control',

@@ -1,12 +1,17 @@
 <?php
 
 use app\assets\AdministratorThemeAsset;
+use app\modules\common\models\ParticipacaoUniversidadeChangeRequest;
 use kartik\dialog\Dialog;
 
 /* @var $this yii\web\View */
 /* @var $content string */
 
 AdministratorThemeAsset::register($this);
+
+$pendingUniversityRequestCount = (int) ParticipacaoUniversidadeChangeRequest::find()
+    ->where(['status' => ParticipacaoUniversidadeChangeRequest::STATUS_PENDENTE])
+    ->count();
 
 $this->beginPage();
 ?>
@@ -41,6 +46,9 @@ $this->beginPage();
                 <?= $this->render('partesadminsemjquery/_topbar') ?>
 
                 <div class="container-fluid">
+                    <?= $this->render('partesadminsemjquery/_pending_university_requests_alert', [
+                        'pendingRequestCount' => $pendingUniversityRequestCount,
+                    ]) ?>
                     <?= $content ?>
                 </div>
             </div>
