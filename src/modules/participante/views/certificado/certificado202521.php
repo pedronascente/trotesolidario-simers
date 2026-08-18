@@ -25,21 +25,7 @@ $asset = static function (string $fileName) use ($renderMode): string {
     }
 
     if ($renderMode === 'pdf') {
-        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        $mime = match ($extension) {
-            'png' => 'image/png',
-            'jpg', 'jpeg' => 'image/jpeg',
-            'gif' => 'image/gif',
-            'svg' => 'image/svg+xml',
-            default => 'application/octet-stream',
-        };
-
-        $data = file_get_contents($path);
-        if ($data === false) {
-            return '';
-        }
-
-        return 'data:' . $mime . ';base64,' . base64_encode($data);
+        return $path;
     }
 
     return Yii::getAlias('@web') . '/img/' . rawurlencode($fileName);
@@ -100,67 +86,23 @@ $logoPath = $asset('logo-site.png');
 $assinaturaMarciaPath = $asset('assinatura-marcia.png');
 $assinaturaMarceloPath = $asset('assinatura-marcelo.png');
 ?>
-<style type="text/css">
-    .tg {}
-    .tg td { font-family: AvenirLTStd-Roman; font-size: 14px;overflow: hidden;padding: 10px 5px;word-break: normal;}
-    .tg th { font-family: AvenirLTStd-Roman;font-size: 14px;font-weight: normal;overflow: hidden;padding: 10px 5px;word-break: normal;}
-    .tg .tg-baqh {text-align: center;vertical-align: top}
-    .tg .tg-0lax {text-align: left;vertical-align: top}
-</style>
-
-<body class="body">
-    <div style="background-color:#520EBA; background-repeat: no-repeat; background-size: cover;background-image: url('<?= $backgroundPath ?>');">
-        <div class="well"
-            style="background-color: transparent; border:none;height: 530px;">
-            <div class="row" style="padding:20px">
-                <table class="tg" style="table-layout: fixed; width: 100%">
-                    <thead>
-                        <tr>
-                            <th class="tg-0lax"></th>
-                            <th class="tg-baqh" colspan="3">
-                                <img src="<?= $logoPath ?>" style="width:auto;height: 130px;" alt="logo" />
-                            </th>
-                            <th class="tg-0lax"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="padding-top:20px;">
-                            <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: center;">
-                                <h1 style="color:#2e056b; ">CERTIFICADO</h1>
-                            </td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                                <p style="color: #2e056b; font-size: 22px;"><?= $textoPrincipal ?> </p>
-                            </td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                        <tr style="padding-top:20px;">
-                            <td class="tg-0lax"></td>
-                            <td class="tg-0lax"></td>
-                            <th class="tg-baqh" style="  flex-direction: row; justify-content: start; text-align: left;">
-                                <img src="<?=$assinaturaMarciaPath?>" style="width:auto;height: 80px;" alt="logo" />
-                            </th>
-                            <th class="tg-baqh" style="flex-direction: row; justify-content: end; text-align: center;">
-                                <img src="<?=$assinaturaMarceloPath?>" style="width:auto;height: 80px;" alt="logo" />
-                            </th>
-                        </tr>
-                        <tr>
-                            <td class="tg-0lax"></td>
-                            <th class="tg-baqh" colspan="3">
-                            </th>
-                            <td class="tg-0lax"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</body>
+<table cellpadding="0" cellspacing="0" style="width:277mm; height:155mm; border-collapse:collapse; font-family:Arial, sans-serif; color:#2e056b;">
+    <tr>
+        <td style="height:155mm; padding:0 13mm; text-align:center; vertical-align:top; background-color:#520eba; background-image:url('<?= $backgroundPath ?>'); background-repeat:no-repeat; background-image-resize:6;">
+            <div style="height:12mm;"></div>
+            <img src="<?= $logoPath ?>" alt="Logo Trote Solidário Simers" style="width:52mm; height:auto;">
+            <div style="margin-top:3mm; font-size:10mm; line-height:1;">CERTIFICADO</div>
+            <div style="margin-top:7mm; font-size:5.8mm; line-height:1.2;"><?= $textoPrincipal ?></div>
+            <table cellpadding="0" cellspacing="0" style="width:100%; margin-top:5mm; border-collapse:collapse; color:#2e056b;">
+                <tr>
+                    <td style="width:50%; text-align:center; vertical-align:top; font-size:2.7mm; line-height:1.25;">
+                        <img src="<?= $assinaturaMarciaPath ?>" alt="Assinatura de Marcia Pires Barbosa" style="width:48mm; height:auto;">
+                    </td>
+                    <td style="width:50%; text-align:center; vertical-align:top; font-size:2.7mm; line-height:1.25;">
+                        <img src="<?= $assinaturaMarceloPath ?>" alt="Assinatura de Marcelo Marsillac Matias" style="width:42mm; height:auto;">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

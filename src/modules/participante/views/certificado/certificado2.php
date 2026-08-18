@@ -36,9 +36,9 @@ $asset = static function (string $fileName) use ($renderMode): string {
 
 $logoPath = $asset('logocertificado.jpg');
 $nucleoPath = $asset('nucleoacademicoverde.jpg');
-$textoProjeto = 'O Trote Solid&aacute;rio ? um projeto realizado pelo N&uacute;cleo Acad&ecirc;mico Simers desde 2008. Esta a?o ? a uni&atilde;o da campanha de doa&ccedil;&atilde;o de sangue realizada pelos ingressantes das universidades de medicina e o convite ? sociedade para doar alimentos &agrave;s comunidades carentes, que mant&eacute;m a tradi&ccedil;&atilde;o do trote universit&aacute;rio, tornando realidade o objetivo de todos os m&eacute;dicos: SALVAR VIDAS.';
+$textoProjeto = 'O Trote Solid&aacute;rio &eacute; um projeto realizado pelo N&uacute;cleo Acad&ecirc;mico Simers desde 2008. Esta a&ccedil;&atilde;o &eacute; a uni&atilde;o da campanha de doa&ccedil;&atilde;o de sangue realizada pelos ingressantes das universidades de medicina e o convite &agrave; sociedade para doar alimentos &agrave;s comunidades carentes, que mant&eacute;m a tradi&ccedil;&atilde;o do trote universit&aacute;rio, tornando realidade o objetivo de todos os m&eacute;dicos: SALVAR VIDAS.';
 $textoReconhecimento = 'Como reconhecimento p&uacute;blico, o Trote Solid&aacute;rio foi vencedor do Pr&ecirc;mio Top Cidadania 2013 da ABRH-RS e do Pr&ecirc;mio Ser Humano Oswaldo Checchia 2014 da ABRH-Nacional, na modalidade Desenvolvimento Sustent&aacute;vel e Responsabilidade Social/ Organiza&ccedil;&atilde;o Cidad&atilde;.';
-$textoAtual = 'Atualmente o Trote Solid&aacute;rio promove as seguintes a&ccedil;&otilde;es: doa&ccedil;&atilde;o de sangue, coleta de alimentos, tampinhas pl?sticas e livros pr?-vestibular para doa&ccedil;&atilde;o junto a entidades carentes.';
+$textoAtual = 'Atualmente o Trote Solid&aacute;rio promove as seguintes a&ccedil;&otilde;es: doa&ccedil;&atilde;o de sangue, coleta de alimentos, tampinhas pl&aacute;sticas e livros pr&eacute;-vestibular para doa&ccedil;&atilde;o junto a entidades carentes.';
 ?>
 <style type="text/css">
     .tg td,

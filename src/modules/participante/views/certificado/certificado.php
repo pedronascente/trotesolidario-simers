@@ -110,7 +110,7 @@ $frase = Html::encode((string) ($model['frase_certificado'] ?? ''));
                         <td class="tg-0lax"></td>
                         <th class="tg-baqh" colspan="3">
                             <?php if ($participacaoPath !== ''): ?>
-                                <img src="<?= $participacaoPath ?>" style="width:auto; height:80px;" alt="Participa?o" />
+                                <img src="<?= $participacaoPath ?>" style="width:auto; height:80px;" alt="Participação" />
                             <?php endif; ?>
                         </th>
                         <td class="tg-0lax"></td>

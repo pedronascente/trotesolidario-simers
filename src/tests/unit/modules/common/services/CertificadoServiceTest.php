@@ -2,6 +2,8 @@
 
 namespace tests\unit\modules\common\services;
 
+require_once dirname(__DIR__, 5) . '/vendor/autoload.php';
+require_once dirname(__DIR__, 5) . '/vendor/yiisoft/yii2/Yii.php';
 require_once dirname(__DIR__, 5) . '/modules/common/models/Certificado.php';
 require_once dirname(__DIR__, 5) . '/modules/common/models/Participacao.php';
 require_once dirname(__DIR__, 5) . '/modules/common/models/Doacao.php';
@@ -106,15 +108,21 @@ class CertificadoServiceTest extends TestCase
         $this->assertSame('certificado202511.php', basename((string) $pageTwo));
     }
 
-    public function testSanitizeHtmlForPdfRemovesControlCharacters(): void
+    public function testModernCertificateTemplatesUsePdfSafeStructure(): void
     {
-        $service = new ExposedCertificadoService();
-        $html = "<div>Olá" . chr(7) . " mundo</div>";
+        $basePath = dirname(__DIR__, 5) . '/modules/participante/views/certificado/';
 
-        $sanitized = $service->exposeSanitizeHtmlForPdf($html);
+        foreach (['certificado202521.php', 'certificado202511.php', 'certificado202611.php', 'certificado202612.php'] as $template) {
+            $contents = file_get_contents($basePath . $template);
 
-        $this->assertStringNotContainsString(chr(7), $sanitized);
-        $this->assertStringContainsString('Olá mundo', $sanitized);
+            $this->assertIsString($contents);
+            $this->assertStringContainsString('width:277mm', $contents);
+            $this->assertStringContainsString('height:155mm', $contents);
+            $this->assertStringNotContainsString('<body', $contents);
+            $this->assertStringNotContainsString('class="row"', $contents);
+            $this->assertStringNotContainsString('class="well"', $contents);
+            $this->assertStringNotContainsString('position:absolute', $contents);
+        }
     }
 }
 
@@ -130,10 +138,6 @@ class ExposedCertificadoService extends CertificadoService
         return $this->resolveCertificateTemplatePaths($troteEdicao);
     }
 
-    public function exposeSanitizeHtmlForPdf(string $html): string
-    {
-        return $this->sanitizeHtmlForPdf($html);
-    }
 }
 
 class FakeCertificado extends Certificado

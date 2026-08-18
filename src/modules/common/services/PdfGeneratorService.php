@@ -30,7 +30,6 @@ class PdfGeneratorService
 
         try {
             $mpdf = $this->createMpdfInstance($tempDir, $title);
-            $this->loadBootstrapStyles($mpdf);
             $this->writePages($mpdf, $pages);
             $mpdf->Output($outputPath, Destination::FILE);
         } catch (\Throwable $e) {
@@ -63,37 +62,6 @@ class PdfGeneratorService
         $mpdf->SetTitle($title);
 
         return $mpdf;
-    }
-
-    private function loadBootstrapStyles(Mpdf $mpdf): void
-    {
-        $bootstrapCssPath = Yii::getAlias('@vendor', false);
-        if (is_string($bootstrapCssPath) && $bootstrapCssPath !== '') {
-            $bootstrapCssPath .= DIRECTORY_SEPARATOR . 'kartik-v'
-                . DIRECTORY_SEPARATOR . 'yii2-mpdf'
-                . DIRECTORY_SEPARATOR . 'src'
-                . DIRECTORY_SEPARATOR . 'assets'
-                . DIRECTORY_SEPARATOR . 'kv-mpdf-bootstrap.min.css';
-
-            if (is_file($bootstrapCssPath)) {
-                $bootstrapCss = file_get_contents($bootstrapCssPath);
-                if (is_string($bootstrapCss) && $bootstrapCss !== '') {
-                    $mpdf->WriteHTML($bootstrapCss, 1);
-                }
-            }
-        }
-
-        if (class_exists('\\kartik\\mpdf\\Pdf')) {
-            $pdfExtraClass = '\\kartik\\mpdf\\Pdf';
-            /** @var object $pdfExtra */
-            $pdfExtra = new $pdfExtraClass();
-            if (method_exists($pdfExtra, 'getCss')) {
-                $extraCss = $pdfExtra->getCss();
-                if (is_string($extraCss) && $extraCss !== '') {
-                    $mpdf->WriteHTML($extraCss, 1);
-                }
-            }
-        }
     }
 
     private function writePages(Mpdf $mpdf, array $pages): void
