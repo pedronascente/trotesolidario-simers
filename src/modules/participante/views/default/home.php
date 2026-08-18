@@ -1,13 +1,12 @@
 <?php
 
 use app\modules\common\models\Helper;
+use app\assets\ParticipantDashboardAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Visão geral';
-$this->registerCssFile('@web/css/participant-dashboard.css', [
-    'depends' => [\app\assets\AdminAsset::class],
-]);
+ParticipantDashboardAsset::register($this);
 
 $troteAtivoGlobalDisplayEdition = $troteAtivoGlobal !== null ? str_replace('.', '/', (string) $troteAtivoGlobal->edicao) : '-';
 $hasMultipleTrotes = !empty($trotesDisponiveis) && count($trotesDisponiveis) > 1;

@@ -1,15 +1,12 @@
 <?php
 
-use app\assets\AdminAsset;
+use app\assets\AdministratorThemeAsset;
 use kartik\dialog\Dialog;
 
 /* @var $this yii\web\View */
 /* @var $content string */
 
-AdminAsset::register($this);
-$this->registerCssFile('@web/css/administrator-theme.css', [
-    'depends' => [AdminAsset::class],
-]);
+AdministratorThemeAsset::register($this);
 
 $this->beginPage();
 ?>

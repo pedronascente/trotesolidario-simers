@@ -4,6 +4,7 @@
 
 use app\assets\AdminAsset;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 AdminAsset::register($this);
 $menu_active = Yii::$app->controller->id;
@@ -18,7 +19,7 @@ $displayName = $identity ? $identity->name : 'Participante';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title><?= Html::encode($this->title ?: 'Trote Solidário') ?></title>
-    <link rel="shortcut icon" href="/img/favicon_trote.png" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= Html::encode(Url::to('@web/img/favicon_trote.png')) ?>" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
     <?php $this->registerCsrfMetaTags() ?>
     <?php $this->head() ?>
@@ -27,7 +28,7 @@ $displayName = $identity ? $identity->name : 'Participante';
 <?php $this->beginBody() ?>
 <div id="wrapper">
     <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/participante/default/home">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Html::encode(Url::to(['/participante/default/home'])) ?>">
             <span class="sidebar-brand-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></span>
             <span class="sidebar-brand-copy">
                 <strong>Trote</strong>
@@ -38,7 +39,7 @@ $displayName = $identity ? $identity->name : 'Participante';
         <hr class="sidebar-divider my-0">
 
         <li class="nav-item <?= $menu_active === 'default' && $action_id === 'home' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/default/home" <?= $menu_active === 'default' && $action_id === 'home' ? 'aria-current="page"' : '' ?>>
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/home'])) ?>" <?= $menu_active === 'default' && $action_id === 'home' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
@@ -49,31 +50,31 @@ $displayName = $identity ? $identity->name : 'Participante';
         <div class="sidebar-heading">Minha jornada</div>
 
         <li class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/doacao" <?= $menu_active === 'doacao' ? 'aria-current="page"' : '' ?>>
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/doacao'])) ?>" <?= $menu_active === 'doacao' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-hand-holding-heart"></i>
                 <span>Doações</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/participante/default/home#doacao-alimentos">
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/home', '#' => 'doacao-alimentos'])) ?>">
                 <i class="fas fa-apple-alt"></i>
                 <span>Doar alimentos</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/default/ranking" <?= $menu_active === 'default' && $action_id === 'ranking' ? 'aria-current="page"' : '' ?>>
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/ranking'])) ?>" <?= $menu_active === 'default' && $action_id === 'ranking' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-trophy"></i>
                 <span>Ranking</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/certificado" <?= $menu_active === 'certificado' ? 'aria-current="page"' : '' ?>>
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/certificado'])) ?>" <?= $menu_active === 'certificado' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-file-contract"></i>
                 <span>Certificados</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'users' ? 'active' : '' ?>">
-            <a class="nav-link" href="/participante/users/perfil" <?= $menu_active === 'users' ? 'aria-current="page"' : '' ?>>
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/users/perfil'])) ?>" <?= $menu_active === 'users' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-user"></i>
                 <span>Meu perfil</span>
             </a>
@@ -103,7 +104,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                 </div>
 
                 <ul class="navbar-nav ml-auto">
-                    <div class="topbar-divider d-none d-sm-block"></div>
+                    <li class="topbar-divider d-none d-sm-block" aria-hidden="true"></li>
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="participant-user-avatar" aria-hidden="true"><i class="fas fa-user"></i></span>
@@ -113,7 +114,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                             <i class="fas fa-chevron-down fa-sm fa-fw ml-2 participant-user-chevron"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="/participante/users/perfil">
+                            <a class="dropdown-item" href="<?= Html::encode(Url::to(['/participante/users/perfil'])) ?>">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Meu perfil
                             </a>

@@ -5,6 +5,7 @@ namespace tests\unit\modules\participante\controllers;
 require_once dirname(__DIR__, 4) . '/_bootstrap.php';
 require_once dirname(__DIR__, 5) . '/modules/participante/controllers/DefaultController.php';
 require_once dirname(__DIR__, 5) . '/modules/common/services/contracts/ParticipacaoServiceInterface.php';
+require_once dirname(__DIR__, 5) . '/modules/common/services/contracts/RankingCacheServiceInterface.php';
 require_once dirname(__DIR__, 5) . '/modules/common/models/Participacao.php';
 require_once dirname(__DIR__, 5) . '/modules/common/models/Trote.php';
 require_once dirname(__DIR__, 5) . '/models/User.php';
@@ -14,6 +15,7 @@ use app\modules\common\models\ParticipacaoUniversidadeChangeRequest;
 use app\modules\common\models\ParticipantUniversityCorrectionForm;
 use app\modules\common\models\ParticipantUniversityCorrectionRequestForm;
 use app\modules\common\services\contracts\ParticipacaoServiceInterface;
+use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use app\modules\participante\controllers\DefaultController;
 use PHPUnit\Framework\TestCase;
 use Yii;
@@ -32,6 +34,7 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
     private $oldResponse;
     private $oldSession;
     private $oldParticipacaoServiceDefinition;
+    private $oldRankingServiceDefinition;
 
     protected function setUp(): void
     {
@@ -48,6 +51,9 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
         $this->oldSession = Yii::$app->get('session');
         $this->oldParticipacaoServiceDefinition = Yii::$container->has(ParticipacaoServiceInterface::class)
             ? Yii::$container->getDefinitions()[ParticipacaoServiceInterface::class]
+            : null;
+        $this->oldRankingServiceDefinition = Yii::$container->has(RankingCacheServiceInterface::class)
+            ? Yii::$container->getDefinitions()[RankingCacheServiceInterface::class]
             : null;
 
         $db = new Connection([
@@ -69,6 +75,7 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
     protected function tearDown(): void
     {
         $_POST = [];
+        $_GET = [];
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
         if ($this->oldDb !== null) {
@@ -99,6 +106,11 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
         Yii::$container->clear(ParticipacaoServiceInterface::class);
         if ($this->oldParticipacaoServiceDefinition !== null) {
             Yii::$container->set(ParticipacaoServiceInterface::class, $this->oldParticipacaoServiceDefinition);
+        }
+
+        Yii::$container->clear(RankingCacheServiceInterface::class);
+        if ($this->oldRankingServiceDefinition !== null) {
+            Yii::$container->set(RankingCacheServiceInterface::class, $this->oldRankingServiceDefinition);
         }
 
         parent::tearDown();
@@ -142,6 +154,40 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
             'Nao foi possivel iniciar sua participacao agora. Tente novamente em instantes.',
             Yii::$app->session->getFlash('error')
         );
+    }
+
+    public function testHomeSummaryRespectsSelectedTrote(): void
+    {
+        $this->insert('trote', [
+            'id' => 8,
+            'titulo' => 'Outra edição',
+            'edicao' => '2026.2',
+            'status' => 'ativo',
+            'data_inicio' => '2026-07-01',
+            'data_fim' => '2026-12-31',
+        ]);
+        $this->insert('participacao', ['id' => 1, 'user_id' => 99, 'trote_id' => 7, 'universidade_id' => 10, 'status' => 'ativo']);
+        $this->insert('participacao', ['id' => 2, 'user_id' => 99, 'trote_id' => 8, 'universidade_id' => 10, 'status' => 'ativo']);
+        $this->insert('doacao', ['id' => 1, 'participacao_id' => 1, 'status' => 'aprovada']);
+        $this->insert('doacao', ['id' => 2, 'participacao_id' => 1, 'status' => 'pendente']);
+        $this->insert('doacao', ['id' => 3, 'participacao_id' => 2, 'status' => 'aprovada']);
+        $this->insert('certificado', ['id' => 1, 'participacao_id' => 1]);
+        $this->insert('certificado', ['id' => 2, 'participacao_id' => 2]);
+
+        $_GET['trote_id'] = '7';
+        Yii::$container->set(ParticipacaoServiceInterface::class, static fn() => new FakeParticipacaoServiceForHomeTest());
+        Yii::$container->set(RankingCacheServiceInterface::class, static fn() => new FakeRankingServiceForHomeTest());
+
+        $controller = new TestParticipanteDefaultHomeController('default', new Module('participante'));
+        $result = $controller->actionHome();
+
+        $this->assertSame(7, $result['params']['selectedTroteId']);
+        $this->assertSame([
+            'doacoes' => 2,
+            'doacoesAprovadas' => 1,
+            'doacoesPendentes' => 1,
+            'certificados' => 1,
+        ], $result['params']['dashboardSummary']);
     }
 
     private function createSchema(Connection $db): void
@@ -294,6 +340,24 @@ class FakeParticipacaoServiceForHomeTest implements ParticipacaoServiceInterface
     public function rejectUniversityCorrectionRequest(int $requestId, int $reviewedBy, ?string $reviewNotes = null): ParticipacaoUniversidadeChangeRequest
     {
         throw new \BadMethodCallException('Not implemented.');
+    }
+}
+
+class FakeRankingServiceForHomeTest implements RankingCacheServiceInterface
+{
+    public function findTrotes(): array
+    {
+        return [];
+    }
+
+    public function rebuild(?int $troteId = null): int
+    {
+        return 0;
+    }
+
+    public function getUniversityRanking(?int $troteId = null): array
+    {
+        return [];
     }
 }
 

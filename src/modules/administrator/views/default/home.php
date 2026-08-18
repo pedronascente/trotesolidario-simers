@@ -1,12 +1,11 @@
 <?php
 
+use app\assets\AdministratorDashboardAsset;
 use app\modules\common\models\Doacao;
 use yii\helpers\Html;
 
 $this->title = 'Visão geral';
-$this->registerCssFile('@web/css/administrator-dashboard.css', [
-    'depends' => [\app\assets\AdminAsset::class],
-]);
+AdministratorDashboardAsset::register($this);
 
 $cards = [
     ['label' => 'Usuários', 'value' => $totalUsuarios, 'hint' => 'Contas cadastradas', 'variant' => 'primary', 'icon' => 'fas fa-users'],
