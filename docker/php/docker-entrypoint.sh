@@ -13,6 +13,7 @@ prepare_dir /var/www/html/runtime/logs
 prepare_dir /var/www/html/runtime/debug
 prepare_dir /var/www/html/runtime/cache
 prepare_dir /var/www/html/runtime/mpdf
+prepare_dir /var/www/html/web/assets
 prepare_dir /var/www/html/web/img
 prepare_dir /var/www/html/web/imagens
 prepare_dir /var/www/html/web/imagens/doacoes
