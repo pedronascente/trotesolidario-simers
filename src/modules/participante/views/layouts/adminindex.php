@@ -49,6 +49,13 @@ $displayName = $identity ? $identity->name : 'Participante';
 
         <div class="sidebar-heading">Minha jornada</div>
 
+        <li class="nav-item <?= $menu_active === 'album-fotos' ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/album-fotos'])) ?>" <?= $menu_active === 'album-fotos' ? 'aria-current="page"' : '' ?>>
+                <i class="fas fa-images"></i>
+                <span>Álbum de fotos</span>
+            </a>
+        </li>
+
         <li class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/doacao'])) ?>" <?= $menu_active === 'doacao' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-hand-holding-heart"></i>
