@@ -55,7 +55,12 @@ $displayName = $identity ? $identity->name : 'Participante';
                 <span>Álbum de fotos</span>
             </a>
         </li>
-
+        <li class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/certificado'])) ?>" <?= $menu_active === 'certificado' ? 'aria-current="page"' : '' ?>>
+                <i class="fas fa-file-contract"></i>
+                <span>Certificados</span>
+            </a>
+        </li>
         <li class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/doacao'])) ?>" <?= $menu_active === 'doacao' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-hand-holding-heart"></i>
@@ -68,22 +73,22 @@ $displayName = $identity ? $identity->name : 'Participante';
                 <span>Doar alimentos</span>
             </a>
         </li>
-        <li class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/ranking'])) ?>" <?= $menu_active === 'default' && $action_id === 'ranking' ? 'aria-current="page"' : '' ?>>
-                <i class="fas fa-trophy"></i>
-                <span>Ranking</span>
-            </a>
-        </li>
-        <li class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/certificado'])) ?>" <?= $menu_active === 'certificado' ? 'aria-current="page"' : '' ?>>
-                <i class="fas fa-file-contract"></i>
-                <span>Certificados</span>
+        <li class="nav-item <?= $menu_active === 'instituicao' ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/instituicao'])) ?>" <?= $menu_active === 'instituicao' ? 'aria-current="page"' : '' ?>>
+                <i class="fas fa-building"></i>
+                <span>Instituição</span>
             </a>
         </li>
         <li class="nav-item <?= $menu_active === 'users' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/users/perfil'])) ?>" <?= $menu_active === 'users' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-user"></i>
                 <span>Meu perfil</span>
+            </a>
+        </li>
+        <li class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/ranking'])) ?>" <?= $menu_active === 'default' && $action_id === 'ranking' ? 'aria-current="page"' : '' ?>>
+                <i class="fas fa-trophy"></i>
+                <span>Ranking</span>
             </a>
         </li>
         <li class="nav-item">

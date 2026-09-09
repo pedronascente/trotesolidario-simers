@@ -50,8 +50,8 @@ class CertificadoController extends Controller
     }
 
     public function beforeAction($action)
-    {
-        if (Yii::$app->user->isGuest) {
+    { 
+    if (Yii::$app->user->isGuest) {
             return $this->redirect(['/auth/login']);
         }
 

@@ -14,7 +14,7 @@
     background: #f6f7fa;
 }
 
-.administrator-shell #content > .container-fluid {
+.administrator-shell #content>.container-fluid {
     padding: 1.5rem;
 }
 
@@ -82,19 +82,19 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-.administrator-shell .sidebar .nav-item > .nav-link {
+.administrator-shell .sidebar .nav-item>.nav-link {
     border-radius: 0.45rem;
 }
 
-.administrator-shell .sidebar .nav-item.active > .nav-link,
-.administrator-shell .sidebar-hover-menu .submenu .nav-item.active > .nav-link {
+.administrator-shell .sidebar .nav-item.active>.nav-link,
+.administrator-shell .sidebar-hover-menu .submenu .nav-item.active>.nav-link {
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
     border-left-color: var(--admin-lime);
 }
 
-.administrator-shell .sidebar .nav-item.active > .nav-link i,
-.administrator-shell .sidebar-hover-menu .submenu .nav-item.active > .nav-link i {
+.administrator-shell .sidebar .nav-item.active>.nav-link i,
+.administrator-shell .sidebar-hover-menu .submenu .nav-item.active>.nav-link i {
     color: var(--admin-lime);
 }
 
@@ -167,7 +167,7 @@
 
 @media (min-width: 768px) {
     .administrator-shell .sidebar:not(.toggled) {
-        width: 15.5rem !important;
+        width: 18.5rem !important;
     }
 
     .administrator-shell .sidebar .nav-item .nav-link {
@@ -180,7 +180,7 @@
 }
 
 @media (max-width: 767.98px) {
-    .administrator-shell #content > .container-fluid {
+    .administrator-shell #content>.container-fluid {
         padding: 1rem;
     }
 

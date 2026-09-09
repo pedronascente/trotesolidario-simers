@@ -99,7 +99,6 @@ class DefaultController extends Controller
             ->all();
 
         $troteAtivo = $trotesAtivos[0] ?? null;
-
         $troteResumo = null;
         $rankingUniversidades = [];
         $trotesAtivosResumo = [];
