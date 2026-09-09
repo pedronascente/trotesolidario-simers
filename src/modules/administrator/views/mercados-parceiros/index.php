@@ -1,137 +1,88 @@
 <?php
 
+use kartik\alert\Alert;
+use kartik\grid\GridView;
 use yii\helpers\Html;
-use yii\grid\GridView;
 
-/** @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Mercados parceiros';
-
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 
+<style>
+    .btn-group-actions { display: flex; gap: 6px; justify-content: center; align-items: center; }
+</style>
+
 <div class="container-fluid">
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Mercado parceiro', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000]) ?>
+    <?php endif; ?>
+
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Mercado parceiro', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000]) ?>
+    <?php endif; ?>
 
     <div class="card shadow mb-4">
-
-        <div class="card-body">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <h1 class="h4 mb-0">
-                    <?= Html::encode($this->title) ?>
-                </h1>
-
-                <?= Html::a(
-                    'Cadastrar mercado',
-                    ['create'],
-                    ['class' => 'btn btn-success']
-                ) ?>
-
-            </div>
-
-            <?php if (Yii::$app->session->hasFlash('success')): ?>
-
-                <div class="alert alert-success" role="alert">
-                    <?= Html::encode(
-                        Yii::$app->session->getFlash('success')
-                    ) ?>
-                </div>
-
-            <?php endif; ?>
-
-            <?php if (Yii::$app->session->hasFlash('error')): ?>
-
-                <div class="alert alert-danger" role="alert">
-                    <?= Html::encode(
-                        Yii::$app->session->getFlash('error')
-                    ) ?>
-                </div>
-
-            <?php endif; ?>
+        <div class="p-3">
+            <p>
+                <?= Html::a('Cadastrar mercado', ['create'], ['class' => 'btn btn-success']) ?>
+            </p>
 
             <?= GridView::widget([
-
                 'dataProvider' => $dataProvider,
-
-                'summary' => 'Exibindo {begin}-{end} de {totalCount} mercados parceiros.',
-
-                'emptyText' => 'Nenhum mercado parceiro cadastrado.',
-
-                'tableOptions' => [
-                    'class' => 'table table-striped table-hover mb-0'
+                'pjax' => true,
+                'hover' => true,
+                'panel' => [
+                    'heading' => '<i class="fa fa-store"></i> Lista de mercados parceiros',
+                    'before' => '<div style="padding-top: 7px;"><em></em></div>',
                 ],
-
+                'export' => ['fontAwesome' => true],
+                'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
                 'columns' => [
-
+                    ['class' => 'yii\\grid\\SerialColumn'],
+                    ['attribute' => 'nome_mercado', 'vAlign' => 'middle'],
+                    ['attribute' => 'endereco', 'vAlign' => 'middle'],
+                    ['attribute' => 'numero', 'vAlign' => 'middle'],
+                    ['attribute' => 'bairro', 'vAlign' => 'middle'],
                     [
-                        'class' => 'yii\grid\SerialColumn'
-                    ],
-
-                    'nome_mercado',
-
-                    'endereco',
-
-                    'numero',
-
-                    'bairro',
-
-                    [
-                        'class' => 'yii\grid\ActionColumn',
-
-                        'template' => '{delete}',
-
-                        'headerOptions' => [
-                            'style' => 'width: 90px;'
-                        ],
-
+                        'class' => '\\kartik\\grid\\ActionColumn',
+                        'template' => '<div class="btn-group-actions">{update} {delete}</div>',
+                        'headerOptions' => ['style' => 'width:120px'],
                         'buttons' => [
-
-                            'delete' => function ($url, $model) {
-
+                            'update' => function ($url, $model) {
                                 return Html::a(
-                                    '<i class="fas fa-trash-alt" aria-hidden="true"></i>',
-
+                                    '<i class="fas fa-pencil-alt" aria-hidden="true"></i>',
+                                    ['update', 'id' => $model->id],
                                     [
-                                        'delete',
-                                        'id' => $model->id
-                                    ],
-
-                                    [
-                                        'class' => 'btn btn-sm btn-danger',
-
-                                        'title' => 'Excluir mercado',
-
-                                        'aria-label' =>
-                                            'Excluir ' . $model->nome_mercado,
-
-                                        'data' => [
-
-                                            'confirm' =>
-                                                'Deseja realmente excluir o mercado "' .
-                                                $model->nome_mercado .
-                                                '"?',
-
-                                            'method' => 'post',
-
-                                        ],
-
+                                        'class' => 'btn btn-sm btn-primary',
+                                        'title' => 'Editar mercado',
+                                        'aria-label' => 'Editar ' . $model->nome_mercado,
+                                        'data-pjax' => '0',
                                     ]
                                 );
-
                             },
-
+                            'delete' => function ($url, $model) {
+                                return Html::a(
+                                    '<i class="fas fa-trash-alt" aria-hidden="true"></i>',
+                                    ['delete', 'id' => $model->id],
+                                    [
+                                        'class' => 'btn btn-sm btn-danger',
+                                        'title' => 'Excluir mercado',
+                                        'aria-label' => 'Excluir ' . $model->nome_mercado,
+                                        'data' => [
+                                            'confirm' => 'Deseja realmente excluir o mercado "' . $model->nome_mercado . '"?',
+                                            'method' => 'post',
+                                            'pjax' => '0',
+                                        ],
+                                    ]
+                                );
+                            },
                         ],
-
                     ],
-
                 ],
-
-            ]) ?>
-
+            ]); ?>
         </div>
-
     </div>
-
 </div>

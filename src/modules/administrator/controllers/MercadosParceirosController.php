@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 class MercadosParceirosController extends Controller
 {
@@ -45,6 +46,9 @@ class MercadosParceirosController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => MercadoParceiro::find()->orderBy(['nome_mercado' => SORT_ASC]),
+            'pagination' => [
+                'pageSize' => 10,
+            ],
         ]);
 
         return $this->render('index', compact('dataProvider'));
@@ -63,13 +67,22 @@ class MercadosParceirosController extends Controller
         return $this->render('create', compact('model'));
     }
 
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Mercado parceiro atualizado com sucesso.');
+
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('update', compact('model'));
+    }
+
     public function actionDelete($id)
     {
-        $model = MercadoParceiro::findOne($id);
-
-        if ($model === null) {
-            throw new NotFoundHttpException('Mercado parceiro não encontrado.');
-        }
+        $model = $this->findModel($id);
 
         if ($model->delete()) {
             Yii::$app->session->setFlash('success', 'Mercado parceiro excluído com sucesso.');
@@ -80,6 +93,12 @@ class MercadosParceirosController extends Controller
         return $this->redirect(['index']);
     }
 
+    protected function findModel($id): MercadoParceiro
+    {
+        if (($model = MercadoParceiro::findOne($id)) !== null) {
+            return $model;
+        }
 
-
+        throw new NotFoundHttpException('Mercado parceiro não encontrado.');
+    }
 }
