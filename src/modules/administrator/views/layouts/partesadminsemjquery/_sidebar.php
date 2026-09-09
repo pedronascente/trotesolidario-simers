@@ -5,28 +5,13 @@ use yii\helpers\Url;
 $controller = Yii::$app->controller->id;
 
 $menuGroups = [
-    'Planejamento' => [
-        'icon' => 'fa-folder-open',
+    'Cadastros' => [
+        'icon' => 'fa-address-book',
         'items' => [
-            'trote' => ['label' => 'Trotes', 'icon' => 'fa-book'],
-            'evento' => ['label' => 'Eventos', 'icon' => 'fa-calendar'],
-            'universidade' => ['label' => 'Universidades', 'icon' => 'fa-university'],
-            'tipo-doacao' => ['label' => 'Tipos de Doação', 'icon' => 'fa-donate'],
-        ],
-    ],
-    'Pessoas' => [
-        'icon' => 'fa-users',
-        'items' => [
-            'user' => ['label' => 'Usuários', 'icon' => 'fa-users'],
-            'participacao' => ['label' => 'Participações', 'icon' => 'fa-user-plus'],
-        ],
-    ],
-    'Operacao' => [
-        'icon' => 'fa-cogs',
-        'items' => [
-            'doacao' => ['label' => 'Doações', 'icon' => 'fa-certificate'],
-            'certificado' => ['label' => 'Certificados', 'icon' => 'fa-file-alt'],
-            'ranking' => ['label' => 'Ranking', 'icon' => 'fa-trophy'],
+            'cidades-participantes' => ['label' => 'Cidades participantes', 'icon' => 'fa-city'],
+            'comissoes-organizadoras' => ['label' => 'Comissões organizadoras', 'icon' => 'fa-users'],
+            'mercados-parceiros' => ['label' => 'Mercados parceiros', 'icon' => 'fa-store'],
+             'universidade' => ['label' => 'Universidades', 'icon' => 'fa-university'],
         ],
     ],
     'Comunicacao' => [
@@ -35,6 +20,31 @@ $menuGroups = [
             'banner' => ['label' => 'Banners', 'icon' => 'fa-cubes'],
             'informativo' => ['label' => 'Informativos', 'icon' => 'fa-info-circle'],
             'regulamento' => ['label' => 'Regulamentos', 'icon' => 'fa-bookmark'],
+        ],
+    ],
+    'Operacao' => [
+        'icon' => 'fa-cogs',
+        'items' => [
+            'certificado' => ['label' => 'Certificados', 'icon' => 'fa-file-alt'],
+            'doacao' => ['label' => 'Doações', 'icon' => 'fa-certificate'],
+            'ranking' => ['label' => 'Ranking', 'icon' => 'fa-trophy'],
+        ],
+    ],
+    'Pessoas' => [
+        'icon' => 'fa-users',
+        'items' => [
+            'participacao' => ['label' => 'Participações', 'icon' => 'fa-user-plus'],
+            'user' => ['label' => 'Usuários', 'icon' => 'fa-users'],
+        ],
+    ],
+    'Planejamento' => [
+        'icon' => 'fa-folder-open',
+        'items' => [
+            'evento' => ['label' => 'Eventos', 'icon' => 'fa-calendar'],
+            'tipo-doacao' => ['label' => 'Tipos de Doação', 'icon' => 'fa-donate'],
+            'trote' => ['label' => 'Trotes', 'icon' => 'fa-book'],
+            'mercado-universidade' => ['label' => 'Vincular Mercados a Universidades', 'icon' => 'fa-store'],
+           
         ],
     ],
 ];
