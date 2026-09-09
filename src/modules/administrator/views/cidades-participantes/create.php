@@ -1,0 +1,19 @@
+<?php
+
+use yii\helpers\Html;
+
+/* @var $model app\modules\common\models\CidadeParticipante */
+
+$this->title = 'Cadastrar cidade participante';
+$this->params['breadcrumbs'][] = ['label' => 'Cidades participantes', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+?>
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h1 class="h4 mb-3"><?= Html::encode($this->title) ?></h1>
+            <?= $this->render('_form', ['model' => $model]) ?>
+        </div>
+    </div>
+</div>
