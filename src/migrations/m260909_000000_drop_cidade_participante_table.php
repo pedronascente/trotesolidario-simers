@@ -2,10 +2,23 @@
 
 use yii\db\Migration;
 
-class m260903_203100_create_cidade_participante_table extends Migration
+class m260909_000000_drop_cidade_participante_table extends Migration
 {
     public function safeUp()
     {
+        if ($this->db->schema->getTableSchema('{{%cidade_participante}}', true) === null) {
+            return;
+        }
+
+        $this->dropTable('{{%cidade_participante}}');
+    }
+
+    public function safeDown()
+    {
+        if ($this->db->schema->getTableSchema('{{%cidade_participante}}', true) !== null) {
+            return;
+        }
+
         $this->createTable('{{%cidade_participante}}', [
             'id' => $this->primaryKey(),
             'cidade' => $this->string(255)->notNull(),
@@ -20,10 +33,5 @@ class m260903_203100_create_cidade_participante_table extends Migration
             ['cidade', 'uf'],
             true
         );
-    }
-
-    public function safeDown()
-    {
-        $this->dropTable('{{%cidade_participante}}');
     }
 }
