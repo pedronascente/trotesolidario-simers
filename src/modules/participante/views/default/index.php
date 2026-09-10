@@ -1,5 +1,6 @@
 <?php
 use app\modules\common\models\Helper;
+use app\modules\common\models\Banner;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -8,17 +9,17 @@ $this->registerCss("
     .trote-container { font-family: 'Poppins', sans-serif; color: #1f1d44; }
     .img-banner { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
     .img-banner:hover { transform: scale(1.01); }
-    
+
     .hero-title { font-weight: 800; color: #1f1d44; letter-spacing: -1px; margin-top: 2rem; }
     .hero-subtitle { font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto 2rem; }
-    
+
     .btn-custom { border-radius: 50px; padding: 12px 30px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     .btn-custom:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-    
+
     .instruction-card { background: linear-gradient(135deg, #00b38d 0%, #00d4a7 100%); border-radius: 20px; padding: 30px; color: #fff; margin: 40px 0; border: none; }
-    
-    .uni-card { 
-        background: #1f1d44; color: #fff; border-radius: 12px; padding: 20px; 
+
+    .uni-card {
+        background: #1f1d44; color: #fff; border-radius: 12px; padding: 20px;
         display: flex; align-items: center; justify-content: center; text-align: center;
         min-height: 100px; transition: all 0.3s; border: 2px solid transparent; text-decoration: none !important;
     }
@@ -113,10 +114,11 @@ $this->registerCss("
 <div class="container trote-container pb-5">
     <div class="row">
         <div class="col-lg-10 mx-auto text-center">
-            
+
             <div class="py-4">
-                <?php if ($capa && ($capa->img_dsk || $capa->img_mob) && $capa->ativo == 1 && $capa->tipo == "Login"): ?>
-                    <?= Html::img('/img/' . (!Helper::isMobile() ? $capa->img_dsk : $capa->img_mob), [
+                <?php if ($capa && ($capa->img_dsk || $capa->img_mob) && $capa->ativo == 1 && $capa->tipo === Banner::TIPO_LOGIN): ?>
+                    <?php $bannerImage = Helper::isMobile() ? ($capa->img_mob ?: $capa->img_dsk) : ($capa->img_dsk ?: $capa->img_mob); ?>
+                    <?= Html::img('/img/' . rawurlencode(basename($bannerImage)), [
                         'class' => 'img-fluid img-banner',
                         'alt' => 'Trote Solidário 2026'
                     ]) ?>
@@ -125,7 +127,7 @@ $this->registerCss("
 
             <h1 class="hero-title mt-4">Participe do Trote 2026/1</h1>
             <p class="hero-subtitle">
-                O maior movimento de solidariedade acadêmica do RS precisa da sua energia. 
+                O maior movimento de solidariedade acadêmica do RS precisa da sua energia.
                 Sua recepção aos novos colegas pode transformar vidas através da doação.
             </p>
 
@@ -205,7 +207,7 @@ $this->registerCss("
                     </div>
                 <?php endforeach; ?>
             </div>
-            
+
             <div class="mt-5 pt-3">
                 <p class="text-muted italic">"Sua ação não é trote, é solidariedade de verdade."</p>
             </div>

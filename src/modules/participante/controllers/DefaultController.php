@@ -81,7 +81,7 @@ class DefaultController extends Controller
         }
 
         $this->layout = 'index';
-        $capa = Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_LOGIN])->one();
+        $capa = Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_LOGIN])->orderBy(['id' => SORT_DESC])->one();
         $universidades = Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all();
 
 
@@ -89,7 +89,7 @@ class DefaultController extends Controller
             'model' => new \app\models\LoginForm(),
             'capa' => $capa,
             'universidades_botoes' => $universidades,
-       ] ; 
+       ] ;
 
         return $this->render('index', [
             'model' => new \app\models\LoginForm(),
@@ -253,7 +253,7 @@ class DefaultController extends Controller
             ->all();
 
         return $this->render('home', [
-            'banner' => Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_HOME])->one(),
+            'banner' => Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_HOME])->orderBy(['id' => SORT_DESC])->one(),
             'informativos' => Documento::find()
                 ->where(['tipo' => Documento::TIPO_INFORMATIVO])
                 ->andWhere(['not', ['arquivo' => null]])
