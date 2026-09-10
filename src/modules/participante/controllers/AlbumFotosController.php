@@ -2,7 +2,7 @@
 
 namespace app\modules\participante\controllers;
 
-use app\modules\common\models\Doacao;
+use app\modules\common\models\AlbumFoto;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -46,22 +46,21 @@ class AlbumFotosController extends Controller
         $this->layout = 'adminindex';
         $fotos = [];
 
-        $doacoes = Doacao::find()
-            ->innerJoinWith(['participacao', 'tipoDoacao'])
-            ->where(['participacao.user_id' => Yii::$app->user->id])
-            ->andWhere(['not', ['doacao.arquivo' => null]])
-            ->andWhere(['<>', 'doacao.arquivo', ''])
-            ->orderBy(['doacao.created_at' => SORT_DESC])
+        $albumFotos = AlbumFoto::find()
+            ->alias('af')
+            ->innerJoinWith(['participacao p', 'participacao.trote t'])
+            ->where(['p.user_id' => Yii::$app->user->id])
+            ->orderBy(['af.created_at' => SORT_DESC, 'af.id' => SORT_DESC])
             ->all();
 
-        foreach ($doacoes as $doacao) {
-            if ($this->getImagePath($doacao) === null) {
+        foreach ($albumFotos as $foto) {
+            if ($this->getImagePath($foto) === null) {
                 continue;
             }
 
             $fotos[] = [
-                'id' => $doacao->id,
-                'titulo' => $doacao->tipoDoacao->nome ?? 'Foto da doação #' . $doacao->id,
+                'id' => $foto->id,
+                'titulo' => $foto->titulo,
             ];
         }
 
@@ -72,30 +71,31 @@ class AlbumFotosController extends Controller
 
     public function actionArquivo(int $id, bool $download = false)
     {
-        $doacao = Doacao::find()
-            ->innerJoinWith('participacao')
+        $foto = AlbumFoto::find()
+            ->alias('af')
+            ->innerJoinWith('participacao p')
             ->where([
-                'doacao.id' => $id,
-                'participacao.user_id' => Yii::$app->user->id,
+                'af.id' => $id,
+                'p.user_id' => Yii::$app->user->id,
             ])
             ->one();
 
-        if ($doacao === null || ($path = $this->getImagePath($doacao)) === null) {
+        if ($foto === null || ($path = $this->getImagePath($foto)) === null) {
             throw new NotFoundHttpException('Foto não encontrada.');
         }
 
-        return Yii::$app->response->sendFile($path, basename($doacao->arquivo), [
+        return Yii::$app->response->sendFile($path, basename($foto->imagem), [
             'inline' => !$download,
         ]);
     }
 
-    private function getImagePath(Doacao $doacao): ?string
+    private function getImagePath(AlbumFoto $foto): ?string
     {
-        if (empty($doacao->arquivo) || basename($doacao->arquivo) !== $doacao->arquivo) {
+        if (empty($foto->imagem) || basename($foto->imagem) !== $foto->imagem) {
             return null;
         }
 
-        $path = Yii::getAlias('@imgArquivosDoacao') . DIRECTORY_SEPARATOR . $doacao->arquivo;
+        $path = Yii::getAlias('@app/web/imagens/album-fotos') . DIRECTORY_SEPARATOR . $foto->imagem;
 
         return is_file($path) && @getimagesize($path) !== false ? $path : null;
     }

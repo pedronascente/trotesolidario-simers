@@ -25,52 +25,63 @@ CSS
 ?>
 
 <div class="container-fluid">
-    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
-        <div>
-            <h1 class="h3 mb-1 text-gray-800">Álbum de fotos</h1>
-            <p class="mb-0 text-muted">Visualize e baixe as fotos vinculadas às suas doações.</p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
+        <?= Html::a('Voltar para home', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
+    </div>
+
+    <div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
+        Visualize e baixe as fotos vinculadas às suas doações.
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-success">Fotos disponíveis</h6>
+        </div>
+        <div class="card-body">
+            <?php if (empty($fotos)): ?>
+                <div class="photo-album-empty">
+                    <i class="fas fa-images fa-2x mb-3" aria-hidden="true"></i>
+                    <p class="mb-0">Você ainda não possui fotos disponíveis no álbum.</p>
+                </div>
+            <?php else: ?>
+                <div class="row">
+                    <?php foreach ($fotos as $index => $foto): ?>
+                        <?php
+                        $visualizarUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id']]);
+                        $downloadUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id'], 'download' => 1]);
+                        ?>
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                            <article class="card photo-album-card">
+                                <?= Html::a(
+                                    Html::img($visualizarUrl, [
+                                        'class' => 'photo-album-image',
+                                        'alt' => $foto['titulo'],
+                                    ]),
+                                    '#albumPhotosCarousel',
+                                    [
+                                        'class' => 'photo-album-preview',
+                                        'data-photo-index' => $index,
+                                        'aria-label' => 'Visualizar ' . $foto['titulo'],
+                                    ]
+                                ) ?>
+                                <div class="card-body">
+                                    <h2 class="photo-album-title"><?= Html::encode($foto['titulo']) ?></h2>
+                                    <?= Html::a(
+                                        '<i class="fas fa-download mr-2" aria-hidden="true"></i>Baixar foto',
+                                        $downloadUrl,
+                                        ['class' => 'btn btn-success btn-sm photo-album-download']
+                                    ) ?>
+                                </div>
+                            </article>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
-    <?php if (empty($fotos)): ?>
-        <div class="photo-album-empty">
-            <i class="fas fa-images fa-2x mb-3" aria-hidden="true"></i>
-            <p class="mb-0">Você ainda não possui fotos disponíveis no álbum.</p>
-        </div>
-    <?php else: ?>
-        <div class="row">
-            <?php foreach ($fotos as $index => $foto): ?>
-                <?php
-                $visualizarUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id']]);
-                $downloadUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id'], 'download' => 1]);
-                ?>
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                    <article class="card photo-album-card">
-                        <?= Html::a(
-                            Html::img($visualizarUrl, [
-                                'class' => 'photo-album-image',
-                                'alt' => $foto['titulo'],
-                            ]),
-                            '#albumPhotosCarousel',
-                            [
-                                'class' => 'photo-album-preview',
-                                'data-photo-index' => $index,
-                                'aria-label' => 'Visualizar ' . $foto['titulo'],
-                            ]
-                        ) ?>
-                        <div class="card-body">
-                            <h2 class="photo-album-title"><?= Html::encode($foto['titulo']) ?></h2>
-                            <?= Html::a(
-                                '<i class="fas fa-download mr-2" aria-hidden="true"></i>Baixar foto',
-                                $downloadUrl,
-                                ['class' => 'btn btn-success btn-sm photo-album-download']
-                            ) ?>
-                        </div>
-                    </article>
-                </div>
-            <?php endforeach; ?>
-        </div>
-
+    <?php if (!empty($fotos)): ?>
         <div class="modal fade photo-album-modal" id="albumPhotosModal" tabindex="-1" role="dialog" aria-labelledby="albumPhotosModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                 <div class="modal-content">

@@ -61,4 +61,10 @@ class Universidade extends \yii\db\ActiveRecord
     public function getUsers(){
         return $this->hasMany(Users::class, ['instituicao' => 'id']);
     }
+
+    public function getMercadosParceiros()
+    {
+        return $this->hasMany(MercadoParceiro::class, ['id' => 'mercado_id'])
+            ->viaTable('{{%mercado_universidade}}', ['universidade_id' => 'id']);
+    }
 }

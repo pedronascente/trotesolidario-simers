@@ -25,21 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <div class="card shadow mb-4">
-        <div class="p-3">
-            <p>
-                <?= Html::a('Cadastrar mercado', ['create'], ['class' => 'btn btn-success']) ?>
-            </p>
+          <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-success">Lista de mercados parceiros</h6>
+            <?= Html::a('<i class="fas fa-plus mr-1"></i> Cadastrar mercado', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+        </div>
+        <div class="card-body">
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
                 'pjax' => true,
                 'hover' => true,
-                'panel' => [
-                    'heading' => '<i class="fa fa-store"></i> Lista de mercados parceiros',
-                    'before' => '<div style="padding-top: 7px;"><em></em></div>',
-                ],
-                'export' => ['fontAwesome' => true],
-                'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
+                'responsive' => true,
                 'columns' => [
                     ['class' => 'yii\\grid\\SerialColumn'],
                     ['attribute' => 'nome_mercado', 'vAlign' => 'middle'],

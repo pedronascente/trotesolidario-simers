@@ -8,10 +8,10 @@ $menuGroups = [
     'Cadastros' => [
         'icon' => 'fa-address-book',
         'items' => [
-            'cidades-participantes' => ['label' => 'Cidades participantes', 'icon' => 'fa-city'],
             'comissoes-organizadoras' => ['label' => 'Comissões organizadoras', 'icon' => 'fa-users'],
             'mercados-parceiros' => ['label' => 'Mercados parceiros', 'icon' => 'fa-store'],
-             'universidade' => ['label' => 'Universidades', 'icon' => 'fa-university'],
+            'universidade' => ['label' => 'Universidades', 'icon' => 'fa-university'],
+            'album-fotos' => ['label' => 'Álbum de Fotos', 'icon' => 'fa-images'],
         ],
     ],
     'Comunicacao' => [

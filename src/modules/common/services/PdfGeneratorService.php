@@ -20,7 +20,8 @@ class PdfGeneratorService
     public function generatePdf(string $outputPath, array $pages, string $title = 'Certificado Trote Solidario'): void
     {
         $this->ensureWritableDirectory(dirname($outputPath));
-        $tempDir = Yii::getAlias('@runtime') . DIRECTORY_SEPARATOR . 'mpdf';
+        $processId = function_exists('posix_geteuid') ? (string) posix_geteuid() : PHP_SAPI;
+        $tempDir = Yii::getAlias('@runtime') . DIRECTORY_SEPARATOR . 'mpdf-' . $processId;
         $this->ensureWritableDirectory($tempDir);
 
         $previousMemoryLimit = ini_get('memory_limit');

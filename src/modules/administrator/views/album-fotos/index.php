@@ -3,7 +3,7 @@
 use kartik\grid\GridView;
 use yii\helpers\Html;
 
-$this->title = 'Comissões organizadoras';
+$this->title = 'Álbum de Fotos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -19,11 +19,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-success">Membros publicados por instituição</h6>
-            <?= Html::a('<i class="fas fa-plus mr-1"></i> Adicionar membro', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+            <h6 class="m-0 font-weight-bold text-success">Fotos dos participantes</h6>
+            <?= Html::a('<i class="fas fa-plus mr-1"></i> Nova foto', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
         </div>
         <div class="card-body">
-            <p class="text-muted">Somente membros marcados como publicados aparecem na página da instituição para os participantes.</p>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
@@ -32,31 +31,44 @@ $this->params['breadcrumbs'][] = $this->title;
                 'responsive' => true,
                 'columns' => [
                     ['attribute' => 'id', 'width' => '70px'],
-                    'nome',
-                    'cargo',
                     [
-                        'attribute' => 'universidade_id',
-                        'filter' => false,
-                        'value' => static fn($model) => $model->universidade->nome ?? '-',
-                    ],
-                    ['attribute' => 'ordem', 'width' => '110px'],
-                    [
-                        'attribute' => 'ativo',
-                        'filter' => [1 => 'Sim', 0 => 'Não'],
+                        'label' => 'Imagem',
                         'format' => 'raw',
-                        'value' => static fn($model) => Html::tag('span', $model->ativo ? 'Sim' : 'Não', [
-                            'class' => 'badge badge-' . ($model->ativo ? 'success' : 'secondary'),
+                        'filter' => false,
+                        'value' => static fn($model) => Html::img(['arquivo', 'id' => $model->id], [
+                            'class' => 'img-thumbnail',
+                            'style' => 'width: 100px; height: 70px; object-fit: cover;',
+                            'alt' => $model->titulo,
                         ]),
+                    ],
+                    'titulo',
+                    [
+                        'attribute' => 'participante',
+                        'value' => static fn($model) => $model->participacao->user->nome ?? '-',
+                    ],
+                    [
+                        'attribute' => 'trote',
+                        'label' => 'Trote / edição',
+                        'value' => static function ($model) {
+                            $trote = $model->participacao->trote ?? null;
+                            return $trote ? $trote->titulo . ' | ' . $trote->edicao : '-';
+                        },
+                    ],
+                    [
+                        'attribute' => 'created_at',
+                        'format' => ['datetime', 'php:d/m/Y H:i'],
+                        'filter' => false,
                     ],
                     [
                         'class' => 'kartik\grid\ActionColumn',
-                        'template' => '{update} {delete}',
+                        'template' => '{view} {update} {delete}',
                         'buttons' => [
+                            'view' => static fn($url) => Html::a('<i class="fas fa-eye"></i>', $url, ['class' => 'btn btn-info btn-sm', 'data-pjax' => '0', 'title' => 'Visualizar']),
                             'update' => static fn($url) => Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-success btn-sm', 'data-pjax' => '0', 'title' => 'Editar']),
                             'delete' => static fn($url) => Html::a('<i class="fas fa-trash-alt"></i>', $url, [
                                 'class' => 'btn btn-danger btn-sm',
                                 'title' => 'Excluir',
-                                'data' => ['confirm' => 'Deseja remover este membro da comissão?', 'method' => 'post'],
+                                'data' => ['confirm' => 'Deseja realmente excluir esta foto?', 'method' => 'post'],
                             ]),
                         ],
                     ],

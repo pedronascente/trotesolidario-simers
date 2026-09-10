@@ -39,6 +39,7 @@ tests/_support/_generated
 
 # uploads src
 /src/web/imagens/doacoes/*
+/src/web/imagens/album-fotos/*
 /src/web/img/*
 /src/web/pdf/*
 

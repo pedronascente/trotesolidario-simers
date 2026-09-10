@@ -4,7 +4,7 @@ namespace app\modules\administrator\controllers;
 
 use Yii;
 use app\modules\common\models\MercadoParceiro;
-use yii\data\ActiveDataProvider;
+use app\modules\common\models\MercadoParceiroSearchModel;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
@@ -44,14 +44,13 @@ class MercadosParceirosController extends Controller
 
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => MercadoParceiro::find()->orderBy(['nome_mercado' => SORT_ASC]),
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-        ]);
+        $searchModel = new MercadoParceiroSearchModel();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', compact('dataProvider'));
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionCreate()

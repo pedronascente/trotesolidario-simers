@@ -97,6 +97,11 @@ class Participacao extends ActiveRecord
         return $this->hasMany(Certificado::class, ['participacao_id' => 'id']);
     }
 
+    public function getAlbumFotos()
+    {
+        return $this->hasMany(AlbumFoto::class, ['participacao_id' => 'id']);
+    }
+
     public function getDisplayLabel(): string
     {
         $nome = $this->user->nome ?? 'Sem usuario';

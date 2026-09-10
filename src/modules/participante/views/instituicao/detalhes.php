@@ -6,6 +6,8 @@ use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $universidade app\modules\common\models\Universidade */
+/* @var $mercadosParceiros app\modules\common\models\MercadoParceiro[] */
+/* @var $comissaoOrganizadora app\modules\common\models\ComissaoOrganizadora[] */
 
 ParticipantDashboardAsset::register($this);
 
@@ -15,20 +17,6 @@ $logoUrl = $universidade->icon
     : null;
 $hasFoodLink = trim((string) $universidade->link_doacao_alimento) !== '';
 $location = trim((string) $universidade->cidade) . ($universidade->uf ? ' - ' . $universidade->uf : '');
-$mercadosParceiros = [
-    'Mercado Exemplo Central — Av. Principal, 120',
-    'Supermercado Exemplo — Rua das Flores, 450',
-    'Mercado Solidário Exemplo — Av. Brasil, 980',
-    'Rede Parceira Exemplo — Rua do Comércio, 235',
-    'Empório Exemplo — Av. da Cidade, 610',
-];
-$comissaoOrganizadora = [
-    'Ana Exemplo',
-    'Bruno Demonstração',
-    'Carla Ilustrativa',
-    'Diego Modelo',
-    'Elisa Referência',
-];
 ?>
 
 <main class="container-fluid participant-dashboard institution-details">
@@ -59,13 +47,22 @@ $comissaoOrganizadora = [
                 <div class="card-body">
                     <div class="dashboard-eyebrow">Doação de alimentos</div>
                     <h2 id="markets-title" class="h4 text-gray-900">Mercados parceiros</h2>
-                    <p class="institution-details-copy">Os mercados parceiros desta instituição serão divulgados neste espaço.</p>
-                    <div class="institution-example-notice">Lista demonstrativa</div>
-                    <ol class="institution-market-list">
-                        <?php foreach ($mercadosParceiros as $mercado): ?>
-                            <li><i class="fas fa-shopping-basket" aria-hidden="true"></i><?= Html::encode($mercado) ?></li>
-                        <?php endforeach; ?>
-                    </ol>
+                    <?php if (!empty($mercadosParceiros)): ?>
+                        <p class="institution-details-copy">Confira os mercados parceiros vinculados a esta instituição.</p>
+                        <ol class="institution-market-list">
+                            <?php foreach ($mercadosParceiros as $mercado): ?>
+                                <li>
+                                    <i class="fas fa-shopping-basket" aria-hidden="true"></i>
+                                    <?= Html::encode($mercado->nome_mercado . ' — ' . $mercado->endereco . ', ' . $mercado->numero . ' - ' . $mercado->bairro) ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ol>
+                    <?php else: ?>
+                        <div class="institution-details-empty institution-details-empty-compact">
+                            <i class="fas fa-shopping-basket" aria-hidden="true"></i>
+                            Nenhum mercado parceiro vinculado a esta instituição no momento.
+                        </div>
+                    <?php endif; ?>
                 </div>
             </section>
         </div>
@@ -97,12 +94,24 @@ $comissaoOrganizadora = [
                 <div class="card-body">
                     <div class="dashboard-eyebrow">Pessoas que fazem acontecer</div>
                     <h2 id="committee-title" class="h4 text-gray-900">Comissão organizadora</h2>
-                    <div class="institution-example-notice">Lista demonstrativa</div>
-                    <ul class="institution-committee-list">
-                        <?php foreach ($comissaoOrganizadora as $membro): ?>
-                            <li><i class="fas fa-user-circle" aria-hidden="true"></i><?= Html::encode($membro) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?php if (!empty($comissaoOrganizadora)): ?>
+                        <ul class="institution-committee-list">
+                            <?php foreach ($comissaoOrganizadora as $membro): ?>
+                                <li>
+                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
+                                    <span>
+                                        <?= Html::encode($membro->nome) ?>
+                                        <?php if ($membro->cargo): ?><small class="d-block text-muted"><?= Html::encode($membro->cargo) ?></small><?php endif; ?>
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <div class="institution-details-empty institution-details-empty-compact">
+                            <i class="fas fa-users" aria-hidden="true"></i>
+                            A comissão organizadora desta instituição será divulgada em breve.
+                        </div>
+                    <?php endif; ?>
                 </div>
             </section>
         </div>
