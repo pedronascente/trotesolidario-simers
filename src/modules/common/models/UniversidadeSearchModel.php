@@ -27,6 +27,9 @@ class UniversidadeSearchModel extends Universidade
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
             'sort' => [
                 'defaultOrder' => [
                     'id' => SORT_DESC
