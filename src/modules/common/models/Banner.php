@@ -2,14 +2,11 @@
 
 namespace app\modules\common\models;
 
-use Yii;
 use yii\db\ActiveRecord;
-use yii\web\UploadedFile;
 
 class Banner extends ActiveRecord{
 
     public const TIPO_LOGIN       = 'Login';
-    public const TIPO_INFORMATIVO = 'Informativo';
     public const TIPO_HOME        = 'Home';
 
     public $file_dsk;
@@ -23,33 +20,60 @@ class Banner extends ActiveRecord{
         return [
             [['tipo','ativo'], 'required'],
             [['ativo'], 'integer'],
+            ['ativo', 'in', 'range' => [0, 1]],
+            ['tipo', 'in', 'range' => array_keys(self::getLocaisExibicao()), 'message' => 'Selecione um local de exibição válido para o banner.'],
+            ['tipo', 'unique', 'message' => 'Já existe um banner cadastrado para este local de exibição.'],
             [
                 ['file_dsk', 'file_mob'],
-                'file',
+                'image',
                 'extensions' => ['jpg', 'jpeg', 'png'],
                 'mimeTypes' => ['image/jpeg', 'image/png'],
-                'skipOnEmpty' => true, 
+                'maxSize' => 5 * 1024 * 1024,
+                'skipOnEmpty' => true,
             ],
-
-            [['img_dsk', 'img_mob'], 'string'],
+            [['file_dsk'], 'validateImagePresence', 'skipOnEmpty' => false],
+            [['img_dsk', 'img_mob'], 'string', 'max' => 255],
         ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_DEFAULT => ['tipo', 'ativo', 'file_dsk', 'file_mob'],
+        ];
+    }
+
+    public function validateImagePresence(string $attribute): void
+    {
+        $hasUpload = $this->file_dsk !== null || $this->file_mob !== null;
+        $hasStoredImage = !$this->isNewRecord && (!empty($this->img_dsk) || !empty($this->img_mob));
+
+        if (!$hasUpload && !$hasStoredImage) {
+            $this->addError($attribute, 'Envie ao menos uma imagem para o banner.');
+        }
     }
 
     public function attributeLabels(){
         return [
-            'tipo'  => 'Posição do Banner',
+            'tipo'  => 'Local de exibição',
             'file_dsk' => 'Imagem Desktop',
             'file_mob' => 'Imagem Mobile',
             'ativo' => 'Ativo',
         ];
     }
 
-    public static function getPosicoes(): array{
+    public static function getLocaisExibicao(): array{
         return [
-            self::TIPO_LOGIN => 'Imagem da pagina de login dos Participantes',
-            self::TIPO_INFORMATIVO => 'Informativo',
-            self::TIPO_HOME => 'Home',
+            self::TIPO_LOGIN => 'Página de acesso dos participantes — antes do login',
+            self::TIPO_HOME => 'Painel inicial do participante — após o login',
         ];
+    }
+
+    /**
+     * @deprecated Use getLocaisExibicao().
+     */
+    public static function getPosicoes(): array{
+        return self::getLocaisExibicao();
     }
 
     public function afterFind(){

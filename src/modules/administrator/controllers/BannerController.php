@@ -20,7 +20,7 @@ class BannerController extends Controller{
         $id,
         $module,
         BannerServiceInterface $service,$config = []
-    ) 
+    )
     {
         parent::__construct($id, $module, $config);
         $this->service = $service;
@@ -55,6 +55,7 @@ class BannerController extends Controller{
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'toggle' => ['POST'],
                 ],
             ],
         ];
@@ -70,10 +71,12 @@ class BannerController extends Controller{
     {
         $searchModel  = new BannerSearchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $locaisDisponiveis = $this->getLocaisDisponiveis();
 
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider'=> $dataProvider,
+            'podeCadastrar' => $locaisDisponiveis !== [],
         ]);
     }
 
@@ -86,40 +89,54 @@ class BannerController extends Controller{
 
     public function actionCreate()
     {
+        $locaisDisponiveis = $this->getLocaisDisponiveis();
+        if ($locaisDisponiveis === []) {
+            Yii::$app->session->setFlash('error', 'Os dois locais de exibição de banners já estão cadastrados.');
+            return $this->redirect(['index']);
+        }
+
         $banner = new Banner();
 
-        if ($banner->load(Yii::$app->request->post())) 
+        if ($banner->load(Yii::$app->request->post()))
         {
-            if ($this->service->create($banner)) 
-            {
-                Yii::$app->session->setFlash('success', 'Banner criado com sucesso.');
-                return $this->redirect(['index']);
+            try {
+                if ($this->service->create($banner)) {
+                    Yii::$app->session->setFlash('success', 'Banner criado com sucesso.');
+                    return $this->redirect(['index']);
+                }
+            } catch (\Throwable $e) {
+                Yii::error('Falha ao criar banner: ' . $e->getMessage(), __METHOD__);
+                $banner->addError('', 'Não foi possível armazenar o banner. Tente novamente.');
             }
-
-            Yii::$app->session->setFlash('error', 'Erro ao criar banner.');
         }
 
         return $this->render('create', [
             'model' => $banner,
+            'locaisExibicao' => $locaisDisponiveis,
         ]);
     }
 
     public function actionUpdate($id)
     {
         $banner = $this->findModel($id);
+        $locaisExibicao = $this->getLocaisDisponiveis($banner->id);
 
-        if ($banner->load(Yii::$app->request->post())) 
+        if ($banner->load(Yii::$app->request->post()))
         {
-            if ($this->service->update($banner)) 
-            {
-                Yii::$app->session->setFlash('success', 'Banner atualizado com sucesso.');
-                return $this->redirect(['index']);
+            try {
+                if ($this->service->update($banner)) {
+                    Yii::$app->session->setFlash('success', 'Banner atualizado com sucesso.');
+                    return $this->redirect(['index']);
+                }
+            } catch (\Throwable $e) {
+                Yii::error('Falha ao atualizar banner ID ' . $banner->id . ': ' . $e->getMessage(), __METHOD__);
+                $banner->addError('', 'Não foi possível armazenar as alterações. Tente novamente.');
             }
-            Yii::$app->session->setFlash('error', 'Erro ao atualizar banner.');
         }
 
         return $this->render('update', [
             'model' => $banner,
+            'locaisExibicao' => $locaisExibicao,
         ]);
     }
 
@@ -127,11 +144,34 @@ class BannerController extends Controller{
     {
         $banner = $this->findModel($id);
 
-        if ($this->service->delete($banner))
-        {
-            Yii::$app->session->setFlash('success', 'Banner excluído com sucesso.');
-        } else {
-            Yii::$app->session->setFlash('error', 'Erro ao excluir banner.');
+        try {
+            if ($this->service->delete($banner)) {
+                Yii::$app->session->setFlash('success', 'Banner excluído com sucesso.');
+            } else {
+                Yii::$app->session->setFlash('error', implode(' ', $banner->getFirstErrors()) ?: 'Erro ao excluir banner.');
+            }
+        } catch (\Throwable $e) {
+            Yii::error('Falha ao excluir banner ID ' . $banner->id . ': ' . $e->getMessage(), __METHOD__);
+            Yii::$app->session->setFlash('error', 'Não foi possível concluir a exclusão do banner.');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionToggle($id)
+    {
+        $banner = $this->findModel($id);
+        $banner->ativo = (int) $banner->ativo === 1 ? 0 : 1;
+
+        try {
+            if ($this->service->update($banner)) {
+                Yii::$app->session->setFlash('success', $banner->ativo ? 'Banner ativado com sucesso.' : 'Banner desativado com sucesso.');
+            } else {
+                Yii::$app->session->setFlash('error', implode(' ', $banner->getFirstErrors()) ?: 'Não foi possível alterar o status do banner.');
+            }
+        } catch (\Throwable $e) {
+            Yii::error('Falha ao alterar status do banner ID ' . $banner->id . ': ' . $e->getMessage(), __METHOD__);
+            Yii::$app->session->setFlash('error', 'Não foi possível alterar o status do banner.');
         }
 
         return $this->redirect(['index']);
@@ -139,10 +179,25 @@ class BannerController extends Controller{
 
     protected function findModel($id): Banner
     {
-        if (($model = Banner::findOne($id)) !== null) 
+        if (($model = Banner::findOne($id)) !== null)
         {
             return $model;
         }
         throw new NotFoundHttpException('Banner não encontrado.');
+    }
+
+    private function getLocaisDisponiveis(?int $ignorarBannerId = null): array
+    {
+        $query = Banner::find()->select('tipo');
+        if ($ignorarBannerId !== null) {
+            $query->andWhere(['!=', 'id', $ignorarBannerId]);
+        }
+
+        $locaisOcupados = $query->column();
+
+        return array_diff_key(
+            Banner::getLocaisExibicao(),
+            array_fill_keys($locaisOcupados, true)
+        );
     }
 }

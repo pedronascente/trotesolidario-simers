@@ -10,7 +10,7 @@ class BannerSearchModel extends Banner{
 
     public function rules(){
         return [
-            [['id'], 'integer'],
+            [['id', 'ativo'], 'integer'],
             [['tipo', 'img_mob', 'img_dsk'], 'safe'],
         ];
     }
@@ -25,6 +25,8 @@ class BannerSearchModel extends Banner{
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => ['pageSize' => 10],
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -36,6 +38,7 @@ class BannerSearchModel extends Banner{
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'ativo' => $this->ativo,
         ]);
 
         $query->andFilterWhere(['like', 'tipo', $this->tipo])
