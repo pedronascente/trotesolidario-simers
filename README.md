@@ -19,6 +19,36 @@ O trabalho contemplou uma revisão completa e incremental do sistema, com foco e
 
 A arquitetura continua baseada em PHP e Yii2, mas diversas áreas foram revistas para oferecer uma base mais confiável tanto para os usuários do sistema quanto para a equipe responsável por sua manutenção.
 
+## Minha atuação no projeto
+
+Atuei como principal responsável pela refatoração técnica e visual desta etapa do projeto. Minha contribuição envolveu compreender o sistema legado, preservar os processos existentes e evoluir gradualmente a aplicação em vez de substituir sua história ou atribuir a mim o desenvolvimento original.
+
+No histórico Git, minhas contribuições aparecem sob duas identidades utilizadas em momentos diferentes:
+
+| Identidade no Git | Commits |
+|---|---:|
+| `Pedro jardim <pedro.jardim@simers.org.br>` | 108 |
+| `pedrosimers <Pedro.jardim@simers.org.br>` | 26 |
+| **Total consolidado** | **134** |
+
+Esse total corresponde a aproximadamente **74% dos 180 commits** existentes no repositório no momento deste levantamento. Os demais commits e o código original pertencem aos outros profissionais que participaram da trajetória do sistema.
+
+### Principais contribuições
+
+- refatoração dos módulos administrativo e do participante;
+- modernização dos dashboards, menus e fluxos de navegação;
+- revisão das regras de negócio de doações, participações, eventos e trotes;
+- criação e evolução da camada de serviços e da injeção de dependências;
+- refatoração do fluxo de certificados e estabilização da geração de PDFs;
+- melhoria dos models, controllers, formulários, filtros e mensagens de validação;
+- criação e manutenção de migrations e seeds para evolução do banco de dados;
+- ampliação dos testes de models, services e fluxos do participante;
+- configuração e melhoria do ambiente Docker com PHP-FPM, Nginx e MySQL;
+- remoção de módulos, assets e arquivos legados sem uso;
+- documentação técnica, orientação de produção e registro visual do antes e depois.
+
+O objetivo central da minha atuação foi combinar **qualidade de código, consistência das regras de negócio e experiência do usuário**, mantendo mudanças incrementais e compatíveis com a operação já existente.
+
 ## Visão do produto
 
 A refatoração transformou a área administrativa em uma experiência visual mais clara, organizada e orientada à operação. O painel reúne informações relevantes do evento, indicadores, alertas, atalhos e atividades recentes em uma única visão.
