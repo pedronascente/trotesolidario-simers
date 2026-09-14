@@ -107,7 +107,7 @@ $this->registerCss(<<<CSS
 .sidebar-hover-menu .submenu .nav-link {
     display: flex;
     align-items: center;
-    padding: .75rem 1rem .75rem 3.2rem;
+    padding: .75rem 1rem .75rem 2.7rem;
     color: rgba(255,255,255,.8);
     font-size: 0.92rem;
     text-decoration: none;
@@ -124,7 +124,7 @@ $this->registerCss(<<<CSS
     font-weight: 700;
     background: rgba(255,255,255,.18);
     border-left: 3px solid #fff;
-    padding-left: calc(3.2rem - 3px);
+    padding-left: calc(2.7rem - 3px);
 }
 
 .sidebar-hover-menu .nav-item.active-parent > .nav-link {

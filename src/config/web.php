@@ -6,6 +6,7 @@ $db = require __DIR__ . '/db.php';
 $mailerHost = getenv('MAILER_HOST') ?: ($params['mailerHost'] ?? 'smtp.gmail.com');
 $mailerPort = (int) (getenv('MAILER_PORT') ?: ($params['mailerPort'] ?? 587));
 $mailerEncryption = getenv('MAILER_ENCRYPTION') ?: ($params['mailerEncryption'] ?? 'tls');
+$mailerScheme = strtolower((string) $mailerEncryption) === 'ssl' ? 'smtps' : 'smtp';
 $mailerUsername = getenv('MAILER_USERNAME') ?: ($params['senderEmail'] ?? null);
 $mailerPassword = getenv('MAILER_PASSWORD') ?: ($params['mailerPassword'] ?? null);
 $mailerUseFileTransport = getenv('MAILER_USE_FILE_TRANSPORT');
@@ -66,17 +67,16 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => 'yii\symfonymailer\Mailer',
             'useFileTransport' => $mailerUseFileTransport === false
                 ? YII_ENV_DEV
                 : filter_var($mailerUseFileTransport, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? YII_ENV_DEV,
             'transport' => [
-                'class' => 'Swift_SmtpTransport',
+                'scheme' => $mailerScheme,
                 'host' => $mailerHost,
                 'username' => $mailerUsername,
                 'password' => $mailerPassword,
                 'port' => $mailerPort,
-                'encryption' => $mailerEncryption,
             ],
         ],
         'log' => [

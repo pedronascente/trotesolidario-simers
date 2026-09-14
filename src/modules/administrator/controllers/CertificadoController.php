@@ -121,12 +121,12 @@ class CertificadoController extends Controller
 
     public function actionSendEmail($id)
     {
-        $model = $this->certificadoService->ensurePdf($this->findModel((int) $id), true);
-
         try {
+            $model = $this->certificadoService->ensurePdf($this->findModel((int) $id), true);
             $this->sendCertificateEmail($model);
             Yii::$app->session->setFlash('success', 'Certificado encaminhado por e-mail com sucesso para ' . $model->participanteEmail . '.');
         } catch (\Throwable $e) {
+            Yii::error($e, __METHOD__);
             Yii::$app->session->setFlash('error', $e->getMessage());
         }
 
@@ -154,19 +154,27 @@ class CertificadoController extends Controller
 
     private function sendCertificateEmail(Certificado $model): void
     {
-        $destinatario = $model->participacao->user->email ?? null;
-        if (empty($destinatario)) {
+        $destinatario = trim((string) ($model->participacao->user->email ?? ''));
+        if ($destinatario === '') {
             throw new \RuntimeException('O participante deste certificado nao possui e-mail cadastrado.');
+        }
+        if (filter_var($destinatario, FILTER_VALIDATE_EMAIL) === false) {
+            throw new \RuntimeException('O participante deste certificado possui um e-mail invalido.');
+        }
+
+        if (Yii::$app->mailer->useFileTransport) {
+            throw new \RuntimeException('O envio real de e-mail esta desativado neste ambiente. Configure o SMTP e desative MAILER_USE_FILE_TRANSPORT.');
         }
 
         $subject = 'Seu certificado do Trote Solidario - ' . ($model->participacao->trote->edicao ?? '');
         $body = $this->buildEmailBody($model);
-        $from = Yii::$app->params['senderEmail'] ?? Yii::$app->params['adminEmail'] ?? 'noreply@example.com';
+        $from = $this->resolveSender();
 
         $message = Yii::$app->mailer->compose('layouts/html', ['content' => $body])
             ->setFrom($from)
             ->setTo($destinatario)
-            ->setSubject($subject);
+            ->setSubject($subject)
+            ->setTextBody($this->buildTextEmailBody($model));
 
         if (!empty(Yii::$app->params['adminEmail'])) {
             $message->setBcc(Yii::$app->params['adminEmail']);
@@ -182,6 +190,25 @@ class CertificadoController extends Controller
         if (!$message->send()) {
             throw new \RuntimeException('Nao foi possivel encaminhar o certificado por e-mail.');
         }
+    }
+
+    private function resolveSender(): array
+    {
+        $transport = Yii::$app->mailer->transport;
+        $smtpUser = getenv('MAILER_USERNAME') ?: null;
+
+        if ($smtpUser === null && is_object($transport) && method_exists($transport, 'getUsername')) {
+            $smtpUser = $transport->getUsername();
+        } elseif ($smtpUser === null && is_object($transport) && property_exists($transport, 'username')) {
+            $smtpUser = $transport->username;
+        }
+
+        $email = trim((string) ($smtpUser ?: (Yii::$app->params['senderEmail'] ?? '')));
+        if ($email === '' || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            throw new \RuntimeException('O e-mail remetente do sistema nao esta configurado corretamente.');
+        }
+
+        return [$email => (string) (Yii::$app->params['senderName'] ?? 'Trote Solidario')];
     }
 
     private function buildEmailBody(Certificado $model): string
@@ -204,5 +231,19 @@ class CertificadoController extends Controller
         $html .= '<p>Atenciosamente,<br>Equipe Trote Solidario</p>';
 
         return $html;
+    }
+
+    private function buildTextEmailBody(Certificado $model): string
+    {
+        $dataEmissao = $model->data_emissao ? date('d/m/Y H:i', strtotime($model->data_emissao)) : '-';
+
+        return "Ola, {$model->participanteNome}.\n\n"
+            . "Seu certificado do Trote Solidario segue anexado a este e-mail.\n\n"
+            . "Trote: {$model->troteDescricao}\n"
+            . "Evento(s): {$model->eventoNomes}\n"
+            . "Carga horaria: " . (int) $model->carga_horaria_total . " hora(s)\n"
+            . "Data de emissao: {$dataEmissao}\n"
+            . "Codigo validador: {$model->codigo_validador}\n\n"
+            . "Atenciosamente,\nEquipe Trote Solidario";
     }
 }

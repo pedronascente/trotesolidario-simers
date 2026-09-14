@@ -39,6 +39,7 @@ class TroteService implements TroteServiceInterface
     {
         return Yii::$app->db->transaction(function () use ($trote)
         {
+            $statusAnterior = $trote->getOldAttribute('status');
             $this->aplicarDataEncerramento($trote);
 
             if (!$trote->validate())
@@ -57,6 +58,7 @@ class TroteService implements TroteServiceInterface
             }
 
             $this->encerrarParticipacoes($trote);
+            $this->reativarParticipacoes($trote, $statusAnterior);
             return true;
         });
     }
@@ -66,15 +68,22 @@ class TroteService implements TroteServiceInterface
      */
     public function ativar(Trote $trote): bool
     {
-        return Yii::$app->db->transaction(function () use ($trote) 
+        return Yii::$app->db->transaction(function () use ($trote)
         {
+            $statusAnterior = $trote->getOldAttribute('status');
+
             // Encerra todos os outros
             $this->encerrarOutros($trote->id);
 
             // Ativa o atual
             $trote->status = Trote::STATUS_ATIVO;
 
-            return $trote->save(false);
+            if (!$trote->save(false)) {
+                return false;
+            }
+
+            $this->reativarParticipacoes($trote, $statusAnterior);
+            return true;
         });
     }
 
@@ -91,9 +100,18 @@ class TroteService implements TroteServiceInterface
             $idAtual ? ['<>', 'id', $idAtual] : []
         );
 
+        $participacaoCondition = ['status' => Participacao::STATUS_ATIVO];
+        if ($idAtual) {
+            $participacaoCondition = [
+                'and',
+                $participacaoCondition,
+                ['<>', 'trote_id', $idAtual],
+            ];
+        }
+
         Participacao::updateAll(
             ['status' => Participacao::STATUS_ENCERRADO],
-            $idAtual ? ['<>', 'trote_id', $idAtual] : []
+            $participacaoCondition
         );
     }
 
@@ -109,7 +127,27 @@ class TroteService implements TroteServiceInterface
         if ($trote->status === Trote::STATUS_ENCERRADO && $trote->id !== null) {
             Participacao::updateAll(
                 ['status' => Participacao::STATUS_ENCERRADO],
-                ['trote_id' => $trote->id]
+                [
+                    'trote_id' => $trote->id,
+                    'status' => Participacao::STATUS_ATIVO,
+                ]
+            );
+        }
+    }
+
+    private function reativarParticipacoes(Trote $trote, ?string $statusAnterior): void
+    {
+        if (
+            $statusAnterior === Trote::STATUS_ENCERRADO
+            && $trote->status === Trote::STATUS_ATIVO
+            && $trote->id !== null
+        ) {
+            Participacao::updateAll(
+                ['status' => Participacao::STATUS_ATIVO],
+                [
+                    'trote_id' => $trote->id,
+                    'status' => Participacao::STATUS_ENCERRADO,
+                ]
             );
         }
     }

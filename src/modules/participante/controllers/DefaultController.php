@@ -147,13 +147,12 @@ class DefaultController extends Controller
             ->all();
         $troteAtivoGlobal = !empty($trotesAtivos) ? $trotesAtivos[0] : null;
 
-        $participacaoAtivaNoTroteGlobal = null;
+        $participacaoNoTroteGlobal = null;
         if ($troteAtivoGlobal !== null) {
-            $participacaoAtivaNoTroteGlobal = Participacao::find()
+            $participacaoNoTroteGlobal = Participacao::find()
                 ->where([
                     'user_id' => $userId,
                     'trote_id' => (int) $troteAtivoGlobal->id,
-                    'status' => Participacao::STATUS_ATIVO,
                 ])
                 ->orderBy(['id' => SORT_DESC])
                 ->one();
@@ -161,7 +160,7 @@ class DefaultController extends Controller
 
         $showStartParticipationCard = $isAcademicParticipant
             && $troteAtivoGlobal !== null
-            && $participacaoAtivaNoTroteGlobal === null;
+            && $participacaoNoTroteGlobal === null;
 
         $startParticipationModel = new Participacao();
         $startParticipationUniversidades = $showStartParticipationCard ? $this->findActiveUniversidadesForStartParticipation() : [];

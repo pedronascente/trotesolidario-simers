@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\Trote */
 
-$this->title = 'Criar Trote';
+$this->title = 'Novo trote';
 ?>
 
 <div class="container-fluid">

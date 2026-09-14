@@ -9,12 +9,8 @@ $this->title = 'Atualizar mercado parceiro: ' . $model->nome_mercado;
 $this->params['breadcrumbs'][] = ['label' => 'Mercados parceiros', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <h1 class="h4 mb-3"><?= Html::encode($this->title) ?></h1>
-            <?= $this->render('_form', ['model' => $model]) ?>
-        </div>
-    </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-success"><?= Html::encode($this->title) ?></h6></div>
+    <div class="card-body"><?= $this->render('_form', ['model' => $model]) ?></div>
 </div>
+

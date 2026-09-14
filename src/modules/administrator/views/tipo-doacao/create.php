@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\common\models\TipoDoacao */
 
-$this->title = 'Criar Tipo Doação';
+$this->title = 'Novo tipo de doação';
 ?>
 
 <div class="container-fluid">

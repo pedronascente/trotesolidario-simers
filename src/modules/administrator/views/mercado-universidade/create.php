@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $mercados array */
 /* @var $universidades array */
 
-$this->title = 'Vincular mercado a universidade';
+$this->title = 'Novo vínculo entre mercado e universidade';
 $this->params['breadcrumbs'][] = ['label' => 'Vínculos de mercados', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

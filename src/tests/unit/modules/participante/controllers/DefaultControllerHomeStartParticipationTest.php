@@ -156,6 +156,26 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
         );
     }
 
+    public function testHomeDoesNotOfferDuplicateParticipationWhenEndedLinkAlreadyExists(): void
+    {
+        $this->insert('participacao', [
+            'id' => 1,
+            'user_id' => 99,
+            'trote_id' => 7,
+            'universidade_id' => 10,
+            'curso' => 'Medicina',
+            'status' => 'encerrado',
+        ]);
+        Yii::$container->set(ParticipacaoServiceInterface::class, static fn() => new FakeParticipacaoServiceForHomeTest());
+
+        $controller = new TestParticipanteDefaultHomeController('default', new Module('participante'));
+        $result = $controller->actionHome();
+
+        $this->assertSame('home', $result['view']);
+        $this->assertFalse($result['params']['showStartParticipationCard']);
+        $this->assertSame([], $result['params']['startParticipationUniversidades']);
+    }
+
     public function testHomeSummaryRespectsSelectedTrote(): void
     {
         $this->insert('trote', [

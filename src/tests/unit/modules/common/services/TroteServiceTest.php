@@ -106,6 +106,52 @@ class TroteServiceTest extends TestCase
         );
     }
 
+    public function testUpdateReativaParticipacoesAoReativarOMesmoTrote(): void
+    {
+        $service = new TroteService();
+        $trote = $this->novoTrote('2026.1', Trote::STATUS_ATIVO);
+        $this->assertTrue($service->create($trote));
+        Yii::$app->db->createCommand()->insert('participacao', [
+            'trote_id' => $trote->id,
+            'status' => 'ativo',
+        ])->execute();
+
+        $trote->status = Trote::STATUS_ENCERRADO;
+        $this->assertTrue($service->update($trote));
+        $this->assertSame('encerrado', $this->findParticipacaoStatus((int) $trote->id));
+
+        $trote->status = Trote::STATUS_ATIVO;
+        $this->assertTrue($service->update($trote));
+        $this->assertSame('ativo', $this->findParticipacaoStatus((int) $trote->id));
+    }
+
+    public function testEncerrarEReativarTrotePreservaParticipacaoCancelada(): void
+    {
+        $service = new TroteService();
+        $trote = $this->novoTrote('2026.1', Trote::STATUS_ATIVO);
+        $this->assertTrue($service->create($trote));
+        Yii::$app->db->createCommand()->insert('participacao', [
+            'trote_id' => $trote->id,
+            'status' => 'cancelado',
+        ])->execute();
+
+        $trote->status = Trote::STATUS_ENCERRADO;
+        $this->assertTrue($service->update($trote));
+        $this->assertSame('cancelado', $this->findParticipacaoStatus((int) $trote->id));
+
+        $trote->status = Trote::STATUS_ATIVO;
+        $this->assertTrue($service->update($trote));
+        $this->assertSame('cancelado', $this->findParticipacaoStatus((int) $trote->id));
+    }
+
+    private function findParticipacaoStatus(int $troteId): string
+    {
+        return (string) Yii::$app->db->createCommand(
+            'SELECT status FROM participacao WHERE trote_id = :trote_id',
+            [':trote_id' => $troteId]
+        )->queryScalar();
+    }
+
     private function novoTrote(string $edicao, string $status): Trote
     {
         $trote = new Trote();

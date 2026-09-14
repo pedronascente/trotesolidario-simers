@@ -10,7 +10,7 @@ use yii\helpers\StringHelper;
 /* @var $searchModel app\modules\common\models\TroteSearchModel */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Trote';
+$this->title = 'Trotes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -28,22 +28,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <div class="card shadow mb-4">
-        <div class="p-3">
-            <p>
-                <?= Html::a('Criar Trote', ['create'], ['class' => 'btn btn-success']) ?>
-            </p>
-
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-success">Lista de trotes</h6>
+            <?= Html::a('<i class="fas fa-plus mr-1"></i> Novo trote', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+        </div>
+        <div class="card-body">
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'pjax' => true,
                 'hover' => true,
-                'panel' => [
-                    'heading' => '<i class="fa fa-hand-holding-heart"></i> Lista de Trotes',
-                    'before' => '<div style="padding-top: 7px;"><em></em></div>',
-                ],
-                'export' => ['fontAwesome' => true],
-                'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
+                'responsive' => true,
                 'rowOptions' => function ($model) {
                     return $model->status === Trote::STATUS_ATIVO ? ['class' => 'table-success'] : [];
                 },
@@ -104,19 +99,30 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => '\\kartik\\grid\\ActionColumn',
                         'template' => '<div class="btn-group-actions">{view} {update} {delete}</div>',
                         'buttons' => [
-                            'view' => fn($url) => Html::a('<i class="fas fa-eye"></i>', $url, ['class' => 'btn btn-sm btn-info', 'title' => 'Visualizar', 'data-pjax' => '0']),
-                            'update' => fn($url) => Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-sm btn-primary', 'title' => 'Editar', 'data-pjax' => '0']),
+                            'view' => fn($url, $model) => Html::a('<i class="fas fa-eye" aria-hidden="true"></i>', $url, [
+                                'class' => 'btn btn-sm btn-info',
+                                'title' => 'Visualizar trote',
+                                'aria-label' => 'Visualizar ' . $model->titulo,
+                                'data-pjax' => '0',
+                            ]),
+                            'update' => fn($url, $model) => Html::a('<i class="fas fa-pencil-alt" aria-hidden="true"></i>', $url, [
+                                'class' => 'btn btn-sm btn-primary',
+                                'title' => 'Editar trote',
+                                'aria-label' => 'Editar ' . $model->titulo,
+                                'data-pjax' => '0',
+                            ]),
                             'delete' => function ($url, $model) {
                                 if ($model->status === Trote::STATUS_ATIVO) {
                                     return '';
                                 }
 
-                                return Html::a('<i class="fas fa-trash"></i>', $url, [
+                                return Html::a('<i class="fas fa-trash" aria-hidden="true"></i>', $url, [
                                     'class' => 'btn btn-sm btn-danger',
-                                    'title' => 'Excluir',
+                                    'title' => 'Excluir trote',
+                                    'aria-label' => 'Excluir ' . $model->titulo,
                                     'data' => [
                                         'method' => 'post',
-                                        'confirm' => 'Deseja realmente excluir este trote?',
+                                        'confirm' => 'Deseja realmente excluir o trote "' . $model->titulo . '"?',
                                         'pjax' => '0',
                                     ],
                                 ]);

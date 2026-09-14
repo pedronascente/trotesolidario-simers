@@ -5,9 +5,8 @@ use kartik\alert\Alert;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 
-$this->title = 'Doacao';
+$this->title = 'Doações';
 $this->params['breadcrumbs'][] = $this->title;
-$this->registerCssFile('@web/css/donation-styles.css');
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
@@ -50,146 +49,136 @@ $this->registerCssFile('@web/css/donation-styles.css');
     }
 </style>
 
-<div class="container-fluid">
-    <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Doacao', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000]) ?>
-    <?php endif; ?>
+<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Doação', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000]) ?>
+<?php endif; ?>
 
-    <?php if (Yii::$app->session->hasFlash('error')): ?>
-        <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Doacao', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000]) ?>
-    <?php endif; ?>
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Doação', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000]) ?>
+<?php endif; ?>
 
-    <div class="row">
-        <div class="col-lg-12 mb-4">
-            <div class="card shadow mb-4">
-                <div class="p-3">
-                    <p>
-                        <?= Html::a('Criar Doacao', ['create'], ['class' => 'btn btn-success']) ?>
-                    </p>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+        <h6 class="m-0 font-weight-bold text-success">Lista de doações</h6>
+        <?= Html::a('<i class="fas fa-plus mr-1"></i> Nova doação', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+    </div>
+    <div class="card-body">
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'pjax' => true,
+            'hover' => true,
+            'responsive' => true,
+            'columns' => [
+                //'id',
+                [
+                    'attribute' => 'arquivo',
+                    'label' => 'Arquivo',
+                    'format' => 'raw',
+                    'filter' => false,
+                    'hAlign' => 'center',
+                    'vAlign' => 'center',
+                    'value' => function ($model) {
+                        if (!$model->arquivo) {
+                            return Html::tag('span', 'Sem arquivo');
+                        }
 
-                    <?= GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'pjax' => true,
-                        'hover' => true,
-                        'panel' => [
-                            'heading' => '<i class="fa fa-hand-holding-heart"></i> Lista de Doacoes',
-                        ],
-                        'export' => ['fontAwesome' => true],
-                        'exportConfig' => ['html' => [], 'csv' => [], 'txt' => [], 'xls' => [], 'json' => []],
-                        'columns' => [
-                            'id',
-                            [
-                                'attribute' => 'arquivo',
-                                'label' => 'Arquivo',
-                                'format' => 'raw',
-                                'filter' => false,
-                                'hAlign' => 'center',
-                                'vAlign' => 'center',
-                                'value' => function ($model) {
-                                    if (!$model->arquivo) {
-                                        return Html::tag('span', 'Sem arquivo');
-                                    }
+                        $filePath = Yii::getAlias('@webroot') . '/imagens/doacoes/' . $model->arquivo;
+                        $webPath = Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo;
+                        $fullUrl = Yii::$app->request->hostInfo . $webPath;
 
-                                    $filePath = Yii::getAlias('@webroot') . '/imagens/doacoes/' . $model->arquivo;
-                                    $webPath = Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo;
-                                    $fullUrl = Yii::$app->request->hostInfo . $webPath;
+                        if (file_exists($filePath) && @getimagesize($filePath)) {
+                            return Html::a(
+                                Html::img($fullUrl, [
+                                    'class' => 'doacao-thumb-img',
+                                    'alt' => 'Doacao ' . $model->id,
+                                ]),
+                                $fullUrl,
+                                [
+                                    'class' => 'doacao-thumb-link',
+                                    'data-fancybox' => 'doacoes-gallery',
+                                    'data-src' => $fullUrl,
+                                    'data-caption' => 'Doacao #' . $model->id . ' - ' . ($model->tipoDoacao->nome ?? $model->arquivo),
+                                    'data-pjax' => '0',
+                                ]
+                            );
+                        }
 
-                                    if (file_exists($filePath) && @getimagesize($filePath)) {
-                                        return Html::a(
-                                            Html::img($fullUrl, [
-                                                'class' => 'doacao-thumb-img',
-                                                'alt' => 'Doacao ' . $model->id,
-                                            ]),
-                                            $fullUrl,
-                                            [
-                                                'class' => 'doacao-thumb-link',
-                                                'data-fancybox' => 'doacoes-gallery',
-                                                'data-src' => $fullUrl,
-                                                'data-caption' => 'Doacao #' . $model->id . ' - ' . ($model->tipoDoacao->nome ?? $model->arquivo),
-                                                'data-pjax' => '0',
-                                            ]
-                                        );
-                                    }
+                        return Html::a('Abrir arquivo', $webPath, [
+                            'class' => 'doacao-file-link',
+                            'target' => '_blank',
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                ],
+                [
+                    'attribute' => 'participacao_label',
+                    'label' => 'Participacao',
+                    'value' => fn($model) => $model->getParticipacaoDisplay(),
+                ],
+                [
+                    'attribute' => 'tipo_doacao_nome',
+                    'label' => 'Tipo de doacao',
+                    'value' => fn($model) => $model->tipoDoacao->nome ?? '-',
+                ],
+                [
+                    'attribute' => 'evento_nome',
+                    'label' => 'Evento',
+                    'value' => fn($model) => $model->evento->nome ?? '-',
+                ],
+                'cpf_snapshot',
+                'edicao_snapshot',
+                [
+                    'attribute' => 'status',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        return match ($model->status) {
+                            Doacao::STATUS_APROVADA => Html::tag('span', 'Aprovada', ['class' => 'badge badge-success']),
+                            Doacao::STATUS_REJEITADA => Html::tag('span', 'Rejeitada', ['class' => 'badge badge-danger']),
+                            default => Html::tag('span', 'Pendente', ['class' => 'badge badge-warning']),
+                        };
+                    },
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => Doacao::getStatusList(),
+                    'filterInputOptions' => ['placeholder' => 'Status'],
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => ['allowClear' => true],
+                    ],
+                ],
+                [
+                    'class' => '\\kartik\\grid\\ActionColumn',
+                    'headerOptions' => ['style' => 'width:180px'],
+                    'template' => '<div class="btn-group-actions">{update} {aprovar} {reprovar}</div>',
+                    'buttons' => [
+                        'update' => fn($url, $model) => Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-primary', 'title' => 'Editar', 'data-pjax' => '0']),
+                        'aprovar' => function ($url, $model) {
+                            if ($model->status === Doacao::STATUS_APROVADA) {
+                                return '';
+                            }
 
-                                    return Html::a('Abrir arquivo', $webPath, [
-                                        'class' => 'doacao-file-link',
-                                        'target' => '_blank',
-                                        'data-pjax' => '0',
-                                    ]);
-                                },
-                            ],
-                            [
-                                'attribute' => 'participacao_label',
-                                'label' => 'Participacao',
-                                'value' => fn($model) => $model->getParticipacaoDisplay(),
-                            ],
-                            [
-                                'attribute' => 'tipo_doacao_nome',
-                                'label' => 'Tipo de doacao',
-                                'value' => fn($model) => $model->tipoDoacao->nome ?? '-',
-                            ],
-                            [
-                                'attribute' => 'evento_nome',
-                                'label' => 'Evento',
-                                'value' => fn($model) => $model->evento->nome ?? '-',
-                            ],
-                            'cpf_snapshot',
-                            'edicao_snapshot',
-                            [
-                                'attribute' => 'status',
-                                'format' => 'raw',
-                                'value' => function ($model) {
-                                    return match ($model->status) {
-                                        Doacao::STATUS_APROVADA => Html::tag('span', 'Aprovada', ['class' => 'badge badge-success']),
-                                        Doacao::STATUS_REJEITADA => Html::tag('span', 'Rejeitada', ['class' => 'badge badge-danger']),
-                                        default => Html::tag('span', 'Pendente', ['class' => 'badge badge-warning']),
-                                    };
-                                },
-                                'filterType' => GridView::FILTER_SELECT2,
-                                'filter' => Doacao::getStatusList(),
-                                'filterInputOptions' => ['placeholder' => 'Status'],
-                                'filterWidgetOptions' => [
-                                    'pluginOptions' => ['allowClear' => true],
-                                ],
-                            ],
-                            [
-                                'class' => '\\kartik\\grid\\ActionColumn',
-                                'headerOptions' => ['style' => 'width:180px'],
-                                'template' => '<div class="btn-group-actions">{update} {aprovar} {reprovar}</div>',
-                                'buttons' => [
-                                    'update' => fn($url, $model) => Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-primary', 'title' => 'Editar', 'data-pjax' => '0']),
-                                    'aprovar' => function ($url, $model) {
-                                        if ($model->status === Doacao::STATUS_APROVADA) {
-                                            return '';
-                                        }
+                            return Html::a('<i class="fa fa-check"></i>', ['aprovar', 'id' => $model->id], [
+                                'class' => 'btn btn-sm btn-success',
+                                'title' => 'Aprovar',
+                                'data-method' => 'post',
+                                'data-confirm' => 'Confirmar aprovacao?',
+                                'data-pjax' => '0',
+                            ]);
+                        },
+                        'reprovar' => function ($url, $model) {
+                            if ($model->status === Doacao::STATUS_REJEITADA) {
+                                return '';
+                            }
 
-                                        return Html::a('<i class="fa fa-check"></i>', ['aprovar', 'id' => $model->id], [
-                                            'class' => 'btn btn-sm btn-success',
-                                            'title' => 'Aprovar',
-                                            'data-method' => 'post',
-                                            'data-confirm' => 'Confirmar aprovacao?',
-                                            'data-pjax' => '0',
-                                        ]);
-                                    },
-                                    'reprovar' => function ($url, $model) {
-                                        if ($model->status === Doacao::STATUS_REJEITADA) {
-                                            return '';
-                                        }
-
-                                        return Html::button('<i class="fa fa-times"></i>', [
-                                            'class' => 'btn btn-sm btn-danger btn-rejeitar',
-                                            'title' => 'Rejeitar',
-                                            'data-id' => $model->id,
-                                        ]);
-                                    },
-                                ],
-                            ],
-                        ],
-                    ]); ?>
-                </div>
-            </div>
-        </div>
+                            return Html::button('<i class="fa fa-times"></i>', [
+                                'class' => 'btn btn-sm btn-danger btn-rejeitar',
+                                'title' => 'Rejeitar',
+                                'data-id' => $model->id,
+                            ]);
+                        },
+                    ],
+                ],
+            ],
+        ]); ?>
     </div>
 </div>
 

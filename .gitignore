@@ -43,5 +43,9 @@ tests/_support/_generated
 /src/web/img/*
 /src/web/pdf/*
 
+# temporary diagnostic scripts and generated artifacts
+/tmp/
+/tmp_*.php
+
 # vendor
 src/vendor

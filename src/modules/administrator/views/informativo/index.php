@@ -1,111 +1,97 @@
 <?php
 
-use yii\helpers\Html;
-use kartik\grid\GridView;
 use kartik\alert\Alert;
+use kartik\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
-$this->title = 'Informativo';
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Informativos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <style>
-    .btn-group-actions { display: flex;  gap: 6px; justify-content: center; align-items: center; }
+    .btn-group-actions { display: flex; gap: 6px; justify-content: center; align-items: center; }
 </style>
+<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Informativo', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000]) ?>
+<?php endif; ?>
 
-<div class="container-fluid">
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Informativo', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000]) ?>
+<?php endif; ?>
 
-    <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <?= Alert::widget(['type' => Alert::TYPE_SUCCESS, 'title' => 'Informativo', 'icon' => 'fas fa-check-circle', 'body' => Yii::$app->session->getFlash('success'), 'showSeparator' => true, 'delay' => 4000,]) ?>
-    <?php endif; ?>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-success">Lista de informativos</h6>
+        <?= Html::a('<i class="fas fa-plus mr-1"></i> Novo informativo', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+    </div>
+    <div class="card-body">
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'pjax' => true,
+            'hover' => true,
+            'responsive' => true,
+            'columns' => [
+                ['class' => 'yii\\grid\\SerialColumn'],
+                ['attribute' => 'nome', 'vAlign' => 'middle'],
+                [
+                    'attribute' => 'arquivo',
+                    'label' => 'Arquivo',
+                    'format' => 'raw',
+                    'filter' => false,
+                    'vAlign' => 'middle',
+                    'value' => function ($model) {
+                        if (!$model->arquivo) {
+                            return null;
+                        }
 
-    <?php if (Yii::$app->session->hasFlash('error')): ?>
-        <?= Alert::widget(['type' => Alert::TYPE_DANGER, 'title' => 'Informativo', 'icon' => 'fas fa-times-circle', 'body' => Yii::$app->session->getFlash('error'), 'showSeparator' => true, 'delay' => 4000,]) ?>
-    <?php endif; ?>
-
-    <div class="row">
-        <div class="col-lg-12 mb-4">
-            <div class="card shadow mb-4">
-                <div class="p-3">
-                    <p>
-                        <?= Html::a('Criar Informativo', ['create'], ['class' => 'btn btn-success']) ?>
-                    </p>
-                    <?= GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'headerContainer' => ['style' => 'top:50px', 'class' => 'kv-table-header'],
-                        'hover' => true,
-                        'panel' => [
-                            'heading' => '<i class="fa fa-hand-holding-heart"></i> Lista de Informativos',
-                            'before' => '<div style="padding-top: 7px;"><em></em></div>',
-                        ],
-                        'export' => [
-                            'fontAwesome' => true
-                        ],
-                        'exportConfig' => [
-                            'html' => [],
-                            'csv' => [],
-                            'txt' => [],
-                            'xls' => [],
-                            'json' => [],
-                        ],
-                        'columns' => [
-                            'nome',
-                            [
-                                'headerOptions' => ['style' => 'width:10%'],
-                                'format' => 'raw',
-                                'filter' => false,
-                                'attribute' => 'arquivo',
-                                'label' => 'Icon',
-                                'value' => function ($model) {
-                                    if ($model->arquivo) {
-                                        return Html::a(
-                                            'Link do arquivo',
-                                            Yii::$app->request->baseUrl . '/pdf/' . $model->arquivo,
-                                            ['target' => '_blank']
-                                        );
-                                    }
-                                    return null;
-                                },
-                                'hiddenFromExport' => true,
-                            ],
-                            [
-                                'headerOptions' => ['style' => 'width:10%'],
-                                'class' => '\kartik\grid\ActionColumn',
-                                'template' => '<div class="btn-group-actions">{update} {delete}</div>',
-                                'buttons' => [
-                                    'update' => function ($url) {
-                                        return Html::a(
-                                            '<i class="fas fa-pencil-alt"></i>',
-                                            $url,
-                                            [
-                                                'class' => 'btn btn-small btn-success',
-                                                'data-toggle' => 'tooltip',
-                                                'data-original-title' => 'Editar',
-                                                'data-pjax' => '0',
-                                            ]
-                                        );
-                                    },
-                                    'delete' => function ($url, $model) {
-                                        return Html::a(
-                                            '<i class="fas fa-trash-alt"></i>',
-                                            ['delete', 'id' => $model->id],
-                                            [
-                                                'class' => 'btn btn-small btn-danger',
-                                                'data' => [
-                                                    'confirm' => 'Tem certeza que deseja excluir este informativo?',
-                                                    'method' => 'post',
-                                                ],
-                                                'data-toggle' => 'tooltip',
-                                                'data-original-title' => 'Excluir',
-                                            ]
-                                        );
-                                    },
-                                ],
-                            ],
-                        ],
-                    ]); ?>
-                </div>
-            </div>
-        </div>
+                        return Html::a(
+                            'Link do arquivo',
+                            Url::to('@web/pdf/' . rawurlencode(basename($model->arquivo))),
+                            ['target' => '_blank', 'rel' => 'noopener noreferrer', 'data-pjax' => '0']
+                        );
+                    },
+                ],
+                [
+                    'class' => '\\kartik\\grid\\ActionColumn',
+                    'template' => '<div class="btn-group-actions">{update} {delete}</div>',
+                    'headerOptions' => ['style' => 'width:120px'],
+                    'buttons' => [
+                        'update' => function ($url, $model) {
+                            return Html::a(
+                                '<i class="fas fa-pencil-alt" aria-hidden="true"></i>',
+                                ['update', 'id' => $model->id],
+                                [
+                                    'class' => 'btn btn-sm btn-primary',
+                                    'title' => 'Editar informativo',
+                                    'aria-label' => 'Editar ' . $model->nome,
+                                    'data-pjax' => '0',
+                                ]
+                            );
+                        },
+                        'delete' => function ($url, $model) {
+                            return Html::a(
+                                '<i class="fas fa-trash-alt" aria-hidden="true"></i>',
+                                ['delete', 'id' => $model->id],
+                                [
+                                    'class' => 'btn btn-sm btn-danger',
+                                    'title' => 'Excluir informativo',
+                                    'aria-label' => 'Excluir ' . $model->nome,
+                                    'data' => [
+                                        'confirm' => 'Deseja realmente excluir o informativo "' . $model->nome . '"?',
+                                        'method' => 'post',
+                                        'pjax' => '0',
+                                    ],
+                                ]
+                            );
+                        },
+                    ],
+                ],
+            ],
+        ]); ?>
     </div>
 </div>
