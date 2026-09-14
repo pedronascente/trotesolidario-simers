@@ -19,6 +19,35 @@ O trabalho contemplou uma revisão completa e incremental do sistema, com foco e
 
 A arquitetura continua baseada em PHP e Yii2, mas diversas áreas foram revistas para oferecer uma base mais confiável tanto para os usuários do sistema quanto para a equipe responsável por sua manutenção.
 
+## Visão do produto
+
+A refatoração transformou a área administrativa em uma experiência visual mais clara, organizada e orientada à operação. O painel reúne informações relevantes do evento, indicadores, alertas, atalhos e atividades recentes em uma única visão.
+
+![Dashboard administrativo do Trote Solidário](fotos-layout/dashboard-administrativo.png)
+
+### Destaques da experiência
+
+- dashboard com visão consolidada da operação e dados prioritários;
+- navegação lateral organizada por contexto de trabalho;
+- indicadores de participantes, doações, eventos e usuários;
+- alertas visuais para situações que exigem atenção;
+- tabelas administrativas com filtros, paginação e ações objetivas;
+- formulários com validação clara e retorno imediato ao usuário;
+- identidade visual consistente entre módulos;
+- fluxos de cadastro e gestão mais previsíveis.
+
+## Galeria da interface refatorada
+
+| Gestão de comissões organizadoras | Gestão de mercados parceiros |
+|---|---|
+| ![Listagem de comissões organizadoras](fotos-layout/comissoes-organizadoras.png) | ![Listagem de mercados parceiros](fotos-layout/mercados-parceiros.png) |
+| Publicação e ordenação dos membros exibidos aos participantes. | Consulta paginada, filtros por campo e ações administrativas diretas. |
+
+| Álbum dos participantes | Cadastro e análise de doações |
+|---|---|
+| ![Álbum de fotos dos participantes](fotos-layout/album-fotos.png) | ![Formulário administrativo de doação](fotos-layout/cadastro-doacao.png) |
+| Gestão de imagens vinculadas ao participante e à edição do evento. | Formulário com validação contextual, upload de comprovante e controle de status. |
+
 ## Stack utilizada
 
 | Camada | Tecnologia |
