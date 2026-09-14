@@ -1,6 +1,23 @@
 # Trote Solidário
 
-Sistema web para administração e participação no Trote Solidário. A aplicação foi construída em PHP com Yii2 e possui módulos para participantes, administração, doações, eventos, documentos, rankings e certificados em PDF.
+Sistema web para administração e participação no Trote Solidário, com módulos para participantes, administração, doações, eventos, documentos, rankings e certificados em PDF.
+
+## Sobre a refatoração
+
+Este sistema **não foi desenvolvido do zero**. O projeto existente passou por uma **refatoração ampla**, realizada para modernizar e aprimorar a aplicação sem perder sua finalidade original nem os fluxos essenciais já consolidados.
+
+O trabalho contemplou uma revisão completa e incremental do sistema, com foco em:
+
+- aperfeiçoar as regras de negócio e tornar os comportamentos mais consistentes;
+- corrigir falhas e reduzir riscos de manutenção;
+- organizar responsabilidades e melhorar a legibilidade do código;
+- padronizar os módulos e as interfaces administrativas;
+- melhorar a experiência do usuário, a navegação e a clareza das ações;
+- preservar a compatibilidade com os dados e processos existentes;
+- aumentar a estabilidade da geração de documentos e certificados em PDF;
+- preparar o projeto para evolução, testes e implantação mais segura.
+
+A arquitetura continua baseada em PHP e Yii2, mas diversas áreas foram revistas para oferecer uma base mais confiável tanto para os usuários do sistema quanto para a equipe responsável por sua manutenção.
 
 ## Stack utilizada
 
@@ -263,4 +280,3 @@ Não execute `yii migrate/down` automaticamente: algumas migrations não são re
 - `readme-docker.md`: comandos detalhados para desenvolvimento, importação de dump e permissões.
 - `docs/framework/yii2/`: documentação local versionada do Yii2.
 - `src/tests/`: configuração das suítes automatizadas.
-
