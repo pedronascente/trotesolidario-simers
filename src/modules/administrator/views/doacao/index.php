@@ -150,7 +150,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['style' => 'width:180px'],
                     'template' => '<div class="btn-group-actions">{update} {aprovar} {reprovar}</div>',
                     'buttons' => [
-                        'update' => fn($url, $model) => Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-primary', 'title' => 'Editar', 'data-pjax' => '0']),
+                        'update' => function ($url, $model) {
+                            if ($model->status === Doacao::STATUS_APROVADA) {
+                                return '';
+                            }
+
+                            return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
+                                'class' => 'btn btn-sm btn-primary',
+                                'title' => 'Editar',
+                                'data-pjax' => '0',
+                            ]);
+                        },
                         'aprovar' => function ($url, $model) {
                             if ($model->status === Doacao::STATUS_APROVADA) {
                                 return '';
