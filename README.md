@@ -36,6 +36,23 @@ A refatoração transformou a área administrativa em uma experiência visual ma
 - identidade visual consistente entre módulos;
 - fluxos de cadastro e gestão mais previsíveis.
 
+## Antes e depois da refatoração
+
+### Área do participante
+
+| Antes | Depois |
+|---|---|
+| ![Página inicial antiga da área do participante](fotos-layout/home-antiga-participante.png) | ![Página inicial refatorada da área do participante](fotos-layout/home-participante.png) |
+| Conteúdo extenso e pouco hierarquizado, navegação reduzida e informações importantes distribuídas em grandes blocos. | Jornada centralizada, ações rápidas, indicadores pessoais, status do evento, documentos, ranking e participações organizados por prioridade. |
+
+A comparação evidencia que a refatoração foi além da identidade visual. A nova experiência aproxima a interface das regras de negócio: o participante identifica o trote ativo, acompanha doações aprovadas ou pendentes, acessa certificados, consulta suas participações e encontra os próximos passos sem precisar interpretar blocos extensos de conteúdo.
+
+### Referência do sistema anterior
+
+A tela antiga de certificados também foi preservada como registro visual da aplicação antes da revisão de navegação, hierarquia e padronização dos módulos.
+
+![Tela antiga de certificados do participante](fotos-layout/certificado-antiga-participante.png)
+
 ## Galeria da interface refatorada
 
 | Gestão de comissões organizadoras | Gestão de mercados parceiros |
