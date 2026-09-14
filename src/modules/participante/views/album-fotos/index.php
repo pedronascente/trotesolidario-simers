@@ -24,112 +24,110 @@ CSS
 );
 ?>
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
-        <?= Html::a('Voltar para home', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
+    <?= Html::a('Voltar para home', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
+</div>
 
-    <div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
-        Visualize e baixe as fotos vinculadas às suas doações.
-    </div>
+<div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
+    Visualize e baixe as fotos vinculadas às suas doações.
+</div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-success">Fotos disponíveis</h6>
-        </div>
-        <div class="card-body">
-            <?php if (empty($fotos)): ?>
-                <div class="photo-album-empty">
-                    <i class="fas fa-images fa-2x mb-3" aria-hidden="true"></i>
-                    <p class="mb-0">Você ainda não possui fotos disponíveis no álbum.</p>
-                </div>
-            <?php else: ?>
-                <div class="row">
-                    <?php foreach ($fotos as $index => $foto): ?>
-                        <?php
-                        $visualizarUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id']]);
-                        $downloadUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id'], 'download' => 1]);
-                        ?>
-                        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                            <article class="card photo-album-card">
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-success">Fotos disponíveis</h6>
+    </div>
+    <div class="card-body">
+        <?php if (empty($fotos)): ?>
+            <div class="photo-album-empty">
+                <i class="fas fa-images fa-2x mb-3" aria-hidden="true"></i>
+                <p class="mb-0">Você ainda não possui fotos disponíveis no álbum.</p>
+            </div>
+        <?php else: ?>
+            <div class="row">
+                <?php foreach ($fotos as $index => $foto): ?>
+                    <?php
+                    $visualizarUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id']]);
+                    $downloadUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id'], 'download' => 1]);
+                    ?>
+                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                        <article class="card photo-album-card">
+                            <?= Html::a(
+                                Html::img($visualizarUrl, [
+                                    'class' => 'photo-album-image',
+                                    'alt' => $foto['titulo'],
+                                ]),
+                                '#albumPhotosCarousel',
+                                [
+                                    'class' => 'photo-album-preview',
+                                    'data-photo-index' => $index,
+                                    'aria-label' => 'Visualizar ' . $foto['titulo'],
+                                ]
+                            ) ?>
+                            <div class="card-body">
+                                <h2 class="photo-album-title"><?= Html::encode($foto['titulo']) ?></h2>
                                 <?= Html::a(
-                                    Html::img($visualizarUrl, [
-                                        'class' => 'photo-album-image',
-                                        'alt' => $foto['titulo'],
-                                    ]),
-                                    '#albumPhotosCarousel',
-                                    [
-                                        'class' => 'photo-album-preview',
-                                        'data-photo-index' => $index,
-                                        'aria-label' => 'Visualizar ' . $foto['titulo'],
-                                    ]
+                                    '<i class="fas fa-download mr-2" aria-hidden="true"></i>Baixar foto',
+                                    $downloadUrl,
+                                    ['class' => 'btn btn-success btn-sm photo-album-download']
                                 ) ?>
-                                <div class="card-body">
-                                    <h2 class="photo-album-title"><?= Html::encode($foto['titulo']) ?></h2>
+                            </div>
+                        </article>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php if (!empty($fotos)): ?>
+    <div class="modal fade photo-album-modal" id="albumPhotosModal" tabindex="-1" role="dialog" aria-labelledby="albumPhotosModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h5 mb-0" id="albumPhotosModalTitle">Visualizar fotos</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="albumPhotosCarousel" class="carousel slide" data-interval="false" data-keyboard="true">
+                    <div class="carousel-inner">
+                        <?php foreach ($fotos as $index => $foto): ?>
+                            <?php
+                            $visualizarUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id']]);
+                            $downloadUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id'], 'download' => 1]);
+                            ?>
+                            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                                <?= Html::img($visualizarUrl, [
+                                    'class' => 'photo-album-modal-image',
+                                    'alt' => $foto['titulo'],
+                                ]) ?>
+                                <div class="p-3 text-center">
+                                    <p class="mb-3 text-white font-weight-bold"><?= Html::encode($foto['titulo']) ?></p>
                                     <?= Html::a(
                                         '<i class="fas fa-download mr-2" aria-hidden="true"></i>Baixar foto',
                                         $downloadUrl,
-                                        ['class' => 'btn btn-success btn-sm photo-album-download']
+                                        ['class' => 'btn btn-success btn-sm']
                                     ) ?>
                                 </div>
-                            </article>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <?php if (!empty($fotos)): ?>
-        <div class="modal fade photo-album-modal" id="albumPhotosModal" tabindex="-1" role="dialog" aria-labelledby="albumPhotosModalTitle" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="h5 mb-0" id="albumPhotosModalTitle">Visualizar fotos</h2>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                    <div id="albumPhotosCarousel" class="carousel slide" data-interval="false" data-keyboard="true">
-                        <div class="carousel-inner">
-                            <?php foreach ($fotos as $index => $foto): ?>
-                                <?php
-                                $visualizarUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id']]);
-                                $downloadUrl = Url::to(['/participante/album-fotos/arquivo', 'id' => $foto['id'], 'download' => 1]);
-                                ?>
-                                <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                    <?= Html::img($visualizarUrl, [
-                                        'class' => 'photo-album-modal-image',
-                                        'alt' => $foto['titulo'],
-                                    ]) ?>
-                                    <div class="p-3 text-center">
-                                        <p class="mb-3 text-white font-weight-bold"><?= Html::encode($foto['titulo']) ?></p>
-                                        <?= Html::a(
-                                            '<i class="fas fa-download mr-2" aria-hidden="true"></i>Baixar foto',
-                                            $downloadUrl,
-                                            ['class' => 'btn btn-success btn-sm']
-                                        ) ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php if (count($fotos) > 1): ?>
-                            <a class="carousel-control-prev" href="#albumPhotosCarousel" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                            <a class="carousel-control-next" href="#albumPhotosCarousel" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Próxima</span>
-                            </a>
-                        <?php endif; ?>
-                    </div>
+                    <?php if (count($fotos) > 1): ?>
+                        <a class="carousel-control-prev" href="#albumPhotosCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                        <a class="carousel-control-next" href="#albumPhotosCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Próxima</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
-    <?php endif; ?>
-</div>
+    </div>
+<?php endif; ?>
 
 <?php
 $this->registerJs(<<<JS

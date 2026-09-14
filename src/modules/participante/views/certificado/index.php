@@ -6,7 +6,7 @@ use yii\helpers\Html;
 $this->title = 'Meus certificados';
 ?>
 
-<div class="container-fluid">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
         <?= Html::a('Voltar para home', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
@@ -74,4 +74,4 @@ $this->title = 'Meus certificados';
             <?php endif; ?>
         </div>
     </div>
-</div>
+

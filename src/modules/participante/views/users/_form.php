@@ -3,10 +3,14 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+/* @var $model \app\modules\common\models\ParticipantProfileForm */
+/* @var $selectedParticipationId int|null */
+
 ?>
 
 <div class="participant-profile-form">
     <?php $form = ActiveForm::begin([
+        'id' => 'participant-profile-form',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'options' => ['class' => 'form-group'],
@@ -65,9 +69,15 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
-    <div class="form-group mt-3 mb-0 d-flex gap-2">
-        <?= Html::submitButton('Salvar perfil', ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Cancelar', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary']) ?>
+    <div class="form-group mt-3 mb-0 d-flex flex-wrap">
+        <?= Html::submitButton('Salvar perfil', [
+            'class' => 'btn btn-success mr-2 mb-2',
+            'id' => 'save-profile-button',
+        ]) ?>
+        <?= Html::a('Cancelar', ['perfil', 'participacao_id' => $selectedParticipationId], [
+            'class' => 'btn btn-outline-secondary mb-2',
+            'id' => 'cancel-profile-button',
+        ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -90,5 +100,22 @@ function toggleAcademicFields() {
 
 $(document).on('change', '#participantprofileform-estudante', toggleAcademicFields);
 toggleAcademicFields();
+
+const profileForm = $('#participant-profile-form');
+const initialProfileData = profileForm.serialize();
+
+$('#cancel-profile-button').on('click', function (event) {
+    if (profileForm.serialize() !== initialProfileData && !window.confirm('Descartar as altera\u00e7\u00f5es n\u00e3o salvas?')) {
+        event.preventDefault();
+    }
+});
+
+profileForm.on('beforeSubmit', function () {
+    $('#save-profile-button')
+        .prop('disabled', true)
+        .text('Salvando...');
+
+    return true;
+});
 JS);
 ?>

@@ -141,8 +141,9 @@ $displayName = $identity ? $identity->name : 'Participante';
                     </li>
                 </ul>
             </nav>
-
-            <?= $content ?>
+            <div class="container-fluid">                    
+                <?= $content ?>
+            </div>
         </div>
 
         <footer class="sticky-footer bg-white">
@@ -169,7 +170,7 @@ $displayName = $identity ? $identity->name : 'Participante';
                     <span aria-hidden="true">x</span>
                 </button>
             </div>
-<div class="modal-body">Selecione sair para finalizar a sessão.</div>
+            <div class="modal-body">Selecione sair para finalizar a sessão.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <?= Html::beginForm(['/participante/default/logout'], 'post', ['class' => 'd-inline']) ?>
