@@ -98,6 +98,10 @@ A nova tela traduz melhor a regra de negócio: cada certificado representa uma p
 | ![Álbum de fotos dos participantes](fotos-layout/album-fotos.png) | ![Formulário administrativo de doação](fotos-layout/cadastro-doacao.png) |
 | Gestão de imagens vinculadas ao participante e à edição do evento. | Formulário com validação contextual, upload de comprovante e controle de status. |
 
+## Modelo entidade-relacionamento
+
+![Modelo entidade-relacionamento do Trote Solidário](fotos-layout/modelo-er.png)
+
 ## Stack utilizada
 
 | Camada | Tecnologia |
