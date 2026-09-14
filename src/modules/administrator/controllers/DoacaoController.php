@@ -91,7 +91,20 @@ class DoacaoController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+        if ($model->status === Doacao::STATUS_APROVADA) {
+            throw new ForbiddenHttpException('Doacoes aprovadas nao podem ser editadas.');
+        }
+
         $data = $this->service->getFormData();
+
+        if (!isset($data['participacoes'][$model->participacao_id])) {
+            $participacaoAtual = $model->participacao;
+
+            if ($participacaoAtual !== null) {
+                $data['participacoes'][$participacaoAtual->id] = $participacaoAtual->getDisplayLabel();
+            }
+        }
 
         if ($model->load(Yii::$app->request->post())) {
             if ($this->service->update($model)) {

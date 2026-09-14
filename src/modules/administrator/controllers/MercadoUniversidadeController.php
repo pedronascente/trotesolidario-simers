@@ -8,7 +8,9 @@ use app\modules\common\models\MercadoParceiro;
 use app\modules\common\models\Universidade;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 
@@ -34,6 +36,12 @@ class MercadoUniversidadeController extends Controller
 
                     throw new ForbiddenHttpException('Acesso negado');
                 },
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
             ],
         ];
     }
@@ -87,5 +95,25 @@ class MercadoUniversidadeController extends Controller
         return $this->render('create', compact('model', 'mercados', 'universidades'));
     }
 
-    
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->delete() !== false) {
+            Yii::$app->session->setFlash('success', 'Vínculo removido com sucesso.');
+        } else {
+            Yii::$app->session->setFlash('error', 'Não foi possível remover o vínculo.');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    protected function findModel($id): MercadoUniversidade
+    {
+        if (($model = MercadoUniversidade::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('Vínculo entre mercado e universidade não encontrado.');
+    }
 }
