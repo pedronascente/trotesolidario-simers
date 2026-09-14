@@ -47,11 +47,14 @@ A refatoração transformou a área administrativa em uma experiência visual ma
 
 A comparação evidencia que a refatoração foi além da identidade visual. A nova experiência aproxima a interface das regras de negócio: o participante identifica o trote ativo, acompanha doações aprovadas ou pendentes, acessa certificados, consulta suas participações e encontra os próximos passos sem precisar interpretar blocos extensos de conteúdo.
 
-### Referência do sistema anterior
+### Certificados do participante
 
-A tela antiga de certificados também foi preservada como registro visual da aplicação antes da revisão de navegação, hierarquia e padronização dos módulos.
+| Antes | Depois |
+|---|---|
+| ![Tela antiga de certificados do participante](fotos-layout/certificado-antiga-participante.png) | ![Tela refatorada de certificados do participante](fotos-layout/certificado-participante.png) |
+| Cards resumidos, com pouca informação para diferenciar cada certificado e navegação limitada. | Certificados organizados por participação, com edição do trote, universidade, tipos de doação, última atualização, status e ação de visualização claramente identificados. |
 
-![Tela antiga de certificados do participante](fotos-layout/certificado-antiga-participante.png)
+A nova tela traduz melhor a regra de negócio: cada certificado representa uma participação e é atualizado quando novas doações são aprovadas para essa mesma participação. A explicação aparece no próprio contexto da página, reduzindo dúvidas e evitando a impressão de certificados duplicados.
 
 ## Galeria da interface refatorada
 
