@@ -177,6 +177,44 @@ docker compose exec php php yii migrate --interactive=0
 
 A aplicação local ficará disponível em `http://localhost:8080`.
 
+### Acessar o MySQL no Docker
+
+Para abrir um terminal no container do banco:
+
+```bash
+docker compose exec mysql-db bash
+```
+
+Dentro do container, conecte-se ao MySQL usando as variáveis definidas no `.env`:
+
+```bash
+mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"
+```
+
+Também é possível conectar diretamente, sem abrir o terminal do container:
+
+```bash
+docker compose exec mysql-db sh -lc \
+  'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"'
+```
+
+Comandos úteis depois da conexão:
+
+```sql
+SHOW TABLES;
+DESCRIBE tipo_categoria_custo;
+DESCRIBE categoria_custo;
+DESCRIBE distribuicao_custo;
+
+SELECT * FROM tipo_categoria_custo;
+SELECT * FROM categoria_custo;
+SELECT * FROM distribuicao_custo;
+
+EXIT;
+```
+
+Consulte também o guia [Como acessar o container MySQL](docs/como%20acessar%20container%20mysql.md).
+
 As seeds existem para preparação de ambientes controlados:
 
 ```bash
@@ -361,5 +399,6 @@ Não execute `yii migrate/down` automaticamente: algumas migrations não são re
 ## Documentação complementar
 
 - `readme-docker.md`: comandos detalhados para desenvolvimento, importação de dump e permissões.
+- `docs/como acessar container mysql.md`: acesso ao MySQL e comandos básicos de inspeção.
 - `docs/framework/yii2/`: documentação local versionada do Yii2.
 - `src/tests/`: configuração das suítes automatizadas.

@@ -12,6 +12,7 @@ $menuGroups = [
             'mercados-parceiros' => ['label' => 'Mercados parceiros', 'icon' => 'fa-store'],
             'universidade' => ['label' => 'Universidades', 'icon' => 'fa-university'],
             'album-fotos' => ['label' => 'Álbum de Fotos', 'icon' => 'fa-images'],
+            'tipo-categoria-custo' => ['label' => 'Categorias de custos', 'icon' => 'fa-tags'],
         ],
     ],
     'Comunicacao' => [
@@ -28,6 +29,7 @@ $menuGroups = [
             'certificado' => ['label' => 'Certificados', 'icon' => 'fa-file-alt'],
             'doacao' => ['label' => 'Doações', 'icon' => 'fa-certificate'],
             'ranking' => ['label' => 'Ranking', 'icon' => 'fa-trophy'],
+            'gestao-custos' => ['label' => 'Custos', 'icon' => 'fa-coins'],
         ],
     ],
     'Pessoas' => [

@@ -37,14 +37,19 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'mDjJbJm3XXWDYy1ln2QyxP75uuVkPCjd',
-            'csrfParam' => '_csrf',
+            'csrfParam' => '_csrf_trotesolidario',
 
             'enableCsrfCookie' => true,
 
             'csrfCookie' => [
+                'name' => '_csrf_trotesolidario',
                 'httpOnly' => true,
                 'path' => '/',
             ],
+        ],
+        'session' => [
+            'name' => 'trotesolidario_session',
+            'timeout' => 8 * 60 * 60,
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -56,6 +61,10 @@ $config = [
              */
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'identityCookie' => [
+                'name' => '_identity_trotesolidario',
+                'httpOnly' => true,
+            ],
             /**
              * Ã‰ responsÃ¡vel por definir a rota (URL) padrÃ£o de login
              */

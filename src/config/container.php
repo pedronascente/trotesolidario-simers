@@ -12,6 +12,7 @@ use app\modules\common\services\ParticipanteService;
 use app\modules\common\services\ParticipacaoService;
 use app\modules\common\services\RankingCacheService;
 use app\modules\common\services\CertificadoService;
+use app\modules\common\services\GestaoCustosService;
 use app\services\auth\AuthService;
 
 use app\modules\common\services\contracts\BannerServiceInterface;
@@ -26,6 +27,7 @@ use app\modules\common\services\contracts\ParticipanteServiceInterface;
 use app\modules\common\services\contracts\ParticipacaoServiceInterface;
 use app\modules\common\services\contracts\RankingCacheServiceInterface;
 use app\modules\common\services\contracts\CertificadoServiceInterface;
+use app\modules\common\services\contracts\GestaoCustosServiceInterface;
 use app\services\auth\AuthServiceInterface;
 
 return [
@@ -41,5 +43,6 @@ return [
     ParticipacaoServiceInterface::class => ParticipacaoService::class,
     RankingCacheServiceInterface::class => RankingCacheService::class,
     CertificadoServiceInterface::class => CertificadoService::class,
+    GestaoCustosServiceInterface::class => GestaoCustosService::class,
     AuthServiceInterface::class => AuthService::class,
 ];
