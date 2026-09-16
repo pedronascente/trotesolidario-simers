@@ -60,6 +60,50 @@ body {
     box-shadow: 0.7rem 0 2rem rgba(28, 47, 55, 0.12);
 }
 
+.participant-sidebar-header {
+    display: flex;
+    align-items: center;
+}
+
+.participant-sidebar-close {
+    display: inline-flex;
+    flex: 0 0 2.75rem;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: 0.75rem;
+    padding: 0;
+    color: #fff;
+    border: 0;
+    border-radius: 0.65rem;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.participant-sidebar-backdrop {
+    display: none;
+}
+
+.participant-menu-toggle {
+    display: inline-flex;
+    flex: 0 0 2.75rem;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    color: #13795b !important;
+    border: 1px solid #dce9e4;
+    border-radius: 0.7rem !important;
+    background: #f3faf7;
+}
+
+.participant-menu-toggle:focus,
+.participant-sidebar-close:focus {
+    outline: 3px solid rgba(185, 231, 105, 0.45);
+    outline-offset: 2px;
+}
+
 .participant-shell #accordionSidebar::after {
     position: absolute;
     right: -3.5rem;
@@ -326,27 +370,116 @@ body {
 }
 
 @media (max-width: 767.98px) {
-    .participant-shell .sidebar .sidebar-brand {
+    .participant-shell {
+        overflow-x: hidden;
+    }
+
+    .participant-shell.mobile-nav-open {
+        overflow: hidden;
+    }
+
+    .participant-shell #accordionSidebar,
+    .participant-shell #accordionSidebar.toggled {
+        position: fixed;
+        z-index: 1051;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: min(19rem, 86vw) !important;
+        min-height: 100%;
+        transform: translateX(-105%);
+        visibility: hidden;
+        transition: transform 220ms ease, visibility 220ms ease;
+    }
+
+    .participant-shell.mobile-nav-open #accordionSidebar {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .participant-shell .participant-sidebar-backdrop {
+        position: fixed;
+        z-index: 1050;
+        inset: 0;
+        display: block;
         padding: 0;
+        border: 0;
+        background: rgba(10, 25, 22, 0.58);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 220ms ease, visibility 220ms ease;
+    }
+
+    .participant-shell.mobile-nav-open .participant-sidebar-backdrop {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .participant-shell .sidebar .sidebar-brand {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 0 1rem;
     }
 
     .participant-shell .sidebar-brand-copy {
-        display: none;
+        display: flex;
+    }
+
+    .participant-shell .sidebar .sidebar-heading {
+        padding: 0 1.25rem;
+        text-align: left;
     }
 
     .participant-shell .sidebar .nav-item {
-        padding: 0 0.35rem;
+        padding: 0 0.75rem;
     }
 
-    .participant-shell .sidebar .nav-item .nav-link {
-        justify-content: center;
-        padding-right: 0.25rem;
-        padding-left: 0.25rem;
+    .participant-shell .sidebar .nav-item .nav-link,
+    .participant-shell #accordionSidebar.toggled .nav-item .nav-link {
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 3.25rem;
+        padding: 0.8rem 0.9rem;
+        text-align: left;
+    }
+
+    .participant-shell .sidebar .nav-item .nav-link i,
+    .participant-shell #accordionSidebar.toggled .nav-item .nav-link i {
+        margin-right: 0.55rem;
+    }
+
+    .participant-shell .sidebar .nav-item .nav-link span,
+    .participant-shell #accordionSidebar.toggled .nav-item .nav-link span {
+        display: inline;
+        font-size: 0.86rem;
+    }
+
+    .participant-shell .sidebar .sidebar-brand {
+        margin-bottom: 0;
     }
 
     .participant-shell .topbar {
+        position: sticky;
+        z-index: 1030;
+        top: 0;
+        height: 4rem;
         padding-right: 0.85rem;
         padding-left: 0.85rem;
+    }
+
+    .participant-shell #content > .container-fluid,
+    .participant-shell #content > .participant-dashboard {
+        padding: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .participant-shell #accordionSidebar,
+    .participant-shell .participant-sidebar-backdrop {
+        transition: none;
     }
 }
 

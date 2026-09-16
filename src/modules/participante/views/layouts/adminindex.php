@@ -27,85 +27,93 @@ $displayName = $identity ? $identity->name : 'Participante';
 <body class="page-top participant-shell" id="page-top">
 <?php $this->beginBody() ?>
 <div id="wrapper">
-    <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Html::encode(Url::to(['/participante/default/home'])) ?>">
-            <span class="sidebar-brand-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></span>
-            <span class="sidebar-brand-copy">
-                <strong>Trote</strong>
-                <small>Solidário</small>
-            </span>
-        </a>
+    <nav class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar" aria-label="Navegação principal">
+        <div class="participant-sidebar-header">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Html::encode(Url::to(['/participante/default/home'])) ?>">
+                <span class="sidebar-brand-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></span>
+                <span class="sidebar-brand-copy">
+                    <strong>Trote</strong>
+                    <small>Solidário</small>
+                </span>
+            </a>
+            <button type="button" class="participant-sidebar-close d-md-none" data-participant-menu-close aria-label="Fechar menu">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
 
         <hr class="sidebar-divider my-0">
 
-        <li class="nav-item <?= $menu_active === 'default' && $action_id === 'home' ? 'active' : '' ?>">
+        <div class="nav-item <?= $menu_active === 'default' && $action_id === 'home' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/home'])) ?>" <?= $menu_active === 'default' && $action_id === 'home' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
-        </li>
+        </div>
 
         <hr class="sidebar-divider">
 
         <div class="sidebar-heading">Minha jornada</div>
 
-        <li class="nav-item <?= $menu_active === 'album-fotos' ? 'active' : '' ?>">
+        <div class="nav-item <?= $menu_active === 'album-fotos' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/album-fotos'])) ?>" <?= $menu_active === 'album-fotos' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-images"></i>
                 <span>Álbum de fotos</span>
             </a>
-        </li>
-        <li class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
+        </div>
+        <div class="nav-item <?= $menu_active === 'certificado' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/certificado'])) ?>" <?= $menu_active === 'certificado' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-file-contract"></i>
                 <span>Certificados</span>
             </a>
-        </li>
-        <li class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
+        </div>
+        <div class="nav-item <?= $menu_active === 'doacao' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/doacao'])) ?>" <?= $menu_active === 'doacao' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-hand-holding-heart"></i>
                 <span>Doações</span>
             </a>
-        </li>
-        <li class="nav-item">
+        </div>
+        <div class="nav-item">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/home', '#' => 'doacao-alimentos'])) ?>">
                 <i class="fas fa-apple-alt"></i>
                 <span>Doar alimentos</span>
             </a>
-        </li>
-        <li class="nav-item <?= $menu_active === 'instituicao' ? 'active' : '' ?>">
+        </div>
+        <div class="nav-item <?= $menu_active === 'instituicao' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/instituicao'])) ?>" <?= $menu_active === 'instituicao' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-building"></i>
                 <span>Instituição</span>
             </a>
-        </li>
-        <li class="nav-item <?= $menu_active === 'users' ? 'active' : '' ?>">
+        </div>
+        <div class="nav-item <?= $menu_active === 'users' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/users/perfil'])) ?>" <?= $menu_active === 'users' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-user"></i>
                 <span>Meu perfil</span>
             </a>
-        </li>
-        <li class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
+        </div>
+        <div class="nav-item <?= $menu_active === 'default' && $action_id === 'ranking' ? 'active' : '' ?>">
             <a class="nav-link" href="<?= Html::encode(Url::to(['/participante/default/ranking'])) ?>" <?= $menu_active === 'default' && $action_id === 'ranking' ? 'aria-current="page"' : '' ?>>
                 <i class="fas fa-trophy"></i>
                 <span>Ranking</span>
             </a>
-        </li>
-        <li class="nav-item">
+        </div>
+        <div class="nav-item">
             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Sair</span>
             </a>
-        </li>
+        </div>
 
         <hr class="sidebar-divider d-none d-md-block">
-    </ul>
+    </nav>
+
+    <button type="button" class="participant-sidebar-backdrop" data-participant-menu-close tabindex="-1" aria-label="Fechar menu"></button>
 
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
+                <button type="button" class="participant-menu-toggle btn btn-link d-md-none mr-2" data-participant-menu-toggle aria-controls="accordionSidebar" aria-expanded="false">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                    <span class="sr-only">Abrir menu</span>
                 </button>
 
                 <div class="participant-topbar-title d-none d-sm-flex">

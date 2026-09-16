@@ -18,6 +18,7 @@ class AdminAsset extends AssetBundle
     public $js = [
         'layoutadmin/vendor/jquery-easing/jquery.easing.min.js',
         'layoutadmin/js/sb-admin-2.js',
+        'layoutadmin/js/participant-navigation.js',
     ];
 
     public $depends = [
