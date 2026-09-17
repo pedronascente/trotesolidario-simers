@@ -34,7 +34,7 @@ class DefaultControllerStartParticipationTest extends TestCase
 
         Yii::$app->set('request', new Request());
         Yii::$app->set('response', new Response());
-        Yii::$app->set('session', new FakeSession());
+        Yii::$app->set('session', new DefaultControllerFakeSession());
         Yii::$app->response->format = Response::FORMAT_HTML;
     }
 
@@ -156,7 +156,7 @@ class TestStartParticipationForm extends ParticipantStartParticipationForm
     }
 }
 
-class FakeSession extends Component
+class DefaultControllerFakeSession extends Component
 {
     private array $flashes = [];
 

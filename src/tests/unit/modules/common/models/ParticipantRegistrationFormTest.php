@@ -227,7 +227,7 @@ class TestParticipantRegistrationForm extends ParticipantRegistrationForm
 
     protected function createUserModel(): User
     {
-        return new FakeUser();
+        return new ParticipantRegistrationFakeUser();
     }
 
     protected function createParticipanteModel(): Participante
@@ -270,7 +270,7 @@ class TestParticipantRegistrationForm extends ParticipantRegistrationForm
     }
 }
 
-class FakeUser extends User
+class ParticipantRegistrationFakeUser extends User
 {
     public function attributes(): array
     {

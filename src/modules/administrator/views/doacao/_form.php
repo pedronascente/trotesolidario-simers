@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\common\services\DoacaoArquivoStorage;
 use kartik\alert\Alert;
 use kartik\depdrop\DepDrop;
 use kartik\file\FileInput;
@@ -9,6 +10,8 @@ use yii\widgets\ActiveForm;
 
 /* @var $model app\modules\common\models\Doacao */
 
+$arquivoDisponivel = DoacaoArquivoStorage::resolve($model->arquivo) !== null;
+$arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : null;
 ?>
 
 
@@ -73,9 +76,9 @@ use yii\widgets\ActiveForm;
                 'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
                 'maxFileSize' => 5120,
                 'overwriteInitial' => true,
-                'initialPreview' => $model->arquivo ? [Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo] : [],
+                'initialPreview' => $arquivoUrl ? [$arquivoUrl] : [],
                 'initialPreviewAsData' => true,
-                'initialPreviewConfig' => $model->arquivo ? [[
+                'initialPreviewConfig' => $arquivoUrl ? [[
                     'caption' => $model->arquivo,
                 ]] : [],
             ],

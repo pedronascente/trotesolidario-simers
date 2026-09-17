@@ -56,7 +56,7 @@ class ParticipacaoServiceTest extends TestCase
         Yii::$app->set('db', $db);
 
         $service = $this->makeService(false, false, false);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->user_id = 55;
         $model->validateResult = true;
 
@@ -77,7 +77,7 @@ class ParticipacaoServiceTest extends TestCase
     public function testDeleteFailsWhenParticipacaoHasDoacoes(): void
     {
         $service = $this->makeService(true, false, true);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->id = 10;
         $model->fakeIsNewRecord = false;
 
@@ -88,7 +88,7 @@ class ParticipacaoServiceTest extends TestCase
     public function testDeleteFailsWhenParticipacaoHasCertificado(): void
     {
         $service = $this->makeService(false, true, true);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->id = 11;
         $model->fakeIsNewRecord = false;
 
@@ -105,7 +105,7 @@ class ParticipacaoServiceTest extends TestCase
             ->with(7);
 
         $service = $this->makeService(false, false, true, $rankingCacheService);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->user_id = 20;
         $model->trote_id = 7;
         $model->validateResult = true;
@@ -124,7 +124,7 @@ class ParticipacaoServiceTest extends TestCase
             ->withConsecutive([4], [9]);
 
         $service = $this->makeService(false, false, true, $rankingCacheService);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->id = 30;
         $model->user_id = 20;
         $model->trote_id = 9;
@@ -146,7 +146,7 @@ class ParticipacaoServiceTest extends TestCase
             ->with(12);
 
         $service = $this->makeService(false, false, true, $rankingCacheService);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->id = 12;
         $model->trote_id = 12;
         $model->fakeIsNewRecord = false;
@@ -165,7 +165,7 @@ class ParticipacaoServiceTest extends TestCase
             ->with(15);
 
         $service = $this->makeService(false, false, true, $rankingCacheService);
-        $model = new FakeParticipacao();
+        $model = new ParticipacaoServiceFakeParticipacao();
         $model->id = 12;
         $model->trote_id = 15;
         $model->fakeIsNewRecord = false;
@@ -248,7 +248,7 @@ class TestParticipacaoService extends ParticipacaoService
     }
 }
 
-class FakeParticipacao extends Participacao
+class ParticipacaoServiceFakeParticipacao extends Participacao
 {
     public $id;
     public $user_id;
@@ -304,7 +304,7 @@ class FakeUserQuery
 
     public function all()
     {
-        $user = new FakeUser();
+        $user = new ParticipacaoServiceFakeUser();
         $user->id = 1;
         $user->nome = 'Participante Ativo';
         $user->cpf = '11111111111';
@@ -314,7 +314,7 @@ class FakeUserQuery
     }
 }
 
-class FakeUser extends User
+class ParticipacaoServiceFakeUser extends User
 {
     public function attributes(): array
     {

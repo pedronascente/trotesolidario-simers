@@ -46,7 +46,7 @@ class TipoDoacaoServiceTest extends TestCase
         $rankingCacheService->expects($this->never())->method('rebuild');
 
         $service = new TipoDoacaoService($rankingCacheService);
-        $model = new FakeTipoDoacao();
+        $model = new TipoDoacaoServiceFakeTipoDoacao();
         $model->validateResult = true;
         $model->saveResult = true;
 
@@ -62,7 +62,7 @@ class TipoDoacaoServiceTest extends TestCase
         $rankingCacheService->expects($this->once())->method('rebuild')->with(null);
 
         $service = new TipoDoacaoService($rankingCacheService);
-        $model = new FakeTipoDoacao();
+        $model = new TipoDoacaoServiceFakeTipoDoacao();
         $model->pontuacao_ranking = 150;
         $model->oldAttributesMap = ['pontuacao_ranking' => 100];
         $model->validateResult = true;
@@ -80,7 +80,7 @@ class TipoDoacaoServiceTest extends TestCase
         $rankingCacheService->expects($this->never())->method('rebuild');
 
         $service = new TipoDoacaoService($rankingCacheService);
-        $model = new FakeTipoDoacao();
+        $model = new TipoDoacaoServiceFakeTipoDoacao();
         $model->pontuacao_ranking = 100;
         $model->oldAttributesMap = ['pontuacao_ranking' => 100];
         $model->validateResult = true;
@@ -98,7 +98,7 @@ class TipoDoacaoServiceTest extends TestCase
         $rankingCacheService->expects($this->once())->method('rebuild')->with(null);
 
         $service = new TipoDoacaoService($rankingCacheService);
-        $model = new FakeTipoDoacao();
+        $model = new TipoDoacaoServiceFakeTipoDoacao();
         $model->deleteResult = 1;
 
         $this->assertTrue($service->delete($model));
@@ -120,7 +120,7 @@ class TipoDoacaoServiceTest extends TestCase
     }
 }
 
-class FakeTipoDoacao extends TipoDoacao
+class TipoDoacaoServiceFakeTipoDoacao extends TipoDoacao
 {
     public $pontuacao_ranking;
     public $validateResult = true;

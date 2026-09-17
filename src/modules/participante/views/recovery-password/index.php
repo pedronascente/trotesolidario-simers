@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 $this->title = 'Recuperar senha';
 ?>
@@ -25,7 +26,12 @@ $this->title = 'Recuperar senha';
 
             <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
             <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
-            <?= $form->field($model, 'cpf')->textInput() ?>
+            <?= $form->field($model, 'cpf')->widget(MaskedInput::class, [
+                'mask' => '999.999.999-99',
+                'clientOptions' => [
+                    'removeMaskOnSubmit' => true,
+                ],
+            ]) ?>
 
             <div class="d-grid gap-2 mt-4">
                 <?= Html::submitButton('Enviar link', ['class' => 'btn btn-success btn-block']) ?>
@@ -40,11 +46,3 @@ $this->title = 'Recuperar senha';
         </div>
     </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
-<script>
-    $(function () {
-        $('#participantrequestpasswordresetform-cpf').inputmask({ mask: '999.999.999-99' });
-    });
-</script>

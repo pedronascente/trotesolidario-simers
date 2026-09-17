@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\common\models\Doacao;
+use app\modules\common\services\DoacaoArquivoStorage;
 use kartik\depdrop\DepDrop;
 use kartik\file\FileInput;
 use yii\helpers\Html;
@@ -10,6 +11,8 @@ use yii\widgets\ActiveForm;
 /* @var $model app\modules\common\models\Doacao */
 
 $isUpdate = !$model->isNewRecord;
+$arquivoDisponivel = DoacaoArquivoStorage::resolve($model->arquivo) !== null;
+$arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : null;
 ?>
 
 <div class="container-fluid">
@@ -86,7 +89,7 @@ $isUpdate = !$model->isNewRecord;
                     'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
                     'maxFileSize' => 5120,
                     'overwriteInitial' => false,
-                    'initialPreview' => $model->arquivo ? [Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo] : [],
+                    'initialPreview' => $arquivoUrl ? [$arquivoUrl] : [],
                     'initialPreviewAsData' => true,
                     'initialPreviewConfig' => [],
                 ],
@@ -94,11 +97,11 @@ $isUpdate = !$model->isNewRecord;
         </div>
     </div>
 
-    <?php if ($model->arquivo): ?>
+    <?php if ($arquivoUrl): ?>
         <div class="row">
             <div class="col-md-12 mb-3">
                 <div class="small text-muted mb-1">Arquivo atual</div>
-                <?= Html::a('Abrir comprovante atual', Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo, [
+                <?= Html::a('Abrir comprovante atual', $arquivoUrl, [
                     'target' => '_blank',
                     'data-pjax' => '0',
                 ]) ?>

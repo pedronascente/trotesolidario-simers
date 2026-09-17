@@ -8,8 +8,9 @@ $displayName = $identity ? $identity->name : 'Administrador';
 
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
 
-    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop">
-        <i class="fa fa-bars"></i>
+    <button type="button" class="btn btn-link d-md-none rounded-circle mr-3 administrator-menu-toggle" data-administrator-menu-toggle aria-controls="administratorSidebar" aria-expanded="false">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+        <span class="sr-only">Abrir menu</span>
     </button>
 
     <div class="administrator-topbar-title d-none d-sm-flex">

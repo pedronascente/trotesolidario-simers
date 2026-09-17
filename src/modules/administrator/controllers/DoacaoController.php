@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use app\modules\common\models\Doacao;
 use app\modules\common\models\DoacaoSearchModel;
+use app\modules\common\services\DoacaoArquivoStorage;
 use app\modules\common\services\contracts\DoacaoServiceInterface;
 
 class DoacaoController extends Controller
@@ -135,6 +136,20 @@ class DoacaoController extends Controller
         }
 
         return ['output' => $out, 'selected' => ''];
+    }
+
+    public function actionArquivo(int $id, bool $download = false)
+    {
+        $model = $this->findModel($id);
+        $path = DoacaoArquivoStorage::resolve($model->arquivo);
+
+        if ($path === null) {
+            throw new NotFoundHttpException('Comprovante nao encontrado.');
+        }
+
+        return Yii::$app->response->sendFile($path, basename((string) $model->arquivo), [
+            'inline' => !$download,
+        ]);
     }
 
     public function actionAprovar($id)

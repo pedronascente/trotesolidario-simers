@@ -3,10 +3,12 @@
 /* @var $content string */
 
 use app\assets\AdminAsset;
+use app\assets\ParticipantNavigationAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 AdminAsset::register($this);
+ParticipantNavigationAsset::register($this);
 $menu_active = Yii::$app->controller->id;
 $action_id = Yii::$app->controller->action ? Yii::$app->controller->action->id : null;
 $identity = Yii::$app->user->identity;

@@ -53,6 +53,7 @@ class DoacaoService implements DoacaoServiceInterface
             return false;
         }
 
+        $arquivo = $model->arquivo;
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
@@ -62,17 +63,18 @@ class DoacaoService implements DoacaoServiceInterface
                 return false;
             }
 
-            $this->removeArquivo($model->arquivo);
             $this->refreshRankingCacheForParticipacoes([(int) $model->participacao_id]);
 
             $transaction->commit();
-            return true;
         } catch (\Throwable $e) {
             $transaction->rollBack();
             $model->addError('arquivo', 'Erro interno ao excluir doacao.');
             Yii::error($e->getMessage(), __METHOD__);
             return false;
         }
+
+        $this->removeArquivo($arquivo);
+        return true;
     }
 
     public function getFormData(): array
@@ -187,10 +189,11 @@ class DoacaoService implements DoacaoServiceInterface
     protected function saveModel(Doacao $model, bool $isNew): bool
     {
         $transaction = Yii::$app->db->beginTransaction();
+        $oldArquivo = !$isNew ? $model->getOldAttribute('arquivo') : null;
+        $novoArquivo = null;
 
         try {
             $oldParticipacaoId = !$isNew ? (int) ($model->getOldAttribute('participacao_id') ?? 0) : null;
-            $oldArquivo = !$isNew ? $model->getOldAttribute('arquivo') : null;
 
             if (!$isNew && $oldParticipacaoId > 0 && $oldParticipacaoId !== (int) $model->participacao_id) {
                 $model->addError('participacao_id', 'Nao e permitido alterar a participacao de uma doacao ja cadastrada.');
@@ -222,8 +225,6 @@ class DoacaoService implements DoacaoServiceInterface
 
             $arquivo = UploadedFile::getInstance($model, 'file');
             $model->file = $arquivo;
-            $novoArquivo = null;
-
             if (!$model->validate()) {
                 $transaction->rollBack();
                 return false;
@@ -242,17 +243,10 @@ class DoacaoService implements DoacaoServiceInterface
             }
 
             if (!$model->save(false)) {
-                if ($novoArquivo !== null) {
-                    $this->removeArquivo($novoArquivo);
-                }
-
+                $this->cleanupFailedArquivoSave($model, $isNew, $novoArquivo, $oldArquivo);
                 $model->addError('arquivo', 'Erro ao salvar doacao.');
                 $transaction->rollBack();
                 return false;
-            }
-
-            if ($novoArquivo !== null && $oldArquivo) {
-                $this->removeArquivo($oldArquivo);
             }
 
             if ($model->status === Doacao::STATUS_APROVADA) {
@@ -266,18 +260,25 @@ class DoacaoService implements DoacaoServiceInterface
             $this->refreshRankingCacheForParticipacoes($rankingParticipacaoIds);
 
             $transaction->commit();
-            return true;
         } catch (IntegrityException $e) {
             $transaction->rollBack();
+            $this->cleanupFailedArquivoSave($model, $isNew, $novoArquivo, $oldArquivo);
             $this->mapIntegrityError($model, $e);
             Yii::error($e->getMessage(), __METHOD__);
             return false;
         } catch (\Throwable $e) {
             $transaction->rollBack();
+            $this->cleanupFailedArquivoSave($model, $isNew, $novoArquivo, $oldArquivo);
             $model->addError('arquivo', 'Erro interno ao salvar doacao.');
             Yii::error($e->getMessage(), __METHOD__);
             return false;
         }
+
+        if ($novoArquivo !== null && $oldArquivo) {
+            $this->removeArquivo($oldArquivo);
+        }
+
+        return true;
     }
 
     private function refreshRankingCacheForParticipacoes(array $participacaoIds): void
@@ -324,38 +325,28 @@ class DoacaoService implements DoacaoServiceInterface
 
     private function saveArquivo(UploadedFile $arquivo): ?string
     {
-        $nome = uniqid('doacao_', true) . '.' . $arquivo->extension;
-        $caminho = Yii::getAlias('@imgArquivosDoacao');
-
-        if (!$this->ensureWritableDirectory($caminho)) {
-            return null;
-        }
-
-        $fullPath = rtrim($caminho, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $nome;
-
-        return $arquivo->saveAs($fullPath) ? $nome : null;
+        return DoacaoArquivoStorage::save($arquivo);
     }
 
     private function removeArquivo(?string $arquivo): void
     {
-        if (!$arquivo) {
-            return;
-        }
-
-        $fullPath = rtrim(Yii::getAlias('@imgArquivosDoacao'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $arquivo;
-
-        if (file_exists($fullPath)) {
-            unlink($fullPath);
-        }
+        DoacaoArquivoStorage::remove($arquivo);
     }
 
-    protected function ensureWritableDirectory(string $path): bool
+    private function cleanupFailedArquivoSave(
+        Doacao $model,
+        bool $isNew,
+        ?string $novoArquivo,
+        ?string $oldArquivo
+    ): void
     {
-        if (!is_dir($path) && !@mkdir($path, 0775, true) && !is_dir($path)) {
-            return false;
+        if ($novoArquivo !== null) {
+            $this->removeArquivo($novoArquivo);
         }
 
-        return is_writable($path);
+        if (!$isNew) {
+            $model->arquivo = $oldArquivo;
+        }
     }
 
     protected function hasCertificadoEmitido(Doacao $model): bool

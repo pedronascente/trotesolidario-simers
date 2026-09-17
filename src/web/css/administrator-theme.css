@@ -7,6 +7,11 @@
     --admin-line: #e4e8ef;
     color: var(--admin-ink);
     background: #f6f7fa;
+    overflow-x: hidden;
+}
+
+.administrator-shell.mobile-nav-open {
+    overflow: hidden;
 }
 
 .administrator-shell #content-wrapper,
@@ -19,15 +24,79 @@
 }
 
 .administrator-shell .sidebar {
+    position: fixed;
+    z-index: 1051;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: min(19rem, 86vw) !important;
+    min-height: 100%;
     background: linear-gradient(180deg, #103e35, #173f3b 52%, #28394a) !important;
     box-shadow: 0.65rem 0 1.8rem rgba(24, 42, 49, 0.1);
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 220ms ease, visibility 220ms ease;
+}
+
+.administrator-shell.mobile-nav-open .sidebar {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.administrator-sidebar-header {
+    display: flex;
+    align-items: center;
 }
 
 .administrator-shell .sidebar-brand {
+    flex: 1 1 auto;
+    min-width: 0;
     height: 5rem;
     padding: 0 1rem;
     justify-content: flex-start !important;
     text-align: left;
+}
+
+.administrator-sidebar-close {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: 0.75rem;
+    flex: 0 0 2.75rem;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.administrator-sidebar-close:hover,
+.administrator-sidebar-close:focus {
+    color: var(--admin-lime);
+    background: rgba(255, 255, 255, 0.16);
+    outline: 0;
+}
+
+.administrator-sidebar-backdrop {
+    position: fixed;
+    z-index: 1050;
+    inset: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: rgba(10, 25, 22, 0.58);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.administrator-shell.mobile-nav-open .administrator-sidebar-backdrop {
+    opacity: 1;
+    visibility: visible;
 }
 
 .administrator-brand-icon,
@@ -83,7 +152,21 @@
 }
 
 .administrator-shell .sidebar .nav-item>.nav-link {
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.8rem 0.9rem;
     border-radius: 0.45rem;
+    text-align: left;
+}
+
+.administrator-shell .sidebar .nav-item>.nav-link i {
+    margin-right: 0.55rem;
+}
+
+.administrator-shell .sidebar .nav-item>.nav-link span {
+    display: inline;
+    font-size: 0.86rem;
 }
 
 .administrator-shell .sidebar .nav-item.active>.nav-link,
@@ -99,11 +182,19 @@
 }
 
 .administrator-shell .topbar {
+    position: sticky;
+    z-index: 1030;
+    top: 0;
     height: 4.25rem;
     margin-bottom: 0 !important;
     padding: 0 1.5rem;
     border-bottom: 1px solid var(--admin-line);
     box-shadow: 0 0.4rem 1.2rem rgba(31, 42, 68, 0.05) !important;
+}
+
+.administrator-shell .administrator-menu-toggle {
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
 .administrator-topbar-title {
@@ -166,6 +257,20 @@
 }
 
 @media (min-width: 768px) {
+    .administrator-shell .sidebar {
+        position: relative;
+        z-index: auto;
+        top: auto;
+        bottom: auto;
+        left: auto;
+        display: flex;
+        overflow: visible;
+        min-height: 100vh;
+        transform: none;
+        visibility: visible;
+        transition: none;
+    }
+
     .administrator-shell .sidebar:not(.toggled) {
         width: 18.5rem !important;
     }
@@ -177,6 +282,12 @@
     .administrator-shell .sidebar.toggled .administrator-brand-copy {
         display: none;
     }
+
+    .administrator-shell .topbar {
+        position: relative;
+        z-index: auto;
+        top: auto;
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -184,7 +295,14 @@
         padding: 1rem;
     }
 
-    .administrator-brand-copy {
-        display: none;
+    .administrator-shell .sidebar .nav-item {
+        padding: 0 0.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .administrator-shell .sidebar,
+    .administrator-shell .administrator-sidebar-backdrop {
+        transition: none;
     }
 }

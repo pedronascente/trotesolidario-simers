@@ -8,6 +8,7 @@ use app\modules\common\models\Evento;
 use app\modules\common\models\Participacao;
 use app\modules\common\models\TipoDoacao;
 use app\modules\common\models\Trote;
+use app\modules\common\services\DoacaoArquivoStorage;
 use app\modules\common\services\contracts\DoacaoServiceInterface;
 use Yii;
 use yii\filters\AccessControl;
@@ -34,10 +35,10 @@ class DoacaoController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'create', 'update', 'delete', 'view', 'eventos-by-participacao'],
+                'only' => ['index', 'create', 'update', 'delete', 'view', 'arquivo', 'eventos-by-participacao'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'eventos-by-participacao'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'arquivo', 'eventos-by-participacao'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -85,8 +86,27 @@ class DoacaoController extends Controller
     {
         $this->layout = 'adminindex';
 
+        $model = $this->findModel($id);
+        $arquivoPath = DoacaoArquivoStorage::resolve($model->arquivo);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'arquivoDisponivel' => $arquivoPath !== null,
+            'arquivoImagem' => DoacaoArquivoStorage::isImage($arquivoPath),
+        ]);
+    }
+
+    public function actionArquivo(int $id, bool $download = false)
+    {
+        $model = $this->findModel($id);
+        $path = DoacaoArquivoStorage::resolve($model->arquivo);
+
+        if ($path === null) {
+            throw new NotFoundHttpException('Comprovante nao encontrado.');
+        }
+
+        return Yii::$app->response->sendFile($path, basename((string) $model->arquivo), [
+            'inline' => !$download,
         ]);
     }
 

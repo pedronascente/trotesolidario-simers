@@ -28,7 +28,7 @@ class RegisterControllerTest extends TestCase
         }
 
         $this->oldSession = Yii::$app->session;
-        Yii::$app->set('session', new FakeSession());
+        Yii::$app->set('session', new RegisterControllerFakeSession());
     }
 
     protected function tearDown(): void
@@ -162,7 +162,7 @@ class StubParticipantRegistrationForm extends ParticipantRegistrationForm
     }
 }
 
-class FakeSession extends Session
+class RegisterControllerFakeSession extends Session
 {
     private array $flashes = [];
 

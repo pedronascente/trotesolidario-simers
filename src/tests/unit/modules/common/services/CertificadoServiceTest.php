@@ -41,7 +41,7 @@ class CertificadoServiceTest extends TestCase
     {
         $service = new ExposedCertificadoService();
 
-        $participante = new FakeUser();
+        $participante = new CertificadoFakeUser();
         $participante->nome = 'Ana Participante';
 
         $trote = new FakeTrote();
@@ -52,12 +52,12 @@ class CertificadoServiceTest extends TestCase
         $universidade = new FakeUniversidade();
         $universidade->nome = 'Universidade Teste';
 
-        $tipoComissao = new FakeTipoDoacao();
+        $tipoComissao = new CertificadoFakeTipoDoacao();
         $tipoComissao->id = 10;
         $tipoComissao->nome = 'Comissão Organizadora';
         $tipoComissao->carga_horaria = 10;
 
-        $tipoSangue = new FakeTipoDoacao();
+        $tipoSangue = new CertificadoFakeTipoDoacao();
         $tipoSangue->id = 20;
         $tipoSangue->nome = 'Sangue';
         $tipoSangue->carga_horaria = 5;
@@ -78,7 +78,7 @@ class CertificadoServiceTest extends TestCase
         $doacaoRejeitada->status = Doacao::STATUS_REJEITADA;
         $doacaoRejeitada->populateRelation('tipoDoacao', $tipoSangue);
 
-        $participacao = new FakeParticipacao();
+        $participacao = new CertificadoFakeParticipacao();
         $participacao->populateRelation('user', $participante);
         $participacao->populateRelation('trote', $trote);
         $participacao->populateRelation('universidade', $universidade);
@@ -148,7 +148,7 @@ class FakeCertificado extends Certificado
     }
 }
 
-class FakeParticipacao extends Participacao
+class CertificadoFakeParticipacao extends Participacao
 {
     public function attributes(): array
     {
@@ -164,7 +164,7 @@ class FakeDoacao extends Doacao
     }
 }
 
-class FakeTipoDoacao extends TipoDoacao
+class CertificadoFakeTipoDoacao extends TipoDoacao
 {
     public function attributes(): array
     {
@@ -188,7 +188,7 @@ class FakeUniversidade extends Universidade
     }
 }
 
-class FakeUser extends User
+class CertificadoFakeUser extends User
 {
     public function attributes(): array
     {

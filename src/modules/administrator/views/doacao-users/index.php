@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\grid\GridView;
+use app\modules\common\services\DoacaoArquivoStorage;
 use app\modules\common\models\Helper;
 use app\modules\common\models\Users;
 use app\modules\common\models\Trote;
@@ -41,7 +43,20 @@ $gridColumns = [
         'vAlign' => 'center',
         'filter' => false,
         'value' => function ($model) {
-            return Html::img("/imagens/doacoes/$model->arquivo", ["class" => "image", "style" => "height: 80px;width: auto;"]);
+            $path = DoacaoArquivoStorage::resolve($model->arquivo);
+            if (!DoacaoArquivoStorage::isImage($path)) {
+                return Html::tag('span', 'Arquivo indisponível', ['class' => 'text-muted']);
+            }
+
+            return Html::img(
+                Url::to(['/administrator/doacao/arquivo', 'id' => $model->id]),
+                [
+                    'class' => 'image',
+                    'style' => 'height: 80px;width: auto;',
+                    'loading' => 'lazy',
+                    'decoding' => 'async',
+                ]
+            );
         }
     ],
     [

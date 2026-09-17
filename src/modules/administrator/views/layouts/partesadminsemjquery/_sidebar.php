@@ -157,14 +157,20 @@ document.querySelectorAll('.sidebar-hover-menu .submenu-toggle').forEach(functio
 JS);
 ?>
 
-<ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion sidebar-hover-menu">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Url::to(['/administrator/default']) ?>">
-        <span class="administrator-brand-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></span>
-        <span class="administrator-brand-copy">
-            <strong>Trote Solidário</strong>
-            <small>Administração</small>
-        </span>
-    </a>
+<nav class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion sidebar-hover-menu" id="administratorSidebar" aria-label="Navegação administrativa">
+    <div class="administrator-sidebar-header">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Url::to(['/administrator/default']) ?>">
+            <span class="administrator-brand-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></span>
+            <span class="administrator-brand-copy">
+                <strong>Trote Solidário</strong>
+                <small>Administração</small>
+            </span>
+        </a>
+
+        <button type="button" class="administrator-sidebar-close d-md-none" data-administrator-menu-close aria-label="Fechar menu">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
 
     <hr class="sidebar-divider my-0">
 
@@ -218,4 +224,6 @@ JS);
 
         <hr class="sidebar-divider">
     <?php endforeach; ?>
-</ul>
+</nav>
+
+<button type="button" class="administrator-sidebar-backdrop" data-administrator-menu-close tabindex="-1" aria-label="Fechar menu"></button>

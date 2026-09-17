@@ -4,9 +4,9 @@
 /* @var $content string */
 
 use app\widgets\Alert;
-use app\assets\AppAsset;
+use app\assets\AdminAsset;
 
-AppAsset::register($this);
+AdminAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -47,11 +47,7 @@ AppAsset::register($this);
 
           gtag('config', 'G-4MZSSQY96N');
         </script>
-        <!-- Custom fonts for this template-->
-        <link href="/layoutadmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-        <!-- Custom styles for this template-->
-        <link href="/layoutadmin/css/sb-admin-2.css" rel="stylesheet">
         <!-- End Google Analytics -->
     </head>
 <body style="background: #eff7ff;">
@@ -59,12 +55,6 @@ AppAsset::register($this);
         <?= Alert::widget() ?>
         <?= $content ?>
 <?php $this->endBody() ?>
-<!-- Bootstrap core JavaScript-->
-<script src="/layoutadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Core plugin JavaScript-->
-<script src="/layoutadmin/vendor/jquery-easing/jquery.easing.min.js"></script>
-<!-- Custom scripts for all pages-->
-<script src="/layoutadmin/js/sb-admin-2.js"></script>
 </body>
 </html>
 <?php $this->endPage() ?>

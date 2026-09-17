@@ -23,7 +23,7 @@ $config = [
         '@npm' => '@vendor/npm-asset',
         '@pdf'   => '@app/web/pdf',
         '@img'   => '@app/web/img',
-        '@imgArquivosDoacao' => '@app/web/imagens/doacoes',
+        '@imgArquivosDoacao' => '@app/storage/doacoes',
     ],
     'components' => [
         'assetManager' => [
@@ -31,6 +31,9 @@ $config = [
             'bundles' => [
                 'kartik\form\ActiveFormAsset' => [
                     'bsDependencyEnabled' => false // do not load bootstrap assets for a specific asset bundle
+                ],
+                'kartik\dialog\DialogBootstrapAsset' => [
+                    'bsDependencyEnabled' => true,
                 ],
             ],
         ],
@@ -168,5 +171,3 @@ if (YII_ENV_DEV) {
 }
 
 return $config;
-
-

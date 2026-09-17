@@ -4,17 +4,13 @@ namespace app\assets;
 
 use yii\web\AssetBundle;
 
-class AdministratorThemeAsset extends AssetBundle
+class ParticipantNavigationAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
 
-    public $css = [
-        'css/administrator-theme.css',
-    ];
-
     public $js = [
-        'js/administrator-navigation.js',
+        'layoutadmin/js/participant-navigation.js',
     ];
 
     public $depends = [

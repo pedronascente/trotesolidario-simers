@@ -52,8 +52,7 @@ AppAsset::register($this);
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="/css/styles.css" rel="stylesheet" />
+        <?php $this->head() ?>
     </head>
     <body id="page-top">
         <?php $this->beginBody() ?>
@@ -61,17 +60,6 @@ AppAsset::register($this);
         <?= Alert::widget() ?>
         <?= $content ?>
         
-        <?php $this->endBody() ?>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Third party plugin JS-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-        <!-- Contact form JS-->
-        <script src="/js/jqBootstrapValidation.js"></script>
-        <script src="/js/contact_me.js"></script>
-        <!-- Core theme JS-->
-        <script src="/js/scripts.js"></script>
         <footer class="footer py-4" style="background-color: #343a40;">
             <div class="container">
                 <div class="row align-items-center">
@@ -108,6 +96,7 @@ AppAsset::register($this);
                 </div>
             </div>
         </footer>
+        <?php $this->endBody() ?>
     </body>
 </html>
 <?php $this->endPage() ?>

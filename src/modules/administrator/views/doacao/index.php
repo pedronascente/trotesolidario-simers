@@ -1,9 +1,11 @@
 <?php
 
 use app\modules\common\models\Doacao;
+use app\modules\common\services\DoacaoArquivoStorage;
 use kartik\alert\Alert;
 use kartik\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = 'Doações';
 $this->params['breadcrumbs'][] = $this->title;
@@ -83,28 +85,33 @@ $this->params['breadcrumbs'][] = $this->title;
                             return Html::tag('span', 'Sem arquivo');
                         }
 
-                        $filePath = Yii::getAlias('@webroot') . '/imagens/doacoes/' . $model->arquivo;
-                        $webPath = Yii::getAlias('@web') . '/imagens/doacoes/' . $model->arquivo;
-                        $fullUrl = Yii::$app->request->hostInfo . $webPath;
+                        $filePath = DoacaoArquivoStorage::resolve($model->arquivo);
+                        if ($filePath === null) {
+                            return Html::tag('span', 'Arquivo indisponível', ['class' => 'text-muted']);
+                        }
 
-                        if (file_exists($filePath) && @getimagesize($filePath)) {
+                        $fileUrl = Url::to(['arquivo', 'id' => $model->id], true);
+
+                        if (DoacaoArquivoStorage::isImage($filePath)) {
                             return Html::a(
-                                Html::img($fullUrl, [
+                                Html::img($fileUrl, [
                                     'class' => 'doacao-thumb-img',
                                     'alt' => 'Doacao ' . $model->id,
+                                    'loading' => 'lazy',
+                                    'decoding' => 'async',
                                 ]),
-                                $fullUrl,
+                                $fileUrl,
                                 [
                                     'class' => 'doacao-thumb-link',
                                     'data-fancybox' => 'doacoes-gallery',
-                                    'data-src' => $fullUrl,
+                                    'data-src' => $fileUrl,
                                     'data-caption' => 'Doacao #' . $model->id . ' - ' . ($model->tipoDoacao->nome ?? $model->arquivo),
                                     'data-pjax' => '0',
                                 ]
                             );
                         }
 
-                        return Html::a('Abrir arquivo', $webPath, [
+                        return Html::a('Abrir arquivo', $fileUrl, [
                             'class' => 'doacao-file-link',
                             'target' => '_blank',
                             'data-pjax' => '0',
