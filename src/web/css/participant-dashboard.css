@@ -220,7 +220,7 @@
     border-radius: 999px;
 }
 
-.dashboard-context-metrics > div {
+.dashboard-context-metrics>div {
     padding-top: 0.7rem;
     border-top: 1px solid rgba(21, 139, 98, 0.14);
 }
@@ -302,10 +302,25 @@
     content: '';
 }
 
-.dashboard-summary-primary { --card-accent: #5475d9; --card-accent-soft: #edf1ff; }
-.dashboard-summary-success { --card-accent: #15936a; --card-accent-soft: #e3f7ef; }
-.dashboard-summary-warning { --card-accent: #ee8741; --card-accent-soft: #fff0e5; }
-.dashboard-summary-info { --card-accent: #7159ae; --card-accent-soft: #f0ebfb; }
+.dashboard-summary-primary {
+    --card-accent: #5475d9;
+    --card-accent-soft: #edf1ff;
+}
+
+.dashboard-summary-success {
+    --card-accent: #15936a;
+    --card-accent-soft: #e3f7ef;
+}
+
+.dashboard-summary-warning {
+    --card-accent: #ee8741;
+    --card-accent-soft: #fff0e5;
+}
+
+.dashboard-summary-info {
+    --card-accent: #7159ae;
+    --card-accent-soft: #f0ebfb;
+}
 
 .dashboard-summary-card .card-body {
     position: relative;
@@ -737,7 +752,7 @@
     gap: 0.75rem;
 }
 
-.dashboard-donation-status > div {
+.dashboard-donation-status>div {
     padding: 1rem;
     text-align: center;
     border: 1px solid #dfebe5;
@@ -745,7 +760,7 @@
     background: #f6fbf8;
 }
 
-.dashboard-donation-status > div:last-child {
+.dashboard-donation-status>div:last-child {
     border-color: #f4e1d3;
     background: #fff8f2;
 }
@@ -767,11 +782,12 @@
     font-weight: 800;
 }
 
-.dashboard-donation-status > div:last-child strong {
+.dashboard-donation-status>div:last-child strong {
     color: #dd7a36;
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .participant-dashboard *,
     .participant-dashboard *::before,
     .participant-dashboard *::after {
@@ -980,7 +996,7 @@
 .dashboard-empty-state,
 .dashboard-food-link,
 .dashboard-ranking-item,
-.dashboard-donation-status > div {
+.dashboard-donation-status>div {
     border-radius: 0.55rem !important;
 }
 

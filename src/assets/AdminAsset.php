@@ -13,6 +13,7 @@ class AdminAsset extends AssetBundle
         'layoutadmin/vendor/fontawesome-free/css/all.min.css',
         'layoutadmin/css/sb-admin-2.css',
         'layoutadmin/css/admin-custom.css',
+        'css/project-buttons.css',
     ];
 
     public $js = [

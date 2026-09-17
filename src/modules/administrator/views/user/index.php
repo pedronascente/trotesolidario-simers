@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'buttons' => [
                         'delete' => static function ($url, $model) {
                             return Html::a('<i class="fas fa-trash" aria-hidden="true"></i>', $url, [
-                                'class' => 'btn btn-sm btn-danger',
+                                'class' => 'btn btn-sm btn-outline-danger',
                                 'title' => 'Inativar usuário',
                                 'aria-label' => 'Inativar ' . $model->nome,
                                 'data-method' => 'post',
@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'update' => static function ($url, $model) {
                             return Html::a('<i class="fas fa-pencil-alt" aria-hidden="true"></i>', $url, [
-                                'class' => 'btn btn-sm btn-primary',
+                                'class' => 'btn btn-sm btn-outline-primary',
                                 'title' => 'Editar usuário',
                                 'aria-label' => 'Editar ' . $model->nome,
                                 'data-pjax' => '0',

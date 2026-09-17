@@ -74,10 +74,11 @@ CSS);
                     'template' => '<div class="album-fotos-actions">{view}{update}{delete}</div>',
                     'headerOptions' => ['style' => 'width: 130px;'],
                     'buttons' => [
-                        'view' => static fn($url) => Html::a('<i class="fas fa-eye"></i>', $url, ['class' => 'btn btn-info btn-sm', 'data-pjax' => '0', 'title' => 'Visualizar']),
-                        'update' => static fn($url) => Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-success btn-sm', 'data-pjax' => '0', 'title' => 'Editar']),
+                        'view' => static fn($url) => Html::a('<i class="fas fa-eye"></i>', $url, ['class' => 'btn btn-sm btn-outline-info', 'data-pjax' => '0', 'title' => 'Visualizar', 'aria-label' => 'Visualizar']),
+                        'update' => static fn($url) => Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-sm btn-outline-primary', 'data-pjax' => '0', 'title' => 'Editar', 'aria-label' => 'Editar']),
                         'delete' => static fn($url) => Html::a('<i class="fas fa-trash-alt"></i>', $url, [
-                            'class' => 'btn btn-danger btn-sm',
+                            'class' => 'btn btn-sm btn-outline-danger',
+                            'aria-label' => 'Excluir',
                             'title' => 'Excluir',
                             'data' => ['confirm' => 'Deseja realmente excluir esta foto?', 'method' => 'post'],
                         ]),

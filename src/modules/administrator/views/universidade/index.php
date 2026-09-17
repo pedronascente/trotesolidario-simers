@@ -128,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         '<i class="fas fa-pencil-alt" aria-hidden="true"></i>',
                                         ['update', 'id' => $model->id],
                                         [
-                                            'class' => 'btn btn-sm btn-primary',
+                                            'class' => 'btn btn-sm btn-outline-primary',
                                             'title' => 'Editar universidade',
                                             'aria-label' => 'Editar ' . $model->nome,
                                             'data-pjax' => '0',
@@ -141,7 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         '<i class="fa ' . ($ativo ? 'fa-ban' : 'fa-check') . '" aria-hidden="true"></i>',
                                         ['delete', 'id' => $model->id],
                                         [
-                                            'class' => 'btn btn-sm ' . ($ativo ? 'btn-danger' : 'btn-success'),
+                                            'class' => 'btn btn-sm ' . ($ativo ? 'btn-outline-danger' : 'btn-outline-success'),
                                             'title' => $ativo ? 'Desativar universidade' : 'Ativar universidade',
                                             'aria-label' => ($ativo ? 'Desativar ' : 'Ativar ') . $model->nome,
                                             'data' => [

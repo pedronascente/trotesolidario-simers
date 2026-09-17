@@ -21,6 +21,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/styles.css',
+        'css/project-buttons.css',
     ];
     public $js = [
         'layoutadmin/vendor/jquery-easing/jquery.easing.min.js',

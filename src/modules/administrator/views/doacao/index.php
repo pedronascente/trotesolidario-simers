@@ -163,8 +163,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
 
                             return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
-                                'class' => 'btn btn-sm btn-primary',
+                                'class' => 'btn btn-sm btn-outline-primary',
                                 'title' => 'Editar',
+                                'aria-label' => 'Editar doação',
                                 'data-pjax' => '0',
                             ]);
                         },
@@ -174,7 +175,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
 
                             return Html::a('<i class="fa fa-check"></i>', ['aprovar', 'id' => $model->id], [
-                                'class' => 'btn btn-sm btn-success',
+                                'class' => 'btn btn-sm btn-outline-success',
                                 'title' => 'Aprovar',
                                 'data-method' => 'post',
                                 'data-confirm' => 'Confirmar aprovacao?',
@@ -187,7 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
 
                             return Html::button('<i class="fa fa-times"></i>', [
-                                'class' => 'btn btn-sm btn-danger btn-rejeitar',
+                                'class' => 'btn btn-sm btn-outline-danger btn-rejeitar',
                                 'title' => 'Rejeitar',
                                 'data-id' => $model->id,
                             ]);

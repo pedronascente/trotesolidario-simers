@@ -26,7 +26,10 @@ foreach ($categorias as $categoria) {
             <?= Html::beginForm(['index'], 'get', ['class' => 'gc-filter-form']) ?>
             <?= Html::dropDownList('trote_id', $troteId, $trotes, ['class' => 'form-control', 'prompt' => 'Todas as edições', 'onchange' => 'this.form.submit()']) ?>
             <?= Html::endForm() ?>
-            <?= Html::a('<i class="fas fa-plus mr-1"></i> Novo custo', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('<i class="fas fa-plus mr-1" aria-hidden="true"></i> Novo custo', ['create'], [
+                'class' => 'btn btn-success btn-sm',
+                'aria-label' => 'Cadastrar novo custo',
+            ]) ?>
         </div>
     </div>
 

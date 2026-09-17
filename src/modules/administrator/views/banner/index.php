@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         '<i class="fas fa-pencil-alt" aria-hidden="true"></i>',
                                         ['update', 'id' => $model->id],
                                         [
-                                            'class' => 'btn btn-sm btn-primary',
+                                            'class' => 'btn btn-sm btn-outline-primary',
                                             'title' => 'Editar banner',
                                             'aria-label' => 'Editar banner - ' . $localExibicao,
                                             'data-pjax' => '0',
@@ -133,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         '<i class="fas ' . ($active ? 'fa-ban' : 'fa-check') . '" aria-hidden="true"></i>',
                                         ['toggle', 'id' => $model->id],
                                         [
-                                            'class' => 'btn btn-sm ' . ($active ? 'btn-warning' : 'btn-success'),
+                                            'class' => 'btn btn-sm ' . ($active ? 'btn-outline-warning' : 'btn-outline-success'),
                                             'title' => $active ? 'Desativar banner' : 'Ativar banner',
                                             'aria-label' => ($active ? 'Desativar banner - ' : 'Ativar banner - ') . $localExibicao,
                                             'data' => [
@@ -152,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         '<i class="fas fa-trash-alt" aria-hidden="true"></i>',
                                         ['delete', 'id' => $model->id],
                                         [
-                                            'class' => 'btn btn-sm btn-danger',
+                                            'class' => 'btn btn-sm btn-outline-danger',
                                             'title' => 'Excluir banner',
                                             'aria-label' => 'Excluir banner - ' . $localExibicao,
                                             'data' => [

@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = 'Perfil';
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <span>Dados do usuario</span>
-                    <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary btn-sm']) ?>
+                    <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                 </div>
                 <div class="p-3">
                     <?= DetailView::widget([
@@ -79,7 +79,10 @@ $this->params['breadcrumbs'][] = 'Perfil';
                         <?= Html::a('Editar participante', ['participante/update', 'id' => $participante->id], ['class' => 'btn btn-primary btn-sm']) ?>
                     <?php else: ?>
                         <p class="text-muted mb-3">Este usuario nao possui perfil de participante.</p>
-                        <?= Html::a('Criar participante', ['participante/create', 'user_id' => $model->id], ['class' => 'btn btn-success btn-sm']) ?>
+                        <?= Html::a('<i class="fas fa-plus mr-1" aria-hidden="true"></i> Criar participante', ['participante/create', 'user_id' => $model->id], [
+                            'class' => 'btn btn-success btn-sm',
+                            'aria-label' => 'Criar participante',
+                        ]) ?>
                     <?php endif; ?>
                 </div>
             </div>

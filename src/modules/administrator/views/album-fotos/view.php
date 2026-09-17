@@ -11,8 +11,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-success"><?= Html::encode($this->title) ?></h6>
         <div>
-            <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-success btn-sm']) ?>
-            <?= Html::a('Excluir', ['delete', 'id' => $model->id], ['class' => 'btn btn-danger btn-sm', 'data' => ['confirm' => 'Deseja realmente excluir esta foto?', 'method' => 'post']]) ?>
+            <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+            <?= Html::a('Excluir', ['delete', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-danger', 'data' => ['confirm' => 'Deseja realmente excluir esta foto?', 'method' => 'post']]) ?>
         </div>
     </div>
     <div class="card-body">

@@ -99,13 +99,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'template' => '<div class="btn-group-actions">{view} {update} {delete}</div>',
                     'buttons' => [
                         'view' => fn($url, $model) => Html::a('<i class="fas fa-eye" aria-hidden="true"></i>', $url, [
-                            'class' => 'btn btn-sm btn-info',
+                            'class' => 'btn btn-sm btn-outline-info',
                             'title' => 'Visualizar trote',
                             'aria-label' => 'Visualizar ' . $model->titulo,
                             'data-pjax' => '0',
                         ]),
                         'update' => fn($url, $model) => Html::a('<i class="fas fa-pencil-alt" aria-hidden="true"></i>', $url, [
-                            'class' => 'btn btn-sm btn-primary',
+                            'class' => 'btn btn-sm btn-outline-primary',
                             'title' => 'Editar trote',
                             'aria-label' => 'Editar ' . $model->titulo,
                             'data-pjax' => '0',
@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
 
                             return Html::a('<i class="fas fa-trash" aria-hidden="true"></i>', $url, [
-                                'class' => 'btn btn-sm btn-danger',
+                                'class' => 'btn btn-sm btn-outline-danger',
                                 'title' => 'Excluir trote',
                                 'aria-label' => 'Excluir ' . $model->titulo,
                                 'data' => [

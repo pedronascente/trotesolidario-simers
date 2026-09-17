@@ -142,7 +142,7 @@ $this->registerCssFile('@web/css/donation-styles.css');
                         'buttons' => [
                             'view' => function ($url, $model) {
                                 return Html::a('<span class="fas fa-eye"></span>', ['view', 'id' => $model->id], [
-                                    'class' => 'btn btn-info btn-sm',
+                                    'class' => 'btn btn-sm btn-outline-info',
                                     'title' => 'Visualizar',
                                     'aria-label' => 'Visualizar',
                                     'data-pjax' => '0',
@@ -151,7 +151,7 @@ $this->registerCssFile('@web/css/donation-styles.css');
                             'update' => function ($url, $model) {
                                 return in_array($model->status, [Doacao::STATUS_PENDENTE, Doacao::STATUS_REJEITADA], true)
                                     ? Html::a('<span class="fas fa-pencil-alt"></span>', ['update', 'id' => $model->id], [
-                                        'class' => 'btn btn-primary btn-sm',
+                                        'class' => 'btn btn-sm btn-outline-primary',
                                         'title' => 'Editar',
                                         'aria-label' => 'Editar',
                                         'data-pjax' => '0',
@@ -168,7 +168,7 @@ $this->registerCssFile('@web/css/donation-styles.css');
                                         'data-pjax' => '0',
                                     ])
                                     . Html::submitButton('<span class="fas fa-trash"></span>', [
-                                        'class' => 'btn btn-danger btn-sm',
+                                        'class' => 'btn btn-sm btn-outline-danger',
                                         'title' => 'Excluir',
                                         'aria-label' => 'Excluir',
                                     ])

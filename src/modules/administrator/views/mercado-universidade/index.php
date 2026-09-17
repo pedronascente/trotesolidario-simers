@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $universidade = $model->universidade->nome ?? 'esta universidade';
 
                             return Html::a('<i class="fas fa-unlink"></i>', ['delete', 'id' => $model->id], [
-                                'class' => 'btn btn-danger btn-sm',
+                                'class' => 'btn btn-sm btn-outline-danger',
                                 'title' => 'Desvincular mercado',
                                 'aria-label' => 'Desvincular mercado',
                                 'data-confirm' => "Deseja remover o vínculo entre {$mercado} e {$universidade}?",

@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ['class' => 'yii\grid\SerialColumn'], 'nome', 'descricao',
         ['attribute' => 'ativo', 'filter' => [1 => 'Sim', 0 => 'Não'], 'format' => 'raw', 'value' => static fn($m) => $m->ativo ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-secondary">Não</span>'],
         ['class' => 'kartik\grid\ActionColumn', 'template' => '{update} {delete}', 'buttons' => [
-            'update' => static fn($url, $m) => Html::a('<i class="fas fa-pencil-alt"></i>', ['update', 'id' => $m->id], ['class' => 'btn btn-sm btn-primary', 'aria-label' => 'Editar ' . $m->nome]),
-            'delete' => static fn($url, $m) => Html::a('<i class="fas fa-trash"></i>', ['delete', 'id' => $m->id], ['class' => 'btn btn-sm btn-danger', 'aria-label' => 'Excluir ' . $m->nome, 'data' => ['method' => 'post', 'confirm' => 'Deseja excluir esta categoria?']]),
+            'update' => static fn($url, $m) => Html::a('<i class="fas fa-pencil-alt"></i>', ['update', 'id' => $m->id], ['class' => 'btn btn-sm btn-outline-primary', 'title' => 'Editar', 'aria-label' => 'Editar ' . $m->nome]),
+            'delete' => static fn($url, $m) => Html::a('<i class="fas fa-trash"></i>', ['delete', 'id' => $m->id], ['class' => 'btn btn-sm btn-outline-danger', 'title' => 'Excluir', 'aria-label' => 'Excluir ' . $m->nome, 'data' => ['method' => 'post', 'confirm' => 'Deseja excluir esta categoria?']]),
         ]],
     ],
 ]) ?></div></div>

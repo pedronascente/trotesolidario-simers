@@ -36,10 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
     <p>
-        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
         <?php if ($model->status !== \app\modules\common\models\Trote::STATUS_ATIVO): ?>
             <?= Html::a('Excluir', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
+                'class' => 'btn btn-sm btn-outline-danger',
                 'data' => [
                     'confirm' => 'Deseja realmente excluir este item?',
                     'method' => 'post',

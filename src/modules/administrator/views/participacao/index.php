@@ -92,7 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'buttons' => [
                         'update' => function ($url, $model) {
                             return Html::a('<i class="fas fa-pencil-alt" aria-hidden="true"></i>', ['update', 'id' => $model->id], [
-                                'class' => 'btn btn-sm btn-primary',
+                                'class' => 'btn btn-sm btn-outline-primary',
                                 'title' => 'Editar participação',
                                 'aria-label' => 'Editar participação',
                                 'data-pjax' => '0',
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'delete' => function ($url, $model) {
                             return Html::a('<i class="fas fa-trash-alt" aria-hidden="true"></i>', ['delete', 'id' => $model->id], [
-                                'class' => 'btn btn-sm btn-danger',
+                                'class' => 'btn btn-sm btn-outline-danger',
                                 'title' => 'Excluir participação',
                                 'aria-label' => 'Excluir participação',
                                 'data' => [

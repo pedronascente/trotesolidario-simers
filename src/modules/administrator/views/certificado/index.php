@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'buttons' => [
                                 'view' => static function ($url, $model) {
                                     return Html::a('<i class="fas fa-eye"></i>', ['view', 'id' => $model->id], [
-                                        'class' => 'btn btn-sm btn-info',
+                                        'class' => 'btn btn-sm btn-outline-info',
                                         'title' => 'Visualizar certificado',
                                         'target' => '_blank',
                                         'data-pjax' => '0',
@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 },
                                 'send-email' => static function ($url, $model) {
                                     return Html::a('<i class="fas fa-paper-plane"></i>', ['send-email', 'id' => $model->id], [
-                                        'class' => 'btn btn-sm btn-primary',
+                                        'class' => 'btn btn-sm btn-outline-primary',
                                         'title' => 'Encaminhar certificado por e-mail',
                                         'data-method' => 'post',
                                         'data-confirm' => 'Deseja encaminhar este certificado por e-mail para o participante?',

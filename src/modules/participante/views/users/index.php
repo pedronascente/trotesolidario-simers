@@ -22,7 +22,10 @@ use app\modules\common\models\Users;
             <!-- Illustrations -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('Criar Usuário', ['create'], ['class' => 'btn btn-success']) ?>
+                    <h6 class="m-0 font-weight-bold text-primary"><?= Html::a('<i class="fas fa-plus mr-1" aria-hidden="true"></i> Criar usuário', ['create'], [
+                            'class' => 'btn btn-success btn-sm',
+                            'aria-label' => 'Criar usuário',
+                        ]) ?>
                     </h6>
                 </div>
                 <div class="p-3">
@@ -47,15 +50,21 @@ use app\modules\common\models\Users;
                                 'class' => '\kartik\grid\ActionColumn',
                                 'template' => '{view} {update}',
                                 'buttons' => [
-                                    'download' => function ($url) {
-                                        return Html::a(
-                                            '<span class="glyphicon glyphicon-arrow-down"></span>',
-                                            $url,
-                                            [
-                                                'title' => 'Download',
-                                                'data-pjax' => '0',
-                                            ]
-                                        );
+                                    'view' => static function ($url, $model) {
+                                        return Html::a('<i class="fas fa-eye" aria-hidden="true"></i>', $url, [
+                                            'class' => 'btn btn-sm btn-outline-info',
+                                            'title' => 'Visualizar usuário',
+                                            'aria-label' => 'Visualizar ' . $model->name,
+                                            'data-pjax' => '0',
+                                        ]);
+                                    },
+                                    'update' => static function ($url, $model) {
+                                        return Html::a('<i class="fas fa-pencil-alt" aria-hidden="true"></i>', $url, [
+                                            'class' => 'btn btn-sm btn-outline-primary',
+                                            'title' => 'Editar usuário',
+                                            'aria-label' => 'Editar ' . $model->name,
+                                            'data-pjax' => '0',
+                                        ]);
                                     },
                                 ],
                             ],

@@ -51,10 +51,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'kartik\grid\ActionColumn',
                     'template' => '{update} {delete}',
                     'buttons' => [
-                        'update' => static fn($url) => Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-success btn-sm', 'data-pjax' => '0', 'title' => 'Editar']),
+                        'update' => static fn($url) => Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-sm btn-outline-primary', 'data-pjax' => '0', 'title' => 'Editar', 'aria-label' => 'Editar']),
                         'delete' => static fn($url) => Html::a('<i class="fas fa-trash-alt"></i>', $url, [
-                            'class' => 'btn btn-danger btn-sm',
+                            'class' => 'btn btn-sm btn-outline-danger',
                             'title' => 'Excluir',
+                            'aria-label' => 'Excluir',
                             'data' => ['confirm' => 'Deseja remover este membro da comissão?', 'method' => 'post'],
                         ]),
                     ],

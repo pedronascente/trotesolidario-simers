@@ -1,0 +1,193 @@
+/*
+ * Padrão global de botões.
+ * Mantém em todo o projeto a mesma base visual usada em Gestão de Custos.
+ */
+:root {
+    --project-btn-primary: #4e73df;
+    --project-btn-primary-hover: #2e59d9;
+    --project-btn-secondary: #858796;
+    --project-btn-secondary-hover: #717384;
+    --project-btn-success: #1cc88a;
+    --project-btn-success-hover: #17a673;
+    --project-btn-info: #36b9cc;
+    --project-btn-info-hover: #2c9faf;
+    --project-btn-warning: #f6c23e;
+    --project-btn-warning-hover: #f4b619;
+    --project-btn-danger: #e74a3b;
+    --project-btn-danger-hover: #e02d1b;
+    --project-btn-light: #f8f9fc;
+    --project-btn-light-hover: #dde2f1;
+    --project-btn-dark: #5a5c69;
+    --project-btn-dark-hover: #484a54;
+}
+
+html body .btn {
+    display: inline-block;
+    padding: .375rem .75rem !important;
+    border: 1px solid transparent;
+    border-radius: .35rem !important;
+    box-shadow: none !important;
+    font-size: 1rem;
+    font-weight: 400 !important;
+    line-height: 1.5;
+    letter-spacing: normal !important;
+    text-align: center;
+    text-decoration: none;
+    text-transform: none !important;
+    vertical-align: middle;
+    user-select: none;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out,
+        border-color .15s ease-in-out, box-shadow .15s ease-in-out !important;
+}
+
+html body .btn:hover,
+html body .btn:focus {
+    text-decoration: none;
+    transform: none !important;
+}
+
+html body .btn:focus,
+html body .btn.focus {
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(78, 115, 223, .25) !important;
+}
+
+html body .btn.disabled,
+html body .btn:disabled {
+    opacity: .65;
+}
+
+html body .btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+
+html body .btn-sm,
+html body .btn-group-sm > .btn {
+    padding: .25rem .5rem !important;
+    border-radius: .2rem !important;
+    font-size: .875rem;
+    line-height: 1.5;
+}
+
+html body .btn-lg,
+html body .btn-group-lg > .btn {
+    padding: .5rem 1rem !important;
+    border-radius: .3rem !important;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+html body .btn-primary { color: #fff; background-color: var(--project-btn-primary) !important; border-color: var(--project-btn-primary) !important; }
+html body .btn-primary:hover,
+html body .btn-primary:focus,
+html body .btn-primary.focus { color: #fff; background-color: var(--project-btn-primary-hover) !important; border-color: #2653d4 !important; }
+
+html body .btn-secondary,
+html body .btn-default { color: #fff; background-color: var(--project-btn-secondary) !important; border-color: var(--project-btn-secondary) !important; }
+html body .btn-secondary:hover,
+html body .btn-secondary:focus,
+html body .btn-secondary.focus,
+html body .btn-default:hover,
+html body .btn-default:focus,
+html body .btn-default.focus { color: #fff; background-color: var(--project-btn-secondary-hover) !important; border-color: #6b6d7d !important; }
+
+html body .btn-success { color: #fff; background-color: var(--project-btn-success) !important; border-color: var(--project-btn-success) !important; }
+html body .btn-success:hover,
+html body .btn-success:focus,
+html body .btn-success.focus { color: #fff; background-color: var(--project-btn-success-hover) !important; border-color: #169b6b !important; }
+
+html body .btn-info { color: #fff; background-color: var(--project-btn-info) !important; border-color: var(--project-btn-info) !important; }
+html body .btn-info:hover,
+html body .btn-info:focus,
+html body .btn-info.focus { color: #fff; background-color: var(--project-btn-info-hover) !important; border-color: #2a96a5 !important; }
+
+html body .btn-warning { color: #fff; background-color: var(--project-btn-warning) !important; border-color: var(--project-btn-warning) !important; }
+html body .btn-warning:hover,
+html body .btn-warning:focus,
+html body .btn-warning.focus { color: #fff; background-color: var(--project-btn-warning-hover) !important; border-color: #f4b30d !important; }
+
+html body .btn-danger { color: #fff; background-color: var(--project-btn-danger) !important; border-color: var(--project-btn-danger) !important; }
+html body .btn-danger:hover,
+html body .btn-danger:focus,
+html body .btn-danger.focus { color: #fff; background-color: var(--project-btn-danger-hover) !important; border-color: #d52a1a !important; }
+
+html body .btn-light { color: #3a3b45; background-color: var(--project-btn-light) !important; border-color: var(--project-btn-light) !important; }
+html body .btn-light:hover,
+html body .btn-light:focus,
+html body .btn-light.focus { color: #3a3b45; background-color: var(--project-btn-light-hover) !important; border-color: #d4daed !important; }
+
+html body .btn-dark { color: #fff; background-color: var(--project-btn-dark) !important; border-color: var(--project-btn-dark) !important; }
+html body .btn-dark:hover,
+html body .btn-dark:focus,
+html body .btn-dark.focus { color: #fff; background-color: var(--project-btn-dark-hover) !important; border-color: #42444e !important; }
+
+html body .btn-outline-primary { color: var(--project-btn-primary); background-color: transparent !important; border-color: var(--project-btn-primary) !important; }
+html body .btn-outline-secondary { color: var(--project-btn-secondary); background-color: transparent !important; border-color: var(--project-btn-secondary) !important; }
+html body .btn-outline-success { color: var(--project-btn-success); background-color: transparent !important; border-color: var(--project-btn-success) !important; }
+html body .btn-outline-info { color: var(--project-btn-info); background-color: transparent !important; border-color: var(--project-btn-info) !important; }
+html body .btn-outline-warning { color: var(--project-btn-warning); background-color: transparent !important; border-color: var(--project-btn-warning) !important; }
+html body .btn-outline-danger { color: var(--project-btn-danger); background-color: transparent !important; border-color: var(--project-btn-danger) !important; }
+html body .btn-outline-light { color: var(--project-btn-light); background-color: transparent !important; border-color: var(--project-btn-light) !important; }
+html body .btn-outline-dark { color: var(--project-btn-dark); background-color: transparent !important; border-color: var(--project-btn-dark) !important; }
+
+html body .btn-outline-primary:hover,
+html body .btn-outline-primary:focus,
+html body .btn-outline-primary.focus { color: #fff; background-color: var(--project-btn-primary) !important; border-color: var(--project-btn-primary) !important; }
+html body .btn-outline-secondary:hover,
+html body .btn-outline-secondary:focus,
+html body .btn-outline-secondary.focus { color: #fff; background-color: var(--project-btn-secondary) !important; border-color: var(--project-btn-secondary) !important; }
+html body .btn-outline-success:hover,
+html body .btn-outline-success:focus,
+html body .btn-outline-success.focus { color: #fff; background-color: var(--project-btn-success) !important; border-color: var(--project-btn-success) !important; }
+html body .btn-outline-info:hover,
+html body .btn-outline-info:focus,
+html body .btn-outline-info.focus { color: #fff; background-color: var(--project-btn-info) !important; border-color: var(--project-btn-info) !important; }
+html body .btn-outline-warning:hover,
+html body .btn-outline-warning:focus,
+html body .btn-outline-warning.focus { color: #fff; background-color: var(--project-btn-warning) !important; border-color: var(--project-btn-warning) !important; }
+html body .btn-outline-danger:hover,
+html body .btn-outline-danger:focus,
+html body .btn-outline-danger.focus { color: #fff; background-color: var(--project-btn-danger) !important; border-color: var(--project-btn-danger) !important; }
+html body .btn-outline-light:hover,
+html body .btn-outline-light:focus,
+html body .btn-outline-light.focus { color: #3a3b45; background-color: var(--project-btn-light) !important; border-color: var(--project-btn-light) !important; }
+html body .btn-outline-dark:hover,
+html body .btn-outline-dark:focus,
+html body .btn-outline-dark.focus { color: #fff; background-color: var(--project-btn-dark) !important; border-color: var(--project-btn-dark) !important; }
+
+html body .btn-link {
+    color: var(--project-btn-primary);
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+html body .btn-link:hover,
+html body .btn-link:focus {
+    color: #224abe;
+    text-decoration: underline;
+}
+
+/* Ações iconográficas de tabelas seguem as dimensões de Gestão de Custos. */
+html body .kv-grid-table .btn-sm.btn-outline-primary,
+html body .kv-grid-table .btn-sm.btn-outline-secondary,
+html body .kv-grid-table .btn-sm.btn-outline-success,
+html body .kv-grid-table .btn-sm.btn-outline-info,
+html body .kv-grid-table .btn-sm.btn-outline-warning,
+html body .kv-grid-table .btn-sm.btn-outline-danger,
+html body .gc-actions .btn-sm.btn-outline-primary,
+html body .gc-actions .btn-sm.btn-outline-secondary,
+html body .gc-actions .btn-sm.btn-outline-success,
+html body .gc-actions .btn-sm.btn-outline-info,
+html body .gc-actions .btn-sm.btn-outline-warning,
+html body .gc-actions .btn-sm.btn-outline-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html body .btn { transition: none !important; }
+}
