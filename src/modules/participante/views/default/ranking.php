@@ -1,96 +1,112 @@
 <?php
 
+use app\assets\ParticipantDashboardAsset;
 use yii\helpers\Html;
 
+ParticipantDashboardAsset::register($this);
 $this->title = 'Ranking completo';
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <div>
-        <h1 class="h3 mb-1 text-gray-800">Ranking completo</h1>
-        <p class="mb-0 text-muted">Acompanhe a pontua??o consolidada por universidade no Trote Solid?rio.</p>
-    </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <?= Html::a('Voltar para home', ['/participante/default/home'], ['class' => 'btn btn-outline-secondary btn-sm']) ?>
-    </div>
-</div>
+<main class="participant-dashboard ranking-page container-fluid">
+    <header class="ranking-page-header">
+        <div>
+            <div class="dashboard-eyebrow">Desempenho das universidades</div>
+            <h1>Ranking completo</h1>
+            <p>Acompanhe a pontuação consolidada por universidade no Trote Solidário.</p>
+        </div>
+        <?= Html::a(
+            '<i class="fas fa-arrow-left" aria-hidden="true"></i><span>Voltar para home</span>',
+            ['/participante/default/home'],
+            ['class' => 'btn ranking-back-button']
+        ) ?>
+    </header>
 
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-body">
-        <?= Html::beginForm(['/participante/default/ranking'], 'get', ['class' => 'row g-3 align-items-end']) ?>
-            <div class="col-md-5">
-                <label class="form-label" for="ranking-trote">Edi??o do trote</label>
+    <section class="card ranking-filter-card mb-4" aria-labelledby="ranking-filter-title">
+        <div class="card-body">
+            <div class="ranking-section-heading">
+                <span class="ranking-section-icon" aria-hidden="true"><i class="fas fa-filter"></i></span>
+                <div>
+                    <h2 id="ranking-filter-title">Filtrar ranking</h2>
+                    <p>Escolha uma edição para consultar os resultados.</p>
+                </div>
+            </div>
+            <?= Html::beginForm(['/participante/default/ranking'], 'get', ['class' => 'ranking-filter-form']) ?>
+            <div class="ranking-filter-field">
+                <label for="ranking-trote">Edição do trote</label>
                 <?= Html::dropDownList('trote_id', $selectedTroteId, $trotes, [
                     'id' => 'ranking-trote',
                     'class' => 'form-control',
                     'prompt' => 'Todos os trotes',
                 ]) ?>
             </div>
-            <div class="col-md-auto">
-                <?= Html::submitButton('Filtrar ranking', ['class' => 'btn btn-success']) ?>
+            <div class="ranking-filter-actions">
+                <?= Html::submitButton('<i class="fas fa-search" aria-hidden="true"></i><span>Aplicar filtro</span>', ['class' => 'btn btn-success']) ?>
+                <?php if ($selectedTroteId !== null): ?>
+                    <?= Html::a('Limpar', ['/participante/default/ranking'], ['class' => 'btn btn-outline-secondary']) ?>
+                <?php endif; ?>
             </div>
-            <?php if ($selectedTroteId !== null): ?>
-                <div class="col-md-auto">
-                    <?= Html::a('Limpar filtro', ['/participante/default/ranking'], ['class' => 'btn btn-outline-secondary']) ?>
-                </div>
-            <?php endif; ?>
-        <?= Html::endForm() ?>
-    </div>
-</div>
+            <?= Html::endForm() ?>
+        </div>
+    </section>
 
-<?php if ($troteAtivo !== null): ?>
-    <div class="card shadow-sm border-0 mb-4 border-left-success">
-        <div class="card-body py-3">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <?php if ($troteAtivo !== null): ?>
+        <aside class="ranking-active-edition mb-4" aria-label="Edição ativa">
+            <span class="ranking-active-icon" aria-hidden="true"><i class="fas fa-bolt"></i></span>
+            <div class="ranking-active-content">
                 <div>
-                    <div class="text-success small text-uppercase font-weight-bold">Trote ativo</div>
-                    <div class="h5 mb-0"><?= Html::encode($troteAtivo->titulo ?: ('Trote ' . $troteAtivo->edicao)) ?></div>
+                    <span>Trote ativo</span>
+                    <strong><?= Html::encode($troteAtivo->titulo ?: ('Trote ' . $troteAtivo->edicao)) ?></strong>
                 </div>
-                <div class="text-muted small">
-                    <?= $selectedTroteId !== null && (int) $selectedTroteId === (int) $troteAtivo->id ? 'Exibindo a edi??o ativa.' : 'Voc? pode filtrar por qualquer edi??o dispon?vel.' ?>
-                </div>
+                <p><?= $selectedTroteId !== null && (int) $selectedTroteId === (int) $troteAtivo->id ? 'Você está vendo a edição ativa.' : 'Você pode consultar qualquer edição disponível.' ?></p>
             </div>
-        </div>
-    </div>
-<?php endif; ?>
+        </aside>
+    <?php endif; ?>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h2 class="h5 mb-0 text-gray-800">Ranking por universidade</h2>
-            <span class="text-muted small"><?= count($ranking) ?> universidade(s)</span>
-        </div>
-        <?php if (!empty($ranking)): ?>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+    <section class="card ranking-results-card" aria-labelledby="ranking-results-title">
+        <div class="card-body">
+            <div class="ranking-results-header">
+                <div>
+                    <div class="dashboard-eyebrow">Classificação geral</div>
+                    <h2 id="ranking-results-title">Ranking por universidade</h2>
+                </div>
+                <span class="ranking-count"><?= count($ranking) ?> <?= count($ranking) === 1 ? 'universidade' : 'universidades' ?></span>
+            </div>
+            <?php if (!empty($ranking)): ?>
+                <div class="table-responsive ranking-table-wrapper">
+                    <table class="table ranking-table mb-0">
+                    <caption class="sr-only">Classificação das universidades por pontos</caption>
                     <thead>
                         <tr>
-                            <th style="width: 60px;">#</th>
-                            <th>Universidade</th>
-                            <th style="width: 140px;">Participantes</th>
-                            <th style="width: 120px;">Pontos</th>
+                            <th scope="col">Posição</th>
+                            <th scope="col">Universidade</th>
+                            <th scope="col">Participantes</th>
+                            <th scope="col">Pontos</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($ranking as $index => $item): ?>
                             <?php $isCurrentUniversity = in_array((int) ($item['universidade_id'] ?? 0), $userUniversityIds, true); ?>
-                            <tr class="<?= $isCurrentUniversity ? 'table-success' : '' ?>">
-                                <td><?= $index + 1 ?></td>
-                                <td>
-                                    <div class="font-weight-bold text-dark"><?= Html::encode($item['nome']) ?></div>
+                            <tr class="<?= $isCurrentUniversity ? 'is-current-university' : '' ?>">
+                                <td data-label="Posição"><span class="ranking-position"><?= $index + 1 ?></span></td>
+                                <td data-label="Universidade" class="ranking-university">
+                                    <strong><?= Html::encode($item['nome']) ?></strong>
                                     <?php if ($isCurrentUniversity): ?>
-                                        <div class="small text-success">Sua universidade</div>
+                                        <span class="ranking-user-badge"><i class="fas fa-user-check" aria-hidden="true"></i> Sua universidade</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?= (int) $item['participantes'] ?></td>
-                                <td><strong><?= (int) $item['pontos'] ?></strong></td>
+                                <td data-label="Participantes"><?= (int) $item['participantes'] ?></td>
+                                <td data-label="Pontos"><strong class="ranking-points"><?= (int) $item['pontos'] ?></strong></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
-            </div>
-        <?php else: ?>
-            <div class="text-muted">Ainda n?o h? dados suficientes para montar o ranking completo neste filtro.</div>
-        <?php endif; ?>
-    </div>
-</div>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="dashboard-empty-state">
+                    <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                    <span>Ainda não há dados suficientes para montar o ranking nesta edição.</span>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+</main>

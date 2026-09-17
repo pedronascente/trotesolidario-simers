@@ -490,6 +490,247 @@
     background: linear-gradient(90deg, var(--dash-purple), var(--dash-green)) !important;
 }
 
+/* Full ranking */
+.ranking-page {
+    /*max-width: 76rem;*/
+    padding-top: 1.25rem;
+}
+
+.ranking-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.ranking-page-header h1,
+.ranking-results-header h2,
+.ranking-section-heading h2 {
+    margin: 0;
+    color: var(--dash-ink);
+    font-weight: 800;
+}
+
+.ranking-page-header h1 {
+    font-size: clamp(1.75rem, 4vw, 2.4rem);
+}
+
+.ranking-page-header p {
+    max-width: 40rem;
+    margin: 0.55rem 0 0;
+    color: var(--dash-muted);
+}
+
+.ranking-back-button,
+.ranking-filter-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    border-radius: 0.55rem;
+    font-weight: 800;
+}
+
+.ranking-back-button {
+    color: var(--dash-green-dark);
+    border: 1px solid #d6e7df;
+    background: #fff;
+}
+
+.ranking-back-button:hover,
+.ranking-back-button:focus {
+    color: var(--dash-green-dark);
+    border-color: var(--dash-green);
+    background: #f3faf7;
+}
+
+.ranking-section-heading,
+.ranking-active-edition,
+.ranking-active-content,
+.ranking-results-header {
+    display: flex;
+    align-items: center;
+}
+
+.ranking-section-heading {
+    gap: 0.85rem;
+    margin-bottom: 1.1rem;
+}
+
+.ranking-section-heading h2 {
+    font-size: 1.05rem;
+}
+
+.ranking-section-heading p {
+    margin: 0.2rem 0 0;
+    color: var(--dash-muted);
+    font-size: 0.82rem;
+}
+
+.ranking-section-icon,
+.ranking-active-icon {
+    display: inline-flex;
+    flex: 0 0 2.6rem;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    color: var(--dash-green-dark);
+    border-radius: 0.65rem;
+    background: #e5f6ee;
+}
+
+.ranking-filter-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: end;
+}
+
+.ranking-filter-field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--dash-ink);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.ranking-filter-field .form-control {
+    height: 2.75rem;
+    border-color: #dce2eb;
+    border-radius: 0.55rem;
+}
+
+.ranking-filter-actions {
+    display: flex;
+    gap: 0.55rem;
+}
+
+.ranking-active-edition {
+    gap: 0.9rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid #d9eee4;
+    border-left: 0.3rem solid var(--dash-green);
+    border-radius: 0.7rem;
+    background: #f4fbf8;
+}
+
+.ranking-active-content {
+    min-width: 0;
+    flex: 1;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.ranking-active-content span {
+    display: block;
+    color: var(--dash-green);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ranking-active-content strong {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--dash-ink);
+    font-size: 1.05rem;
+}
+
+.ranking-active-content p {
+    margin: 0;
+    color: var(--dash-muted);
+    font-size: 0.8rem;
+}
+
+.ranking-results-header {
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ranking-results-header h2 {
+    font-size: 1.25rem;
+}
+
+.ranking-count,
+.ranking-user-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.ranking-count {
+    flex: 0 0 auto;
+    padding: 0.45rem 0.7rem;
+    color: var(--dash-purple);
+    background: #f0ebfb;
+}
+
+.ranking-table-wrapper {
+    border: 1px solid var(--dash-line);
+    border-radius: 0.65rem;
+}
+
+.ranking-table thead th {
+    padding: 0.8rem 1rem;
+    color: var(--dash-muted);
+    border: 0;
+    background: #f7f8fb;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.ranking-table tbody td {
+    padding: 0.95rem 1rem;
+    vertical-align: middle;
+    border-top-color: var(--dash-line);
+}
+
+.ranking-table tbody tr:first-child td {
+    border-top: 0;
+}
+
+.ranking-table .is-current-university {
+    background: #edfaf4;
+}
+
+.ranking-position {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: #fff;
+    border-radius: 0.55rem;
+    background: var(--dash-purple);
+    font-weight: 900;
+}
+
+.ranking-university strong {
+    display: block;
+    color: var(--dash-ink);
+}
+
+.ranking-user-badge {
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    color: var(--dash-green-dark);
+    background: #d8f2e6;
+}
+
+.ranking-points {
+    color: var(--dash-green-dark);
+    font-size: 1.05rem;
+}
+
 .dashboard-donation-status {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -589,6 +830,128 @@
     .dashboard-list-item {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .ranking-page {
+        padding-top: 1rem;
+    }
+
+    .ranking-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .ranking-page-header p {
+        font-size: 0.9rem;
+        line-height: 1.55;
+    }
+
+    .ranking-back-button {
+        width: 100%;
+    }
+
+    .ranking-section-heading {
+        align-items: flex-start;
+    }
+
+    .ranking-filter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .ranking-filter-actions {
+        display: grid;
+        grid-template-columns: 1fr auto;
+    }
+
+    .ranking-active-edition {
+        align-items: flex-start;
+    }
+
+    .ranking-active-content {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .ranking-results-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    .ranking-table-wrapper {
+        overflow: visible;
+        border: 0;
+    }
+
+    .ranking-table,
+    .ranking-table tbody,
+    .ranking-table tr,
+    .ranking-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .ranking-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    .ranking-table tbody {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .ranking-table tbody tr {
+        padding: 0.85rem;
+        border: 1px solid var(--dash-line);
+        border-radius: 0.65rem;
+        background: #fff;
+    }
+
+    .ranking-table tbody tr.is-current-university {
+        border-color: #b9dfcd;
+        background: #edfaf4;
+    }
+
+    .ranking-table tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.55rem 0;
+        text-align: right;
+        border: 0;
+        border-bottom: 1px solid var(--dash-line);
+    }
+
+    .ranking-table tbody td::before {
+        color: var(--dash-muted);
+        content: attr(data-label);
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .ranking-table tbody td:last-child {
+        border-bottom: 0;
+    }
+
+    .ranking-table .ranking-university {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: left;
+    }
+
+    .ranking-table .ranking-university::before {
+        margin-bottom: 0.1rem;
     }
 }
 

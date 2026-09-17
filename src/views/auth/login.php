@@ -3,10 +3,14 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
+
+$this->title = 'Entrar';
 ?>
 
 <?php $form = ActiveForm::begin([
+    'id' => 'login-form',
     'enableClientValidation' => true,
+    'options' => ['class' => 'auth-form', 'novalidate' => true],
     'fieldConfig' => [
         'template' => "{label}\n{input}\n{error}",
         'options' => ['class' => 'form-group'],
@@ -16,8 +20,20 @@ use yii\widgets\MaskedInput;
 ]); ?>
 
 <div class="login-box">
+    <div class="auth-intro">
+        <h1>Acesse sua conta</h1>
+        <p>Entre para acompanhar sua participação no Trote Solidário.</p>
+    </div>
+
     <?= $form->field($model, 'cpf')->widget(MaskedInput::class, [
         'mask' => '999.999.999-99',
+        'options' => [
+            'class' => 'form-control',
+            'inputmode' => 'numeric',
+            'autocomplete' => 'username',
+            'autofocus' => true,
+            'placeholder' => '000.000.000-00',
+        ],
         'clientOptions' => [
             'removeMaskOnSubmit' => true,
         ],
@@ -26,20 +42,16 @@ use yii\widgets\MaskedInput;
     <?= $form->field($model, 'password', [
         'inputOptions' => [
             'class' => 'form-control ' . ($model->hasErrors('password') ? 'is-invalid' : ''),
+            'autocomplete' => 'current-password',
         ],
-    ])->passwordInput(['placeholder' => 'Senha']) ?>
+    ])->passwordInput(['placeholder' => 'Digite sua senha']) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Entrar', ['class' => 'btn btn-primary btn-block']) ?>
+    <div class="form-group auth-submit-group">
+        <?= Html::submitButton('<span>Entrar</span><i class="fas fa-arrow-right" aria-hidden="true"></i>', ['class' => 'btn btn-primary btn-block auth-submit']) ?>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div></div>
-        <div>
-            <?= Html::a('Esqueci minha senha', ['/auth/request-password-reset'], [
-                'class' => 'text-primary small',
-            ]) ?>
-        </div>
+    <div class="auth-secondary-action">
+        <?= Html::a('<i class="far fa-question-circle" aria-hidden="true"></i><span>Esqueci minha senha</span>', ['/auth/request-password-reset']) ?>
     </div>
 </div>
 

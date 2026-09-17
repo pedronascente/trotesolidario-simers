@@ -7,13 +7,16 @@ $this->title = 'Recuperar senha';
 ?>
 
 <div class="login-box">
-    <div class="mb-4 text-center">
-        <h3 class="mb-2">Recuperar senha</h3>
-        <p class="text-muted mb-0">Informe seu e-mail para receber o link de redefinição.</p>
+    <div class="auth-intro">
+        <span class="auth-intro-icon" aria-hidden="true"><i class="fas fa-lock"></i></span>
+        <h1>Recuperar senha</h1>
+        <p>Informe o e-mail cadastrado para receber o link de redefinição.</p>
     </div>
 
     <?php $form = ActiveForm::begin([
+        'id' => 'password-reset-request-form',
         'enableClientValidation' => true,
+        'options' => ['class' => 'auth-form', 'novalidate' => true],
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'options' => ['class' => 'form-group'],
@@ -27,14 +30,19 @@ $this->title = 'Recuperar senha';
     <?= $form->field($model, 'email')->textInput([
         'autofocus' => true,
         'placeholder' => 'seuemail@exemplo.com',
+        'type' => 'email',
+        'inputmode' => 'email',
+        'autocomplete' => 'email',
+        'autocapitalize' => 'none',
+        'spellcheck' => 'false',
     ]) ?>
 
-    <div class="form-group mt-4">
-        <?= Html::submitButton('Enviar link', ['class' => 'btn btn-primary btn-block']) ?>
+    <div class="form-group auth-submit-group">
+        <?= Html::submitButton('<span>Enviar link</span><i class="fas fa-paper-plane" aria-hidden="true"></i>', ['class' => 'btn btn-primary btn-block auth-submit']) ?>
     </div>
 
-    <div class="text-center mt-3">
-        <?= Html::a('Voltar ao login', ['/auth/login'], ['class' => 'text-primary small']) ?>
+    <div class="auth-secondary-action">
+        <?= Html::a('<i class="fas fa-arrow-left" aria-hidden="true"></i><span>Voltar ao login</span>', ['/auth/login']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

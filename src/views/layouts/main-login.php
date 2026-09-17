@@ -13,6 +13,7 @@ $this->beginPage();
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <?= Html::csrfMetaTags() ?>
 
@@ -22,22 +23,24 @@ $this->beginPage();
 </head>
 
 
-<body class="">
+<body class="auth-shell">
     <?php $this->beginBody() ?>
-    <div class="login-container d-flex align-items-center justify-content-center">
-        <div class="card shadow-lg p-4 login-card">
-            <div class="text-center mb-4">
-                <h3 class="font-weight-bold">Trote Solidário</h3>
-                <p class="text-muted">Acesse sua conta</p>
-            </div>
+    <main class="login-container">
+        <section class="login-card" aria-labelledby="auth-brand-title">
+            <header class="login-brand">
+                <span class="login-brand-icon" aria-hidden="true"><i class="fas fa-graduation-cap"></i></span>
+                <div>
+                    <span class="login-brand-kicker">Bem-vindo ao</span>
+                    <strong id="auth-brand-title">Trote Solidário</strong>
+                </div>
+            </header>
 
             <div class="login-card-content">
                 <?= Alert::widget() ?>
-                <?= $content ?> <!-- A VIEW VAI ENTRAR AQUI -->
+                <?= $content ?>
             </div>
-
-        </div>
-    </div>
+        </section>
+    </main>
     <?php $this->endBody() ?>
 </body>
 

@@ -13,32 +13,121 @@ body {
     height: 100vh;
 }
 
+.auth-shell {
+    min-width: 20rem;
+    min-height: 100vh;
+    min-height: 100svh;
+    color: #172033;
+    background:
+        radial-gradient(circle at 12% 8%, rgba(185, 231, 105, 0.22), transparent 16rem),
+        radial-gradient(circle at 96% 92%, rgba(103, 80, 164, 0.14), transparent 18rem),
+        #f5f8f7;
+}
+
 .login-container {
-    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
 }
 
 .login-card {
     width: 100%;
-    max-width: 400px;
-    border-radius: 12px;
+    max-width: 28rem;
+    overflow: hidden;
+    border: 1px solid #e1e9e5;
+    border-radius: 1rem;
     background: #fff;
+    box-shadow: 0 1.25rem 3rem rgba(24, 55, 46, 0.12);
 }
 
-.login-card-content {
-    width: 100%;
+.login-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.15rem 1.25rem;
+    color: #fff;
+    background: linear-gradient(125deg, #0d6849, #158b62 62%, #51408c);
 }
 
-.login-card-content .alert {
-    margin-bottom: 1rem;
+.login-brand-icon {
+    display: inline-flex;
+    flex: 0 0 2.75rem;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: #164631;
+    border-radius: 0.7rem;
+    background: #b9e769;
 }
 
+.login-brand-kicker,
+.login-brand strong { display: block; }
+.login-brand-kicker { color: rgba(255, 255, 255, 0.76); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.login-brand strong { margin-top: 0.1rem; font-size: 1rem; font-weight: 900; }
+.login-card-content { width: 100%; padding: 1.5rem 1.25rem; }
+
+.auth-intro { margin-bottom: 1.5rem; }
+.auth-intro h1 { margin: 0; color: #172033; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; }
+.auth-intro p { margin: 0.55rem 0 0; color: #687386; font-size: 0.9rem; line-height: 1.55; }
+.auth-intro-icon { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; margin-bottom: 1rem; color: #0d6849; border-radius: 0.7rem; background: #e5f6ee; }
+
+.auth-form .form-group { margin-bottom: 1.1rem; }
+.auth-form label { margin-bottom: 0.4rem; color: #344054; font-size: 0.78rem; font-weight: 800; }
 .login-card .form-control {
-    border-radius: 8px;
-    padding: 12px;
+    width: 100%;
+    height: 3rem;
+    padding: 0.7rem 0.85rem;
+    color: #172033;
+    border: 1px solid #ccd7d2;
+    border-radius: 0.6rem;
+    background: #fff;
+    font-size: 1rem;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
-.login-card .btn {
-    border-radius: 8px;
+.login-card .form-control::placeholder { color: #98a2b3; }
+.login-card .form-control:hover { border-color: #9fb6ab; }
+.login-card .form-control:focus { border-color: #158b62; box-shadow: 0 0 0 0.2rem rgba(21, 139, 98, 0.16); }
+.login-card .form-control.is-invalid,
+.auth-form .has-error .form-control { border-color: #d64b5d; background-image: none; }
+.auth-form .invalid-feedback,
+.auth-form .help-block { display: block; margin-top: 0.4rem; color: #b42336; font-size: 0.76rem; line-height: 1.4; }
+.login-card-content .alert { margin-bottom: 1rem; border: 0; border-radius: 0.65rem; font-size: 0.82rem; }
+.login-card-content .error-summary ul { margin-bottom: 0; padding-left: 1.1rem; }
+
+.auth-submit-group { margin-top: 1.4rem; }
+.login-card .auth-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3rem;
+    border: 0;
+    border-radius: 0.6rem;
+    background: #158b62;
+    font-weight: 800;
+    box-shadow: 0 0.6rem 1.2rem rgba(21, 139, 98, 0.18);
+}
+
+.login-card .auth-submit:hover,
+.login-card .auth-submit:focus { background: #0d6849; }
+.login-card .auth-submit:focus,
+.auth-secondary-action a:focus { outline: 3px solid rgba(185, 231, 105, 0.6); outline-offset: 2px; }
+.auth-secondary-action { margin-top: 1.25rem; text-align: center; }
+.auth-secondary-action a { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 2.75rem; padding: 0.5rem; color: #0d6849; border-radius: 0.45rem; font-size: 0.82rem; font-weight: 800; }
+.auth-secondary-action a:hover { color: #158b62; text-decoration: none; }
+
+@media (min-width: 36rem) {
+    .login-card-content { padding: 2rem; }
+    .login-brand { padding: 1.25rem 2rem; }
+}
+
+@media (max-height: 35rem) and (orientation: landscape) {
+    .login-container { align-items: flex-start; }
 }
 
 
