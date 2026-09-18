@@ -28,13 +28,19 @@ final class DoacaoArquivoStorage
     {
         $directory = Yii::getAlias('@imgArquivosDoacao');
         if (!self::ensureWritableDirectory($directory)) {
+            Yii::error('Diretorio de comprovantes inexistente ou sem permissao de escrita: ' . $directory, __METHOD__);
             return null;
         }
 
         $name = uniqid('doacao_', true) . '.' . strtolower($arquivo->extension);
         $path = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $name;
 
-        return $arquivo->saveAs($path) ? $name : null;
+        if (!$arquivo->saveAs($path)) {
+            Yii::error('Falha ao salvar comprovante no diretorio: ' . $directory, __METHOD__);
+            return null;
+        }
+
+        return $name;
     }
 
     public static function remove(?string $arquivo): bool

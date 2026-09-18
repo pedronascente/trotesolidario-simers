@@ -77,8 +77,12 @@ $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : nu
 
     <div class="row">
         <div class="col-md-12">
+            <div class="alert alert-info py-2 mb-2" role="note">
+                <strong><i class="fas fa-info-circle" aria-hidden="true"></i> Arquivos permitidos:</strong>
+                imagens JPG, JPEG, PNG ou GIF e documentos PDF, com no máximo 2 MB.
+            </div>
             <?= $form->field($model, 'file')->widget(FileInput::class, [
-                'options' => ['accept' => 'image/*,.pdf'],
+                'options' => ['accept' => '.jpg,.jpeg,.png,.gif,.pdf'],
                 'pluginOptions' => [
                     'showCaption' => false,
                     'showRemove' => false,
@@ -86,8 +90,8 @@ $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : nu
                     'browseClass' => 'btn btn-primary btn-block',
                     'browseIcon' => '<i class="fas fa-camera"></i> ',
                     'browseLabel' => 'Anexar comprovante',
-                    'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
-                    'maxFileSize' => 5120,
+                    'allowedFileExtensions' => Doacao::COMPROVANTE_EXTENSIONS,
+                    'maxFileSize' => (int) (Doacao::COMPROVANTE_MAX_SIZE / 1024),
                     'overwriteInitial' => false,
                     'initialPreview' => $arquivoUrl ? [$arquivoUrl] : [],
                     'initialPreviewAsData' => true,

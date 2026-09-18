@@ -10,6 +10,9 @@ use yii\db\Expression;
 
 class Doacao extends ActiveRecord
 {
+    public const COMPROVANTE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+    public const COMPROVANTE_MAX_SIZE = 2 * 1024 * 1024;
+
     public $file;
     public $participacao_label;
     public $evento_nome;
@@ -41,8 +44,11 @@ class Doacao extends ActiveRecord
                 ['file'],
                 'file',
                 'skipOnEmpty' => true,
-                'extensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
-                'maxSize' => 1024 * 1024 * 5,
+                'extensions' => self::COMPROVANTE_EXTENSIONS,
+                'maxSize' => self::COMPROVANTE_MAX_SIZE,
+                'checkExtensionByMimeType' => true,
+                'wrongExtension' => 'Formato não permitido. Envie JPG, JPEG, PNG, GIF ou PDF.',
+                'tooBig' => 'O arquivo deve ter no máximo 2 MB.',
             ],
             [
                 ['arquivo'],
