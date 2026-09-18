@@ -1,0 +1,36 @@
+/*
+ * Correções exclusivas do cadastro de participante.
+ * O arquivo separado garante seu carregamento na primeira navegação para a rota.
+ */
+html {
+    /* O Alert legado pode carregar o Bootstrap 3 depois deste asset quando há flash. */
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body.register-shell {
+    font-size: 1rem;
+}
+
+.register-shell,
+.register-shell *,
+.register-shell *::before,
+.register-shell *::after {
+    box-sizing: border-box;
+}
+
+@media (max-width: 35.999rem) {
+    .register-page {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .register-card,
+    .register-content,
+    .register-form,
+    .register-form-section,
+    .register-fields-grid {
+        min-width: 0;
+    }
+}

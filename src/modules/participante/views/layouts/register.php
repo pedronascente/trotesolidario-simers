@@ -2,10 +2,11 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use app\assets\AdminAsset;
+use app\assets\ParticipantRegisterAsset;
 use app\widgets\Alert;
+use yii\helpers\Html;
 
-AdminAsset::register($this);
+ParticipantRegisterAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -15,7 +16,7 @@ AdminAsset::register($this);
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <?= $this->head() ?>
         <!--Header-->
-        <title>Trote Solidario</title>
+        <title><?= Html::encode($this->title ?: 'Trote Solidário') ?></title>
         <meta name="title" content="Trote Solidario">
         <meta name="description" content="Trote Solidario">
         <meta itemprop="image" content="">
@@ -37,10 +38,12 @@ AdminAsset::register($this);
         <!--<link rel="shortcut icon" href="/imagens/favicon.png" type="image/x-icon">-->
         <!-- End Google Analytics -->
     </head>
-    <body class="bg-gradient-success">
+    <body class="register-shell">
         <?php $this->beginBody() ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+        <main class="register-shell-main">
+            <?= Alert::widget() ?>
+            <?= $content ?>
+        </main>
         <?php $this->endBody() ?>
     </body>
 </html>

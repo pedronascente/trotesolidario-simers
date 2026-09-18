@@ -23,7 +23,7 @@ class ParticipantRegistrationForm extends Model
     {
         return [
             [['name', 'cpf', 'password', 'email', 'estudante'], 'required'],
-            [['politicaPrivacidade', 'politicaImagem'], 'required', 'requiredValue' => 1, 'message' => 'Voce precisa aceitar este termo.'],
+            [['politicaPrivacidade', 'politicaImagem'], 'required', 'requiredValue' => 1, 'message' => 'Você precisa aceitar este termo.'],
             [['email'], 'email'],
             [['password'], 'string', 'min' => 6],
             [['name', 'email', 'previsaoFormatura', 'estudanteOutros'], 'string', 'max' => 255],
@@ -65,12 +65,12 @@ class ParticipantRegistrationForm extends Model
             'cpf' => 'CPF',
             'password' => 'Senha',
             'email' => 'E-mail',
-            'estudante' => 'Voce e estudante?',
-            'estudanteMedicina' => 'Voce e estudante de medicina?',
+            'estudante' => 'Você é estudante?',
+            'estudanteMedicina' => 'Você é estudante de medicina?',
             'estudanteOutros' => 'Curso',
-            'previsaoFormatura' => 'Previsao de formatura',
-            'politicaPrivacidade' => 'Estou de acordo com a politica de privacidade.',
-            'politicaImagem' => 'Autorizo o uso de imagem, video e voz.',
+            'previsaoFormatura' => 'Previsão de formatura',
+            'politicaPrivacidade' => 'Estou de acordo com a política de privacidade.',
+            'politicaImagem' => 'Autorizo o uso de imagem, vídeo e voz.',
         ];
     }
 

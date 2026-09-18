@@ -50,8 +50,11 @@ $this->title = 'Entrar';
         <?= Html::submitButton('<span>Entrar</span><i class="fas fa-arrow-right" aria-hidden="true"></i>', ['class' => 'btn btn-primary btn-block auth-submit']) ?>
     </div>
 
-    <div class="auth-secondary-action">
+    <div class="auth-secondary-action d-flex flex-column align-items-center">
         <?= Html::a('<i class="far fa-question-circle" aria-hidden="true"></i><span>Esqueci minha senha</span>', ['/auth/request-password-reset']) ?>
+        <?= Html::a('<i class="fas fa-user-plus" aria-hidden="true"></i><span>Criar minha conta</span>', ['/participante/register/index'], [
+            'class' => 'mt-1',
+        ]) ?>
     </div>
 </div>
 
