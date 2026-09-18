@@ -27,11 +27,11 @@ No histórico Git, minhas contribuições aparecem sob duas identidades utilizad
 
 | Identidade no Git | Commits |
 |---|---:|
-| `Pedro jardim <pedro.jardim@simers.org.br>` | 108 |
+| `Pedro jardim <pedro.jardim@simers.org.br>` | 123 |
 | `pedrosimers <Pedro.jardim@simers.org.br>` | 26 |
-| **Total consolidado** | **134** |
+| **Total consolidado** | **149** |
 
-Esse total corresponde a aproximadamente **74% dos 180 commits** existentes no repositório no momento deste levantamento. Os demais commits e o código original pertencem aos outros profissionais que participaram da trajetória do sistema.
+Esse total corresponde a aproximadamente **76% dos 195 commits** existentes no repositório no momento deste levantamento. Os demais commits e o código original pertencem aos outros profissionais que participaram da trajetória do sistema.
 
 ### Principais contribuições
 
@@ -64,7 +64,9 @@ A refatoração transformou a área administrativa em uma experiência visual ma
 - tabelas administrativas com filtros, paginação e ações objetivas;
 - formulários com validação clara e retorno imediato ao usuário;
 - identidade visual consistente entre módulos;
-- fluxos de cadastro e gestão mais previsíveis.
+- fluxos de cadastro e gestão mais previsíveis;
+- cadastro público responsivo, dividido em etapas e com recursos de acessibilidade;
+- envio de comprovantes com formatos e tamanho máximo informados antes do upload.
 
 ## Antes e depois da refatoração
 
@@ -76,6 +78,22 @@ A refatoração transformou a área administrativa em uma experiência visual ma
 | Conteúdo extenso e pouco hierarquizado, navegação reduzida e informações importantes distribuídas em grandes blocos. | Jornada centralizada, ações rápidas, indicadores pessoais, status do evento, documentos, ranking e participações organizados por prioridade. |
 
 A comparação evidencia que a refatoração foi além da identidade visual. A nova experiência aproxima a interface das regras de negócio: o participante identifica o trote ativo, acompanha doações aprovadas ou pendentes, acessa certificados, consulta suas participações e encontra os próximos passos sem precisar interpretar blocos extensos de conteúdo.
+
+### Cadastro e acesso
+
+O cadastro público possui layout próprio e responsivo, campos agrupados por contexto, preenchimento assistido, consentimentos destacados e navegação direta entre criação de conta, login e recuperação de senha. Os assets dessa página são isolados em `ParticipantRegisterAsset`, reduzindo interferências dos estilos administrativos.
+
+### Comprovantes de doação
+
+O participante pode anexar um comprovante durante o cadastro ou a atualização de uma doação. A validação ocorre tanto no navegador quanto no servidor.
+
+Formatos aceitos:
+
+- imagens `JPG`, `JPEG`, `PNG` e `GIF`;
+- documentos `PDF`;
+- tamanho máximo de **2 MB por arquivo**.
+
+Os arquivos são armazenados fora do diretório público, em `src/storage/doacoes`, e disponibilizados somente pela action autorizada do módulo. O processo PHP-FPM precisa ter permissão de escrita nesse diretório.
 
 ### Certificados do participante
 
@@ -132,6 +150,7 @@ Outras extensões importantes incluem os componentes Kartik para grids, formulá
 │   ├── migrations/         # migrations do banco
 │   ├── modules/            # módulos da aplicação
 │   ├── runtime/            # cache, logs e temporários
+│   ├── storage/doacoes/     # comprovantes protegidos enviados pelos participantes
 │   ├── tests/              # testes automatizados
 │   ├── vendor/             # dependências instaladas pelo Composer
 │   └── web/                # único diretório público
@@ -176,6 +195,19 @@ docker compose exec php php yii migrate --interactive=0
 ```
 
 A aplicação local ficará disponível em `http://localhost:8080`.
+
+O entrypoint do container prepara automaticamente os diretórios graváveis, incluindo `src/storage/doacoes`. Para conferir se o PHP-FPM consegue gravar comprovantes:
+
+```bash
+docker compose exec php sh -lc \
+  'su -s /bin/sh www-data -c "test -w /var/www/html/storage/doacoes"'
+```
+
+O comando termina com código `0` quando a permissão está correta. Se o diretório tiver sido criado ou alterado depois que o container iniciou, recrie o serviço PHP para executar novamente a preparação:
+
+```bash
+docker compose up -d --build --force-recreate php
+```
 
 ### Acessar o MySQL no Docker
 
@@ -309,6 +341,7 @@ O processo PHP precisa escrever somente nos diretórios operacionais:
 
 ```text
 src/runtime/
+src/storage/doacoes/
 src/web/assets/
 src/web/img/
 src/web/imagens/
@@ -317,7 +350,7 @@ src/web/pdf/
 
 O entrypoint Docker cria esses diretórios, inclusive a área temporária do mPDF. Em produção, atribua-os ao usuário do PHP-FPM e use a menor permissão necessária. Evite `0777` em servidor público; o proprietário correto com `0755` ou `0775`, conforme o grupo do processo, é preferível.
 
-Uploads e PDFs gerados precisam de armazenamento persistente. Sem volume, bucket ou rotina de sincronização, esses arquivos serão perdidos ao substituir o container.
+Comprovantes de doação em `src/storage/doacoes` e PDFs gerados precisam de armazenamento persistente. Sem volume, bucket ou rotina de sincronização, esses arquivos serão perdidos ao substituir o container.
 
 ### 8. Cache e desempenho
 
@@ -346,6 +379,7 @@ Faça também uma validação funcional manual:
 - acesso do participante e do administrador;
 - cadastro e edição das entidades principais;
 - upload e download de documentos;
+- upload de comprovantes nos formatos JPG, JPEG, PNG, GIF e PDF, respeitando o limite de 2 MB;
 - envio real de e-mail;
 - geração e download de certificados/PDFs;
 - layout responsivo e páginas de erro;
