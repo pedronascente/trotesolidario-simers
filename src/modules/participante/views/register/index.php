@@ -219,8 +219,34 @@ $this->title = 'Cadastro de participante';
         var privacyPolicyLink = document.getElementById('privacyPolicyLink');
         var privacyPolicyModal = document.getElementById('privacyPolicyModal');
         var contentLoaded = false;
+
+        function closePrivacyPolicyFallback() {
+            if (!privacyPolicyModal || typeof jQuery !== 'undefined') {
+                return;
+            }
+
+            privacyPolicyModal.classList.remove('show');
+            privacyPolicyModal.style.display = 'none';
+            privacyPolicyModal.setAttribute('aria-hidden', 'true');
+        }
         
         if (privacyPolicyLink && privacyPolicyModal) {
+            privacyPolicyModal.querySelectorAll('[data-dismiss="modal"]').forEach(function (control) {
+                control.addEventListener('click', closePrivacyPolicyFallback);
+            });
+
+            privacyPolicyModal.addEventListener('click', function (event) {
+                if (event.target === privacyPolicyModal) {
+                    closePrivacyPolicyFallback();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closePrivacyPolicyFallback();
+                }
+            });
+
             privacyPolicyLink.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();

@@ -393,7 +393,7 @@ class DefaultController extends Controller
 
         Yii::$app->session->setFlash('error', $message);
 
-        return $this->redirect(['index']);
+        return $this->redirect(['/participante/default/index']);
     }
 
     protected function isAjaxStartParticipationRequest(): bool

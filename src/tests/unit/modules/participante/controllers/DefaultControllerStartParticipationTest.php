@@ -10,6 +10,7 @@ use app\modules\participante\controllers\DefaultController;
 use PHPUnit\Framework\TestCase;
 use Yii;
 use yii\base\Component;
+use yii\helpers\Url;
 use yii\web\Application;
 use yii\web\Request;
 use yii\web\Response;
@@ -126,7 +127,7 @@ class DefaultControllerStartParticipationTest extends TestCase
         $result = $controller->actionStartParticipation();
 
         $this->assertInstanceOf(Response::class, $result);
-        $this->assertStringContainsString('/participante/default/index', $result->headers->get('location', ''));
+        $this->assertSame(Url::to(['/participante/default/index'], true), $result->headers->get('location', ''));
         $this->assertSame('CPF invalido. Verifique o numero informado e tente novamente.', Yii::$app->session->getFlash('error'));
     }
 }

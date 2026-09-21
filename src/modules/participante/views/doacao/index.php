@@ -1,5 +1,6 @@
 <?php
 
+use app\assets\FancyboxAsset;
 use app\modules\common\models\Doacao;
 use app\modules\common\services\DoacaoArquivoStorage;
 use kartik\alert\Alert;
@@ -10,10 +11,8 @@ use yii\helpers\Url;
 $this->title = 'Minhas doações';
 
 $this->registerCssFile('@web/css/donation-styles.css');
+FancyboxAsset::register($this);
 ?>
-
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
 <style>
     .doacao-thumb-link { display: inline-flex; align-items: center;justify-content: center;text-decoration: none;}
@@ -186,6 +185,9 @@ $this->registerCssFile('@web/css/donation-styles.css');
 $this->registerJs(<<<JS
 function initParticipantDonationGallery() {
     if (typeof Fancybox !== 'undefined') {
+        if (typeof Fancybox.unbind === 'function') {
+            Fancybox.unbind('[data-fancybox="doacoes-gallery"]');
+        }
         Fancybox.bind('[data-fancybox="doacoes-gallery"]', {
             groupAll: true,
             Thumbs: {

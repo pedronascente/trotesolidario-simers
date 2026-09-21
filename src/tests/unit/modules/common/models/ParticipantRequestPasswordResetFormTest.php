@@ -34,7 +34,7 @@ class ParticipantRequestPasswordResetFormTest extends TestCase
 
     public function testSendEmailPersistsTokenAndSendsMail(): void
     {
-        $user = new User();
+        $user = new PasswordResetUserForTest();
         $user->id = 12;
         $user->nome = 'Participante Teste';
         $user->email = 'participante@example.com';
@@ -65,6 +65,14 @@ class TestParticipantRequestPasswordResetForm extends ParticipantRequestPassword
         parent::__construct($config);
     }
 
+    public function validateCpf($attribute): void
+    {
+        $cpf = preg_replace('/\D/', '', (string) $this->$attribute);
+        if ($cpf !== '52998224725') {
+            $this->addError($attribute, 'CPF invalido.');
+        }
+    }
+
     protected function findUserByEmailAndCpf(string $email, string $cpf): ?User
     {
         if ($this->user === null) {
@@ -84,5 +92,18 @@ class TestParticipantRequestPasswordResetForm extends ParticipantRequestPassword
     {
         $this->mailSent = str_contains($resetLink, 'token=');
         return true;
+    }
+}
+
+class PasswordResetUserForTest extends User
+{
+    public static function primaryKey(): array
+    {
+        return ['id'];
+    }
+
+    public function attributes(): array
+    {
+        return ['id', 'nome', 'email', 'cpf', 'status', 'password_reset_token', 'updated_at'];
     }
 }

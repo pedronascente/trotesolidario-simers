@@ -157,8 +157,19 @@ $displayName = $identity ? $identity->name : 'Participante';
         </div>
 
         <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
+            <div class="container">
+                <?php if ($menu_active === 'default' && $action_id === 'home'): ?>
+                <div class="participant-footer-partners" aria-label="Parceiros">
+                    <span class="participant-footer-partners-title">Parceiros</span>
+                    <div class="participant-footer-partners-list">
+                        <img src="<?= Html::encode(Url::to('@web/img/parceiros/$408d94efdsk.png')) ?>" alt="Banco de Livros" class="participant-footer-partner-logo">
+                        <img src="<?= Html::encode(Url::to('@web/img/parceiros/$75h3bboup35.png')) ?>" alt="Rede de Bancos de Alimentos do Rio Grande do Sul" class="participant-footer-partner-logo">
+                        <img src="<?= Html::encode(Url::to('@web/img/parceiros/$x8jm5962pap.png')) ?>" alt="Instituto do Câncer Infantil" class="participant-footer-partner-logo">
+                        <img src="<?= Html::encode(Url::to('@web/img/parceiros/UnimedPoa.png')) ?>" alt="Unimed Porto Alegre" class="participant-footer-partner-logo">
+                    </div>
+                </div>
+                <?php endif; ?>
+                <div class="copyright text-center">
                     <span>Trote Solidário <span aria-hidden="true">•</span> Universidade que transforma</span>
                 </div>
             </div>

@@ -124,6 +124,22 @@ class CertificadoServiceTest extends TestCase
             $this->assertStringNotContainsString('position:absolute', $contents);
         }
     }
+
+    public function testFallbackCertificateTemplateDisplaysTotalHours(): void
+    {
+        $template = dirname(__DIR__, 5) . '/modules/participante/views/certificado/certificado.php';
+        $html = Yii::$app->view->renderFile($template, [
+            'model' => [
+                'name' => 'Participante Teste',
+                'trote' => '2026/2',
+                'frase_certificado' => 'com carga horária total de',
+                'total_horas' => 33,
+            ],
+            'renderMode' => 'web',
+        ]);
+
+        $this->assertStringContainsString('com carga horária total de 33 horas.', $html);
+    }
 }
 
 class ExposedCertificadoService extends CertificadoService

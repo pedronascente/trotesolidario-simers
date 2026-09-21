@@ -539,6 +539,63 @@ body {
     font-size: 0.78rem;
 }
 
+.participant-shell .participant-footer-partners {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.participant-shell .participant-footer-partners-title {
+    display: block;
+    margin-bottom: 1rem;
+    color: #526072;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.participant-shell .participant-footer-partners-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: 1.25rem 1rem;
+    max-width: 20rem;
+    margin: 0 auto;
+}
+
+.participant-shell .participant-footer-partner-logo {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 3.25rem;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.participant-shell .sticky-footer .copyright {
+    padding: 0 2.75rem;
+    line-height: 1.5;
+}
+
+@media (min-width: 576px) {
+    .participant-shell .participant-footer-partners-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem 2rem;
+        max-width: none;
+    }
+
+    .participant-shell .participant-footer-partner-logo {
+        max-width: 11rem;
+        height: 3.5rem;
+    }
+
+    .participant-shell .sticky-footer .copyright {
+        padding: 0;
+    }
+}
+
 @media (min-width: 768px) {
     .participant-shell .sidebar:not(.toggled) {
         width: 15.5rem !important;

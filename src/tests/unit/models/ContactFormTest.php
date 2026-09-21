@@ -2,8 +2,12 @@
 
 namespace tests\unit\models;
 
-use app\models\ContactForm;
+require_once dirname(__DIR__, 3) . '/modules/common/models/ContactForm.php';
+
+use app\modules\common\models\ContactForm;
 use yii\mail\MessageInterface;
+use yii\mail\BaseMailer;
+use yii\mail\MailEvent;
 
 class ContactFormTest extends \Codeception\Test\Unit
 {
@@ -15,8 +19,16 @@ class ContactFormTest extends \Codeception\Test\Unit
 
     public function testEmailIsSentOnContact()
     {
+        $emailMessage = null;
+        $afterSend = static function (MailEvent $event) use (&$emailMessage): void {
+            if ($event->isSuccessful) {
+                $emailMessage = $event->message;
+            }
+        };
+        \Yii::$app->mailer->on(BaseMailer::EVENT_AFTER_SEND, $afterSend);
+
         /** @var ContactForm $model */
-        $this->model = $this->getMockBuilder('app\models\ContactForm')
+        $this->model = $this->getMockBuilder(ContactForm::class)
             ->setMethods(['validate'])
             ->getMock();
 
@@ -31,18 +43,14 @@ class ContactFormTest extends \Codeception\Test\Unit
             'body' => 'body of current message',
         ];
 
-        expect_that($this->model->contact('admin@example.com'));
+        $this->assertTrue($this->model->contact('admin@example.com'));
+        \Yii::$app->mailer->off(BaseMailer::EVENT_AFTER_SEND, $afterSend);
 
-        // using Yii2 module actions to check email was sent
-        $this->tester->seeEmailIsSent();
-
-        /** @var MessageInterface $emailMessage */
-        $emailMessage = $this->tester->grabLastSentEmail();
-        expect('valid email is sent', $emailMessage)->isInstanceOf('yii\mail\MessageInterface');
-        expect($emailMessage->getTo())->hasKey('admin@example.com');
-        expect($emailMessage->getFrom())->hasKey('noreply@example.com');
-        expect($emailMessage->getReplyTo())->hasKey('tester@example.com');
-        expect($emailMessage->getSubject())->equals('very important letter subject');
-        expect($emailMessage->toString())->stringContainsString('body of current message');
+        $this->assertInstanceOf(MessageInterface::class, $emailMessage);
+        $this->assertArrayHasKey('admin@example.com', $emailMessage->getTo());
+        $this->assertArrayHasKey('noreply@example.com', $emailMessage->getFrom());
+        $this->assertArrayHasKey('tester@example.com', $emailMessage->getReplyTo());
+        $this->assertSame('very important letter subject', $emailMessage->getSubject());
+        $this->assertStringContainsString('body of current message', $emailMessage->toString());
     }
 }

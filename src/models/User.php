@@ -121,7 +121,12 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr(strrchr($token, '_'), 1);
+        $separatorPosition = strrchr($token, '_');
+        if ($separatorPosition === false) {
+            return false;
+        }
+
+        $timestamp = (int) substr($separatorPosition, 1);
         if ($timestamp <= 0) {
             return false;
         }
