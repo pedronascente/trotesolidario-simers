@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\common\models\Helper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 $tipo = ''; 
@@ -26,6 +27,14 @@ if ($model['tipo_doacao'] == 'Comissão') {
     $model['frase_certificado'] .= ' 0 horas.';
     $tipo = ' ';
 }
+
+$tiposDoacao = array_values(array_filter(array_map(
+    static fn($nome): string => trim((string) $nome),
+    $model['all_donations'] ?? []
+)));
+$textoDoacoes = $tiposDoacao !== []
+    ? ', realizando doações dos tipos: ' . Html::encode(implode(', ', $tiposDoacao))
+    : '';
 
 ?>
 <style type="text/css">
@@ -84,7 +93,7 @@ if ($model['tipo_doacao'] == 'Comissão') {
                         <tr>
                             <td class="tg-0lax"></td>
                             <td class="tg-baqh" colspan="3" style="text-align: center;" rowspan="2">
-                                <p style="color:#000;font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>, participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?>, promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
+                                <p style="color:#000;font-size: 22px;">Certificamos que <b><?= $model['name'] ?></b>, participou do Trote Solidário <?= $model['trote'] ?>,<?= $tipo ?><?= $textoDoacoes ?>, promovido pelo Núcleo Acadêmico Simers, <?= $model['frase_certificado'] ?></p>
                             </td>
                             <td class="tg-0lax"></td>
                         </tr>

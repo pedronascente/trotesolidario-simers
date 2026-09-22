@@ -43,6 +43,13 @@ $nome = Html::encode((string) ($model['name'] ?? '-'));
 $trote = Html::encode((string) ($model['trote'] ?? '-'));
 $frase = Html::encode((string) ($model['frase_certificado'] ?? ''));
 $totalHoras = (int) ($model['total_horas'] ?? 0);
+$tiposDoacao = array_values(array_filter(array_map(
+    static fn($tipo): string => trim((string) $tipo),
+    $model['all_donations'] ?? []
+)));
+$textoDoacoes = $tiposDoacao !== []
+    ? ', realizando doações dos tipos: ' . Html::encode(implode(', ', $tiposDoacao))
+    : '';
 ?>
 <style type="text/css">
     .tg td,
@@ -90,7 +97,7 @@ $totalHoras = (int) ($model['total_horas'] ?? 0);
                     <tr>
                         <td class="tg-0lax"></td>
                         <td class="tg-baqh" colspan="3" style="text-align:center;" rowspan="2">
-                            <p style="color:#fff; font-size:22px;">Certificamos que <b><?= $nome ?></b>, participou do Trote Solid&aacute;rio <?= $trote ?>, promovido pelo N&uacute;cleo Acad&ecirc;mico Simers, <?= $frase ?> <?= $totalHoras ?> horas.</p>
+                            <p style="color:#fff; font-size:22px;">Certificamos que <b><?= $nome ?></b>, participou do Trote Solid&aacute;rio <?= $trote ?><?= $textoDoacoes ?>, promovido pelo N&uacute;cleo Acad&ecirc;mico Simers, <?= $frase ?> <?= $totalHoras ?> horas.</p>
                         </td>
                         <td class="tg-0lax"></td>
                     </tr>

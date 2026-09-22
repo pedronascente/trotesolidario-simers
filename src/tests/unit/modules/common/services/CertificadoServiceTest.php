@@ -134,11 +134,28 @@ class CertificadoServiceTest extends TestCase
                 'trote' => '2026/2',
                 'frase_certificado' => 'com carga horária total de',
                 'total_horas' => 33,
+                'all_donations' => ['Doação de Alimentos', 'Doação de Sangue'],
             ],
             'renderMode' => 'web',
         ]);
 
         $this->assertStringContainsString('com carga horária total de 33 horas.', $html);
+        $this->assertStringContainsString(
+            'realizando doações dos tipos: Doação de Alimentos, Doação de Sangue',
+            $html
+        );
+    }
+
+    public function testAllFirstPageCertificateTemplatesDisplayDonationTypes(): void
+    {
+        $basePath = dirname(__DIR__, 5) . '/modules/participante/views/certificado/';
+
+        foreach (['certificado.php', 'certificado202211.php', 'certificado202221.php', 'certificado202311.php', 'certificado202411.php', 'certificado202421.php', 'certificado202521.php', 'certificado202611.php'] as $template) {
+            $contents = file_get_contents($basePath . $template);
+
+            $this->assertIsString($contents);
+            $this->assertStringContainsString('all_donations', $contents, $template);
+        }
     }
 }
 
