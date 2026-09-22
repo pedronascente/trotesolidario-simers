@@ -83,6 +83,7 @@ class DefaultController extends Controller
         $this->layout = 'index';
         $capa = Banner::find()->where(['ativo' => 1, 'tipo' => Banner::TIPO_LOGIN])->orderBy(['id' => SORT_DESC])->one();
         $universidades = Universidade::find()->where(['ativo' => 1])->orderBy(['nome' => SORT_ASC])->all();
+        $troteAtivo = $this->findActiveTrote();
 
 
        $debug_array =  [
@@ -95,6 +96,7 @@ class DefaultController extends Controller
             'model' => new \app\models\LoginForm(),
             'capa' => $capa,
             'universidades_botoes' => $universidades,
+            'troteAtivo' => $troteAtivo,
         ]);
     }
 
@@ -141,11 +143,7 @@ class DefaultController extends Controller
         $participante = Participante::findOne(['user_id' => $userId]);
         $isAcademicParticipant = $participante !== null && (int) $participante->estudante === 1;
 
-        $trotesAtivos = Trote::find()
-            ->where(['status' => Trote::STATUS_ATIVO])
-            ->orderBy(['data_inicio' => SORT_DESC, 'id' => SORT_DESC])
-            ->all();
-        $troteAtivoGlobal = !empty($trotesAtivos) ? $trotesAtivos[0] : null;
+        $troteAtivoGlobal = $this->findActiveTrote();
 
         $participacaoNoTroteGlobal = null;
         if ($troteAtivoGlobal !== null) {
@@ -357,6 +355,14 @@ class DefaultController extends Controller
         }
 
         return null;
+    }
+
+    private function findActiveTrote(): ?Trote
+    {
+        return Trote::find()
+            ->where(['status' => Trote::STATUS_ATIVO])
+            ->orderBy(['data_inicio' => SORT_DESC, 'id' => SORT_DESC])
+            ->one();
     }
 
     protected function createStartParticipationForm(): ParticipantStartParticipationForm

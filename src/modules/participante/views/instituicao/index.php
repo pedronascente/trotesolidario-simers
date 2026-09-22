@@ -71,27 +71,25 @@ natcasesort($cidades);
                         : null;
                     ?>
                     <div class="col-md-6 col-lg-4 mb-4">
-                        <article class="card institution-card h-100 shadow-sm border-0">
-                            <div class="card-body d-flex flex-column">
-                                <div class="institution-card-logo" aria-hidden="<?= $logoUrl ? 'false' : 'true' ?>">
-                                    <?php if ($logoUrl): ?>
-                                        <?= Html::img($logoUrl, ['alt' => 'Logo de ' . $universidade->nome]) ?>
-                                    <?php else: ?>
-                                        <i class="fas fa-university" aria-hidden="true"></i>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="dashboard-eyebrow mb-2"><?= Html::encode($universidade->cidade . ($universidade->uf ? ' - ' . $universidade->uf : '')) ?></div>
-                                <h3 class="institution-card-title"><?= Html::encode($universidade->nome) ?></h3>
-                                <?= Html::a(
-                                    'Visualizar página completa <i class="fas fa-arrow-right" aria-hidden="true"></i>',
-                                    ['detalhes', 'id' => $universidade->id],
-                                    [
-                                        'class' => 'institution-card-link mt-auto',
-                                        'aria-label' => 'Visualizar página completa de ' . $universidade->nome,
-                                    ]
-                                ) ?>
-                            </div>
-                        </article>
+                        <?= Html::a(
+                            '<article class="card institution-card h-100 shadow-sm border-0">' .
+                                '<div class="card-body d-flex flex-column">' .
+                                    '<div class="institution-card-logo" aria-hidden="' . ($logoUrl ? 'false' : 'true') . '">' .
+                                        ($logoUrl
+                                            ? Html::img($logoUrl, ['alt' => 'Logo de ' . $universidade->nome])
+                                            : '<i class="fas fa-university" aria-hidden="true"></i>') .
+                                    '</div>' .
+                                    '<div class="dashboard-eyebrow mb-2">' . Html::encode($universidade->cidade . ($universidade->uf ? ' - ' . $universidade->uf : '')) . '</div>' .
+                                    '<h3 class="institution-card-title">' . Html::encode($universidade->nome) . '</h3>' .
+                                    '<span class="institution-card-link mt-auto">Visualizar página completa <i class="fas fa-arrow-right" aria-hidden="true"></i></span>' .
+                                '</div>' .
+                            '</article>',
+                            ['detalhes', 'id' => $universidade->id],
+                            [
+                                'class' => 'institution-card-hit-area',
+                                'aria-label' => 'Visualizar página completa de ' . $universidade->nome,
+                            ]
+                        ) ?>
                     </div>
                 <?php endforeach; ?>
             </div>

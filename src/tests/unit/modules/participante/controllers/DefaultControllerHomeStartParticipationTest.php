@@ -130,6 +130,26 @@ class DefaultControllerHomeStartParticipationTest extends TestCase
         ], $result['params']['startParticipationUniversidades']);
     }
 
+    public function testPublicIndexReceivesMostRecentActiveTrote(): void
+    {
+        $this->insert('trote', [
+            'id' => 8,
+            'titulo' => 'Trote Solidario',
+            'edicao' => '2026.2',
+            'status' => 'ativo',
+            'data_inicio' => '2026-08-01',
+            'data_fim' => '2026-12-15',
+        ]);
+        Yii::$app->set('user', new FakeGuestUserForHomeTest());
+
+        $controller = new TestParticipanteDefaultHomeController('default', new Module('participante'));
+        $result = $controller->actionIndex();
+
+        $this->assertSame('index', $result['view']);
+        $this->assertSame(8, (int) $result['params']['troteAtivo']->id);
+        $this->assertSame('2026.2', $result['params']['troteAtivo']->edicao);
+    }
+
     public function testHomeKeepsModalOpenAndShowsFlashWhenParticipationCreationFails(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -384,6 +404,14 @@ class FakeRankingServiceForHomeTest implements RankingCacheServiceInterface
 class FakeWebUserForHomeTest extends Component
 {
     public int $id;
+}
+
+class FakeGuestUserForHomeTest extends Component
+{
+    public function getIsGuest(): bool
+    {
+        return true;
+    }
 }
 
 class FakeSessionForHomeTest extends Component

@@ -108,6 +108,19 @@ class RankingCacheService implements RankingCacheServiceInterface
 
     public function getUniversityRanking(?int $troteId = null): array
     {
+        $ranking = $this->buildUniversityRankingQuery($troteId)->all();
+
+        if ($ranking !== [] || $troteId === null || !$this->hasActiveParticipations($troteId)) {
+            return $ranking;
+        }
+
+        $this->rebuild($troteId);
+
+        return $this->buildUniversityRankingQuery($troteId)->all();
+    }
+
+    private function buildUniversityRankingQuery(?int $troteId): Query
+    {
         return (new Query())
             ->select([
                 'u.id AS universidade_id',
@@ -122,7 +135,17 @@ class RankingCacheService implements RankingCacheServiceInterface
             ->innerJoin(['u' => 'universidade'], 'u.id = p.universidade_id')
             ->andFilterWhere(['rc.trote_id' => $troteId])
             ->groupBy(['u.id', 'u.nome', 'rc.trote_id'])
-            ->orderBy(['pontos' => SORT_DESC, 'melhor_posicao' => SORT_ASC, 'u.nome' => SORT_ASC])
-            ->all();
+            ->orderBy(['pontos' => SORT_DESC, 'melhor_posicao' => SORT_ASC, 'u.nome' => SORT_ASC]);
+    }
+
+    private function hasActiveParticipations(int $troteId): bool
+    {
+        return Participacao::find()
+            ->where([
+                'trote_id' => $troteId,
+                'status' => Participacao::STATUS_ATIVO,
+            ])
+            ->andWhere(['not', ['universidade_id' => null]])
+            ->exists();
     }
 }

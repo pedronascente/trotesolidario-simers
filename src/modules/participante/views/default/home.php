@@ -79,11 +79,13 @@ $summaryCards = [
             </div>
             <div class="col-lg-4 mt-3 mt-lg-0">
                 <div class="dashboard-actions d-flex flex-wrap justify-content-lg-end">
-                    <?= Html::a(
-                        '<i class="fas fa-plus-circle mr-2" aria-hidden="true"></i><span>Registrar doação</span>',
-                        ['/participante/doacao/create'],
-                        ['class' => 'btn dashboard-action-primary mb-2']
-                    ) ?>
+                    <?php if ($troteAtivoGlobal !== null): ?>
+                        <?= Html::a(
+                            '<i class="fas fa-plus-circle mr-2" aria-hidden="true"></i><span>Registrar doação</span>',
+                            ['/participante/doacao/create'],
+                            ['class' => 'btn dashboard-action-primary mb-2']
+                        ) ?>
+                    <?php endif; ?>
 
                     <?= Html::a(
                         '<i class="fas fa-apple-alt mr-2" aria-hidden="true"></i><span>Doar alimentos</span>',

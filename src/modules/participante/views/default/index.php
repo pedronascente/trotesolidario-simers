@@ -4,6 +4,13 @@ use app\modules\common\models\Banner;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+$troteAtivoEdition = $troteAtivo !== null
+    ? str_replace('.', '/', (string) $troteAtivo->edicao)
+    : null;
+$troteDisplayName = $troteAtivoEdition !== null && $troteAtivoEdition !== ''
+    ? 'Trote ' . $troteAtivoEdition
+    : 'Trote Solidário';
+
 // Estilos customizados para manter o escopo limpo
 $this->registerCss("
     .trote-container { font-family: 'Poppins', sans-serif; color: #1f1d44; }
@@ -15,6 +22,7 @@ $this->registerCss("
 
     .btn-custom { border-radius: 50px; padding: 12px 30px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     .btn-custom:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+    .btn-custom:disabled { transform: none; box-shadow: none; cursor: not-allowed; opacity: 0.65; }
 
     .instruction-card { background: linear-gradient(135deg, #00b38d 0%, #00d4a7 100%); border-radius: 20px; padding: 30px; color: #fff; margin: 40px 0; border: none; }
 
@@ -125,7 +133,7 @@ $this->registerCss("
                 <?php endif; ?>
             </div>
 
-            <h1 class="hero-title mt-4">Participe do Trote 2026/1</h1>
+            <h1 class="hero-title mt-4">Participe do <?= Html::encode($troteDisplayName) ?></h1>
             <p class="hero-subtitle">
                 O maior movimento de solidariedade acadêmica do RS precisa da sua energia.
                 Sua recepção aos novos colegas pode transformar vidas através da doação.
@@ -136,6 +144,9 @@ $this->registerCss("
                     'class' => 'btn btn-success btn-custom m-2',
                     'type' => 'button',
                     'id' => 'participar-agora-trigger',
+                    'disabled' => $troteAtivo === null,
+                    'aria-disabled' => $troteAtivo === null ? 'true' : 'false',
+                    'title' => $troteAtivo === null ? 'Nenhum trote ativo disponível no momento.' : null,
                 ]) ?>
                 <?= Html::a('Área do participante', ['/auth/login'], ['class' => 'btn btn-primary btn-custom m-2']) ?>
             </div>
@@ -151,13 +162,13 @@ $this->registerCss("
                 <div class="participar-modal-card">
                     <div class="participar-modal-header d-flex align-items-start justify-content-between">
                         <div>
-                            <h3 id="participar-modal-title">Participar do Trote 2026/1</h3>
+                            <h3 id="participar-modal-title">Participar do <?= Html::encode($troteDisplayName) ?></h3>
                         </div>
                         <button type="button" class="participar-modal-close" id="participar-modal-close" aria-label="Fechar modal">&times;</button>
                     </div>
                     <div class="participar-modal-body text-left">
                         <p class="participar-modal-copy">
-                            Informe seu CPF para participar do Trote 2026/1.
+                            Informe seu CPF para participar do <?= Html::encode($troteDisplayName) ?>.
                         </p>
 
                         <form id="participar-modal-form" action="<?= Html::encode(Url::to(['/participante/default/start-participation'])) ?>" method="post" novalidate>

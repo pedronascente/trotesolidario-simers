@@ -142,6 +142,32 @@ class RankingCacheServiceTest extends TestCase
         ], array_map([$this, 'normalizeUniversityRow'], $ranking));
     }
 
+    public function testGetUniversityRankingRebuildsMissingCacheForRequestedTrote(): void
+    {
+        $this->insert('trote', ['id' => 1, 'titulo' => 'Trote Solidario', 'edicao' => '2026.1', 'status' => 'ativo']);
+        $this->insert('universidade', ['id' => 1, 'nome' => 'Universidade A']);
+        $this->insert('tipo_doacao', ['id' => 1, 'nome' => 'Alimento', 'pontuacao_ranking' => 100]);
+        $this->insert('participacao', ['id' => 1, 'trote_id' => 1, 'universidade_id' => 1, 'status' => 'ativo']);
+        $this->insert('doacao', ['id' => 1, 'participacao_id' => 1, 'tipo_doacao_id' => 1, 'status' => 'aprovada']);
+
+        $service = new RankingCacheService();
+        $ranking = $service->getUniversityRanking(1);
+
+        $this->assertSame([
+            [
+                'universidade_id' => 1,
+                'nome' => 'Universidade A',
+                'trote_id' => 1,
+                'pontos' => 100,
+                'participantes' => 1,
+                'melhor_posicao' => 1,
+            ],
+        ], array_map([$this, 'normalizeUniversityRow'], $ranking));
+        $this->assertSame(1, (int) Yii::$app->db->createCommand(
+            'SELECT COUNT(*) FROM ranking_cache WHERE trote_id = 1'
+        )->queryScalar());
+    }
+
     private function createSchema(Connection $db): void
     {
         $db->createCommand('CREATE TABLE trote (id INTEGER PRIMARY KEY, titulo TEXT, edicao TEXT, status TEXT, data_inicio TEXT, data_fim TEXT)')->execute();
