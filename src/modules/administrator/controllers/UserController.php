@@ -90,6 +90,7 @@ class UserController extends Controller
                 return $this->redirect(['index']);
             } catch (\Throwable $e) {
                 $transaction->rollBack();
+                Yii::error('Falha ao criar usuario: ' . $e->getMessage(), __METHOD__);
                 Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }

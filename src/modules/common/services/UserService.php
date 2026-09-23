@@ -208,6 +208,9 @@ class UserService implements UserServiceInterface
         $user->status = $form->status ?: User::STATUS_ACTIVE;
 
         if (!empty($form->password)) {
+            if ($isCreate) {
+                $user->password = $form->password;
+            }
             $user->setPassword($form->password);
             if ($isCreate || empty($user->authKey)) {
                 $user->generateAuthKey();
