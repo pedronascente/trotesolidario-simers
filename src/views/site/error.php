@@ -32,12 +32,7 @@ $this->title = $title;
             <?= Html::encode($description) ?>
         </p>
 
-        <!-- Botões -->
         <div class="d-flex justify-content-center gap-2 mb-4">
-            <?= Html::a('Voltar', Yii::$app->request->referrer ?? ['/site/index'], [
-                'class' => 'btn btn-outline-secondary px-4'
-            ]) ?>
-
             <?= Html::a('Ir para início', ['/site/index'], [
                 'class' => 'btn btn-primary px-4'
             ]) ?>
@@ -48,6 +43,5 @@ $this->title = $title;
             Rua Coronel Corte Real, 975 - Petrópolis - Porto Alegre <br>
             (51) 3027 - 3737
         </div>
-
     </div>
 </div>
