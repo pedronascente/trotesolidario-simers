@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $model app\modules\common\models\MercadoUniversidade */
+/* @var $trotes array */
 /* @var $mercados array */
 /* @var $universidades array */
 
@@ -16,11 +17,12 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="card-body">
         <p class="text-muted mb-4">
-            Selecione um mercado e a universidade que poderá utilizá-lo como parceiro.
+            Selecione o trote, o mercado e a universidade que poderá utilizá-lo como parceiro.
         </p>
 
         <?= $this->render('_form', [
             'model' => $model,
+            'trotes' => $trotes,
             'mercados' => $mercados,
             'universidades' => $universidades,
         ]) ?>

@@ -10,7 +10,7 @@ class ComissaoOrganizadoraSearchModel extends ComissaoOrganizadora
     public function rules()
     {
         return [
-            [['id', 'universidade_id', 'ordem', 'ativo'], 'integer'],
+            [['id', 'trote_id', 'universidade_id', 'ordem', 'ativo'], 'integer'],
             [['nome', 'cargo'], 'safe'],
         ];
     }
@@ -24,7 +24,7 @@ class ComissaoOrganizadoraSearchModel extends ComissaoOrganizadora
     {
         $query = ComissaoOrganizadora::find()
             ->alias('co')
-            ->joinWith(['universidade un']);
+            ->joinWith(['trote tr', 'universidade un']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -38,6 +38,7 @@ class ComissaoOrganizadoraSearchModel extends ComissaoOrganizadora
 
         $query->andFilterWhere([
             'co.id' => $this->id,
+            'co.trote_id' => $this->trote_id,
             'co.universidade_id' => $this->universidade_id,
             'co.ordem' => $this->ordem,
             'co.ativo' => $this->ativo,

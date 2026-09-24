@@ -4,6 +4,7 @@ namespace app\modules\administrator\controllers;
 
 use app\modules\common\models\ComissaoOrganizadora;
 use app\modules\common\models\ComissaoOrganizadoraSearchModel;
+use app\modules\common\models\Trote;
 use app\modules\common\models\Universidade;
 use Yii;
 use yii\filters\AccessControl;
@@ -65,7 +66,7 @@ class ComissoesOrganizadorasController extends Controller
             Yii::$app->session->setFlash('success', 'Membro adicionado à comissão organizadora.');
             return $this->redirect(['index']);
         }
-        return $this->render('create', ['model' => $model, 'universidades' => $this->getUniversidades()]);
+        return $this->render('create', ['model' => $model, 'trotes' => $this->getTrotes($model), 'universidades' => $this->getUniversidades()]);
     }
 
     public function actionUpdate($id)
@@ -75,7 +76,7 @@ class ComissoesOrganizadorasController extends Controller
             Yii::$app->session->setFlash('success', 'Membro da comissão atualizado.');
             return $this->redirect(['index']);
         }
-        return $this->render('update', ['model' => $model, 'universidades' => $this->getUniversidades()]);
+        return $this->render('update', ['model' => $model, 'trotes' => $this->getTrotes($model), 'universidades' => $this->getUniversidades()]);
     }
 
     public function actionDelete($id)
@@ -102,10 +103,25 @@ class ComissoesOrganizadorasController extends Controller
         );
     }
 
+    private function getTrotes(ComissaoOrganizadora $model): array
+    {
+        $trotes = ArrayHelper::map(
+            Trote::getAtivos(),
+            'id',
+            static fn(Trote $trote) => $trote->titulo . ' — ' . $trote->edicao
+        );
+
+        if (!$model->isNewRecord && $model->trote !== null) {
+            $trotes[$model->trote->id] = $model->trote->titulo . ' — ' . $model->trote->edicao;
+        }
+
+        return $trotes;
+    }
+
     private function findModel(int $id): ComissaoOrganizadora
     {
         $model = ComissaoOrganizadora::find()
-            ->with('universidade')
+            ->with(['trote', 'universidade'])
             ->where(['comissao_organizadora.id' => $id])
             ->one();
         if ($model === null) {

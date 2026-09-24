@@ -34,6 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'nome',
                 'cargo',
                 [
+                    'attribute' => 'trote_id',
+                    'filter' => false,
+                    'value' => static fn($model) => $model->trote === null
+                        ? '-'
+                        : $model->trote->titulo . ' — ' . $model->trote->edicao,
+                ],
+                [
                     'attribute' => 'universidade_id',
                     'filter' => false,
                     'value' => static fn($model) => $model->universidade->nome ?? '-',

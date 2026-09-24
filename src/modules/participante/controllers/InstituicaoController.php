@@ -3,6 +3,8 @@
 namespace app\modules\participante\controllers;
 
 use app\modules\common\models\ComissaoOrganizadora;
+use app\modules\common\models\MercadoParceiro;
+use app\modules\common\models\Trote;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -32,15 +34,35 @@ class InstituicaoController extends Controller
             throw new NotFoundHttpException('Instituição não encontrada.');
         }
 
-        $mercadosParceiros = $universidade->getMercadosParceiros()
-            ->orderBy(['nome_mercado' => SORT_ASC])
-            ->all();
+        $troteAtivo = Trote::find()
+            ->where(['status' => Trote::STATUS_ATIVO])
+            ->orderBy(['id' => SORT_DESC])
+            ->one();
 
-        $comissaoOrganizadora = ComissaoOrganizadora::find()
-            ->alias('co')
-            ->where(['co.ativo' => 1, 'co.universidade_id' => $universidade->id])
-            ->orderBy(['co.ordem' => SORT_ASC, 'co.nome' => SORT_ASC, 'co.id' => SORT_ASC])
-            ->all();
+        $mercadosParceiros = [];
+        $comissaoOrganizadora = [];
+
+        if ($troteAtivo !== null) {
+            $mercadosParceiros = MercadoParceiro::find()
+                ->alias('mp')
+                ->innerJoin('{{%mercado_universidade}} mu', '[[mu.mercado_id]] = [[mp.id]]')
+                ->where([
+                    'mu.universidade_id' => $universidade->id,
+                    'mu.trote_id' => $troteAtivo->id,
+                ])
+                ->orderBy(['mp.nome_mercado' => SORT_ASC])
+                ->all();
+
+            $comissaoOrganizadora = ComissaoOrganizadora::find()
+                ->alias('co')
+                ->where([
+                    'co.ativo' => 1,
+                    'co.trote_id' => $troteAtivo->id,
+                    'co.universidade_id' => $universidade->id,
+                ])
+                ->orderBy(['co.ordem' => SORT_ASC, 'co.nome' => SORT_ASC, 'co.id' => SORT_ASC])
+                ->all();
+        }
 
         return $this->render('detalhes', [
             'universidade' => $universidade,

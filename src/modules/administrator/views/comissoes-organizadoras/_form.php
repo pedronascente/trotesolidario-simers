@@ -5,10 +5,26 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $model app\modules\common\models\ComissaoOrganizadora */
+/* @var $trotes array */
 /* @var $universidades array */
 ?>
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
+    <div class="col-md-6">
+        <?php if ($model->isNewRecord): ?>
+            <?= $form->field($model, 'trote_id')->widget(Select2::class, [
+                'data' => $trotes,
+                'options' => ['placeholder' => 'Selecione o trote ativo'],
+                'pluginOptions' => ['allowClear' => true],
+            ]) ?>
+        <?php else: ?>
+            <?= $form->field($model, 'trote_id')->widget(Select2::class, [
+                'data' => $trotes,
+                'options' => ['disabled' => true],
+            ]) ?>
+            <?= Html::activeHiddenInput($model, 'trote_id') ?>
+        <?php endif; ?>
+    </div>
     <div class="col-md-6">
         <?= $form->field($model, 'universidade_id')->widget(Select2::class, [
             'data' => $universidades,

@@ -39,6 +39,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['style' => 'width:80px'],
                 ],
                 [
+                    'label' => 'Trote',
+                    'value' => static function ($model) {
+                        return $model->trote === null
+                            ? '-'
+                            : $model->trote->titulo . ' — ' . $model->trote->edicao;
+                    },
+                    'vAlign' => 'middle',
+                ],
+                [
                     'label' => 'Mercado',
                     'value' => static function ($model) {
                         if ($model->mercado === null) {

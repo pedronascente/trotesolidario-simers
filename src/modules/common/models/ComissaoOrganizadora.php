@@ -26,8 +26,8 @@ class ComissaoOrganizadora extends ActiveRecord
     public function rules()
     {
         return [
-            [['universidade_id', 'nome'], 'required'],
-            [['universidade_id', 'ordem', 'ativo'], 'integer'],
+            [['trote_id', 'universidade_id', 'nome'], 'required'],
+            [['trote_id', 'universidade_id', 'ordem', 'ativo'], 'integer'],
             [['nome', 'cargo'], 'trim'],
             [['nome'], 'string', 'max' => 180],
             [['cargo'], 'string', 'max' => 120],
@@ -36,6 +36,8 @@ class ComissaoOrganizadora extends ActiveRecord
             [['ativo'], 'default', 'value' => 1],
             [['ativo'], 'in', 'range' => [0, 1]],
             [['universidade_id'], 'exist', 'skipOnError' => true, 'targetClass' => Universidade::class, 'targetAttribute' => ['universidade_id' => 'id']],
+            [['trote_id'], 'exist', 'skipOnError' => true, 'targetClass' => Trote::class, 'targetAttribute' => ['trote_id' => 'id']],
+            ['trote_id', 'validateTroteAtivo', 'skipOnError' => true],
         ];
     }
 
@@ -43,6 +45,7 @@ class ComissaoOrganizadora extends ActiveRecord
     {
         return [
             'id' => 'ID',
+            'trote_id' => 'Trote',
             'universidade_id' => 'Instituição',
             'nome' => 'Nome',
             'cargo' => 'Cargo ou função',
@@ -56,5 +59,25 @@ class ComissaoOrganizadora extends ActiveRecord
     public function getUniversidade()
     {
         return $this->hasOne(Universidade::class, ['id' => 'universidade_id']);
+    }
+
+    public function getTrote()
+    {
+        return $this->hasOne(Trote::class, ['id' => 'trote_id']);
+    }
+
+    public function validateTroteAtivo($attribute): void
+    {
+        if (!$this->isNewRecord && !$this->isAttributeChanged($attribute)) {
+            return;
+        }
+
+        $troteAtivoExiste = Trote::find()
+            ->where(['id' => $this->$attribute, 'status' => Trote::STATUS_ATIVO])
+            ->exists();
+
+        if (!$troteAtivoExiste) {
+            $this->addError($attribute, 'Selecione um trote ativo.');
+        }
     }
 }

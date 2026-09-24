@@ -5,6 +5,7 @@ namespace app\modules\administrator\controllers;
 use Yii;
 use app\modules\common\models\MercadoUniversidade;
 use app\modules\common\models\MercadoParceiro;
+use app\modules\common\models\Trote;
 use app\modules\common\models\Universidade;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -57,7 +58,7 @@ class MercadoUniversidadeController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => MercadoUniversidade::find()
-                ->with(['mercado', 'universidade'])
+                ->with(['trote', 'mercado', 'universidade'])
                 ->orderBy(['id' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => 10,
@@ -86,13 +87,20 @@ class MercadoUniversidadeController extends Controller
                 return $mercado->nome_mercado . ' — ' . $mercado->endereco;
             }
         );
+        $trotes = ArrayHelper::map(
+            Trote::getAtivos(),
+            'id',
+            static function (Trote $trote) {
+                return $trote->titulo . ' — ' . $trote->edicao;
+            }
+        );
         $universidades = ArrayHelper::map(
             Universidade::find()->orderBy(['nome' => SORT_ASC])->all(),
             'id',
             'nome'
         );
 
-        return $this->render('create', compact('model', 'mercados', 'universidades'));
+        return $this->render('create', compact('model', 'trotes', 'mercados', 'universidades'));
     }
 
     public function actionDelete($id)
