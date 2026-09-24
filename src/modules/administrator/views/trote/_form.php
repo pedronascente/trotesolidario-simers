@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 $currentYear = (int) date('Y');
 $editionOptions = [];
 
-foreach ([1, 2] as $semester) {
+foreach ([1, 2,3] as $semester) {
     for ($year = $currentYear; $year >= $currentYear - 6; $year--) {
         $edition = $year . '.' . $semester;
         $editionOptions[$edition] = $edition;
