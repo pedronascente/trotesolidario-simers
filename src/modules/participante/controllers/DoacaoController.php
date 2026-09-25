@@ -115,6 +115,7 @@ class DoacaoController extends Controller
         $this->layout = 'adminindex';
 
         $model = new Doacao();
+        $model->scenario = Doacao::SCENARIO_PARTICIPANTE_CREATE;
         $data = $this->getParticipantFormData();
 
         if ($model->load(Yii::$app->request->post())) {

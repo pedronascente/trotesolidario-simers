@@ -81,6 +81,18 @@ $formatDate = static function ($value): string {
         </div>
     </section>
 
+    <?php if ($model->isTipoDoacaoSangue()): ?>
+        <section class="alert alert-warning shadow-sm d-flex align-items-start" role="note" aria-labelledby="donation-blood-term-title">
+            <i class="fas fa-exclamation-triangle fa-lg mr-3 mt-1" aria-hidden="true"></i>
+            <div>
+                <h2 id="donation-blood-term-title" class="h5 font-weight-bold mb-1">Termo da doação de sangue</h2>
+                <p class="mb-0">
+                    Estou ciente de que a doação deve ser realizada pelo próprio participante, não sendo permitidas doações de terceiros.
+                </p>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <?php if ($model->status === Doacao::STATUS_REJEITADA && $model->motivo_reprovado): ?>
         <section class="donation-feedback-card" aria-labelledby="donation-feedback-title">
             <div class="donation-section-icon" aria-hidden="true"><i class="fas fa-comment-alt"></i></div>

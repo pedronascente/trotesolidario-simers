@@ -12,6 +12,11 @@ class TipoDoacao extends ActiveRecord
         return 'tipo_doacao';
     }
 
+    public static function isNomeSangue(string $nome): bool
+    {
+        return mb_strpos(mb_strtolower($nome, 'UTF-8'), 'sangue') !== false;
+    }
+
     public function rules()
     {
         return [

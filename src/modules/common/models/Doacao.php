@@ -10,6 +10,7 @@ use yii\db\Expression;
 
 class Doacao extends ActiveRecord
 {
+    public const SCENARIO_PARTICIPANTE_CREATE = 'participante-create';
     public const COMPROVANTE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
     public const COMPROVANTE_MAX_SIZE = 2 * 1024 * 1024;
 
@@ -17,6 +18,7 @@ class Doacao extends ActiveRecord
     public $participacao_label;
     public $evento_nome;
     public $tipo_doacao_nome;
+    public $termo_doacao_sangue;
 
     const STATUS_PENDENTE = 'pendente';
     const STATUS_APROVADA = 'aprovada';
@@ -31,6 +33,19 @@ class Doacao extends ActiveRecord
     {
         return [
             [['participacao_id', 'tipo_doacao_id'], 'required'],
+            [
+                ['termo_doacao_sangue'],
+                'required',
+                'requiredValue' => 1,
+                'message' => 'Você precisa aceitar este termo.',
+                'on' => self::SCENARIO_PARTICIPANTE_CREATE,
+                'when' => function ($model) {
+                    return $model->isTipoDoacaoSangue();
+                },
+                'whenClient' => "function () {
+                    return $('#doacao-tipo_doacao_id option:selected').text().toLocaleLowerCase('pt-BR').indexOf('sangue') !== -1;
+                }",
+            ],
             [['participacao_id', 'tipo_doacao_id', 'evento_id', 'validado_por'], 'integer'],
             [['motivo_reprovado'], 'string'],
             [['validado_em', 'created_at', 'updated_at'], 'safe'],
@@ -110,6 +125,7 @@ class Doacao extends ActiveRecord
         return [
             'participacao_id' => 'Participação',
             'tipo_doacao_id' => 'Tipo de Doação',
+            'termo_doacao_sangue' => 'Termos',
             'evento_id' => 'Evento',
             'cpf_snapshot' => 'CPF registrado',
             'edicao_snapshot' => 'Edição registrada',
@@ -149,6 +165,19 @@ class Doacao extends ActiveRecord
     public function getTipoDoacao()
     {
         return $this->hasOne(TipoDoacao::class, ['id' => 'tipo_doacao_id']);
+    }
+
+    public function isTipoDoacaoSangue(): bool
+    {
+        if (empty($this->tipo_doacao_id)) {
+            return false;
+        }
+
+        $tipoDoacao = $this->isRelationPopulated('tipoDoacao')
+            ? $this->tipoDoacao
+            : TipoDoacao::findOne((int) $this->tipo_doacao_id);
+
+        return $tipoDoacao !== null && TipoDoacao::isNomeSangue((string) $tipoDoacao->nome);
     }
 
     public function getValidador()

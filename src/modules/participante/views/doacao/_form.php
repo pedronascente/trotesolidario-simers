@@ -1,10 +1,12 @@
 <?php
 
 use app\modules\common\models\Doacao;
+use app\modules\common\models\TipoDoacao;
 use app\modules\common\services\DoacaoArquivoStorage;
 use kartik\depdrop\DepDrop;
 use kartik\file\FileInput;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
@@ -13,6 +15,12 @@ use yii\widgets\ActiveForm;
 $isUpdate = !$model->isNewRecord;
 $arquivoDisponivel = DoacaoArquivoStorage::resolve($model->arquivo) !== null;
 $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : null;
+$tipoDoacaoSangueIds = array_map('strval', array_keys(array_filter(
+    $tipoDoacao,
+    [TipoDoacao::class, 'isNomeSangue']
+)));
+$tipoDoacaoSangueIdsJson = Json::htmlEncode($tipoDoacaoSangueIds);
+$isDoacaoUpdateJs = $isUpdate ? 'true' : 'false';
 ?>
 
 <div class="container-fluid">
@@ -44,6 +52,18 @@ $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : nu
             <?= $form->field($model, 'tipo_doacao_id')->dropDownList($tipoDoacao, [
                 'prompt' => 'Selecione o tipo de doação',
                 'class' => 'form-control',
+            ]) ?>
+        </div>
+    </div>
+
+    <div id="termo-doacao-sangue" class="row" hidden>
+        <div class="col-md-12">
+            <?= $form->field($model, 'termo_doacao_sangue')->checkbox([
+                'value' => 1,
+                'uncheck' => 0,
+                'checked' => $isUpdate && $model->isTipoDoacaoSangue(),
+                'disabled' => $isUpdate,
+                'label' => 'Termos: Estou ciente de que a doação deve ser realizada pelo próprio participante, não sendo permitidas doações de terceiros.',
             ]) ?>
         </div>
     </div>
@@ -133,6 +153,9 @@ $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : nu
 
 <?php
 $this->registerJs(<<<JS
+var tipoDoacaoSangueIds = {$tipoDoacaoSangueIdsJson};
+var isDoacaoUpdate = {$isDoacaoUpdateJs};
+
 var syncFieldValidationState = function () {
     $('.form-group').each(function () {
         var hasError = $(this).hasClass('has-error');
@@ -141,6 +164,20 @@ var syncFieldValidationState = function () {
 };
 
 syncFieldValidationState();
+
+var syncTermoDoacaoSangue = function () {
+    var isDoacaoSangue = tipoDoacaoSangueIds.indexOf($('#doacao-tipo_doacao_id').val()) !== -1;
+    $('#termo-doacao-sangue').prop('hidden', !isDoacaoSangue);
+
+    if (isDoacaoUpdate) {
+        $('#doacao-termo_doacao_sangue').prop('checked', isDoacaoSangue);
+    } else if (!isDoacaoSangue) {
+        $('#doacao-termo_doacao_sangue').prop('checked', false);
+    }
+};
+
+$('#doacao-tipo_doacao_id').on('change', syncTermoDoacaoSangue);
+syncTermoDoacaoSangue();
 
 $('form').on('afterValidate', function () {
     syncFieldValidationState();

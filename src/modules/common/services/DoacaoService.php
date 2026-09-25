@@ -84,7 +84,7 @@ class DoacaoService implements DoacaoServiceInterface
             ->joinWith('trote')
             ->where(['participacao.status' => Participacao::STATUS_ATIVO])
             ->andWhere(['<>', 'trote.status', Trote::STATUS_ENCERRADO])
-            ->orderBy(['id' => SORT_DESC])
+            ->orderBy(['participacao.id' => SORT_DESC])
             ->all();
 
         return [
@@ -194,6 +194,19 @@ class DoacaoService implements DoacaoServiceInterface
 
         try {
             $oldParticipacaoId = !$isNew ? (int) ($model->getOldAttribute('participacao_id') ?? 0) : null;
+
+            if ($isNew && $model->status === Doacao::STATUS_APROVADA) {
+                $identity = Yii::$app->user->identity;
+
+                if ($identity === null || !$identity->isAdmin()) {
+                    $model->addError('status', 'Somente administradores podem cadastrar doacoes ja aprovadas.');
+                    $transaction->rollBack();
+                    return false;
+                }
+
+                $model->validado_por = (int) $identity->id;
+                $model->validado_em = date('Y-m-d H:i:s');
+            }
 
             if (!$isNew && $oldParticipacaoId > 0 && $oldParticipacaoId !== (int) $model->participacao_id) {
                 $model->addError('participacao_id', 'Nao e permitido alterar a participacao de uma doacao ja cadastrada.');

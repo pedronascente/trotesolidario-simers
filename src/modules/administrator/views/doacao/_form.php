@@ -32,6 +32,21 @@ $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : nu
 
 <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
 
+<?php if ($model->isNewRecord): ?>
+    <div class="alert alert-info" role="alert">
+        <strong><i class="fas fa-info-circle" aria-hidden="true"></i> Quando uma doação pode ser registrada?</strong>
+        O administrador pode registrar uma doação somente para um participante com participação ativa
+        em um trote que ainda não foi encerrado.
+    </div>
+
+    <?php if (empty($participacoes)): ?>
+        <div class="alert alert-warning" role="alert">
+            <strong>Nenhum participante disponível.</strong>
+            Cadastre ou ative uma participação em um trote não encerrado para registrar a doação.
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
 <div class="row">
     <div class="col-md-12">
         <?= $form->field($model, 'participacao_id')->dropDownList($participacoes, [
@@ -74,7 +89,7 @@ $arquivoUrl = $arquivoDisponivel ? Url::to(['arquivo', 'id' => $model->id]) : nu
                 'browseIcon' => '<i class="fas fa-paperclip"></i> ',
                 'browseLabel' => 'Anexar arquivo',
                 'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
-                'maxFileSize' => 5120,
+                'maxFileSize' => 2048,
                 'overwriteInitial' => true,
                 'initialPreview' => $arquivoUrl ? [$arquivoUrl] : [],
                 'initialPreviewAsData' => true,
