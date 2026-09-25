@@ -107,7 +107,7 @@ class CertificadoController extends Controller
 
     public function actionView($id)
     {
-        $model = $this->certificadoService->ensurePdf($this->findModel((int) $id), true);
+        $model = $this->certificadoService->ensurePdf($this->findModel((int) $id));
 
         $pdfPath = $model->getArquivoPdfPath();
         if ($pdfPath !== null) {
